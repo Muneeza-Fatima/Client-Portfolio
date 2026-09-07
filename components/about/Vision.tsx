@@ -1,45 +1,108 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 export default function Vision() {
   const reduceMotion = useReducedMotion();
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: fine)");
+
+    const update = () => {
+      setFinePointer(media.matches);
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion && finePointer;
 
   return (
     <section className="relative flex min-h-0 items-center overflow-hidden bg-[#E9E9E5] py-14 text-[#0B1F33] sm:min-h-[68vh] sm:py-28 lg:py-32">
       {/* Background atmosphere */}
       <div className="pointer-events-none absolute inset-0">
+        {/* Center glow — static for better performance */}
         <div
           className="
-            ambient-blob
-            absolute left-1/2 top-1/2
-            h-[620px] w-[620px]
-            -translate-x-1/2 -translate-y-1/2
+            absolute
+            left-1/2
+            top-1/2
+            h-[340px]
+            w-[340px]
+            -translate-x-1/2
+            -translate-y-1/2
             rounded-full
-            bg-[#168BD1]/[0.045]
-            blur-[180px]
+            bg-[#168BD1]/[0.035]
+            blur-[90px]
+            sm:h-[460px]
+            sm:w-[460px]
+            sm:blur-[120px]
+            lg:h-[620px]
+            lg:w-[620px]
+            lg:blur-[160px]
           "
-          style={
-            reduceMotion
-              ? undefined
-              : ({
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.05,
-                  "--drift-opacity-from": 0.3,
-                  "--drift-opacity-to": 0.45,
-                  "--drift-duration": "20s",
-                } as any)
-          }
         />
 
-        <div className="absolute -right-32 top-[15%] h-[320px] w-[320px] rounded-full bg-[#42D5F5]/[0.035] blur-[140px]" />
+        {/* Right atmosphere */}
+        <div
+          className="
+            absolute
+            -right-24
+            top-[15%]
+            h-[220px]
+            w-[220px]
+            rounded-full
+            bg-[#42D5F5]/[0.028]
+            blur-[80px]
+            sm:-right-32
+            sm:h-[280px]
+            sm:w-[280px]
+            sm:blur-[110px]
+            lg:h-[320px]
+            lg:w-[320px]
+            lg:blur-[130px]
+          "
+        />
 
-        <div className="absolute -left-40 bottom-[5%] h-[340px] w-[340px] rounded-full bg-[#168BD1]/[0.03] blur-[150px]" />
+        {/* Left atmosphere */}
+        <div
+          className="
+            absolute
+            -left-28
+            bottom-[5%]
+            h-[240px]
+            w-[240px]
+            rounded-full
+            bg-[#168BD1]/[0.025]
+            blur-[90px]
+            sm:-left-40
+            sm:h-[300px]
+            sm:w-[300px]
+            sm:blur-[120px]
+            lg:h-[340px]
+            lg:w-[340px]
+            lg:blur-[140px]
+          "
+        />
 
+        {/* Subtle vignette */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(7,24,39,0.035)_100%)]" />
 
+        {/* Static grid — no animation */}
         <div
-          className="absolute inset-0 opacity-[0.018]"
+          className="
+            absolute
+            inset-0
+            opacity-[0.012]
+            sm:opacity-[0.018]
+          "
           style={{
             backgroundImage:
               "linear-gradient(90deg, rgba(11,31,51,.8) 1px, transparent 1px), linear-gradient(rgba(11,31,51,.8) 1px, transparent 1px)",
@@ -47,6 +110,7 @@ export default function Vision() {
           }}
         />
 
+        {/* Section borders */}
         <div className="absolute inset-x-0 top-0 h-px bg-[#0B1F33]/[0.08]" />
         <div className="absolute inset-x-0 bottom-0 h-px bg-[#0B1F33]/[0.06]" />
       </div>
@@ -58,7 +122,7 @@ export default function Vision() {
               ? false
               : {
                   opacity: 0,
-                  y: 18,
+                  y: 14,
                 }
           }
           whileInView={
@@ -71,9 +135,12 @@ export default function Vision() {
           }
           viewport={{
             once: true,
-            amount: 0.3,
+            amount: 0.2,
           }}
-          transition={{ duration: 0.8 }}
+          transition={{
+            duration: 0.55,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="mx-auto max-w-5xl text-center"
         >
           {/* Eyebrow */}
@@ -94,8 +161,7 @@ export default function Vision() {
                 ? false
                 : {
                     opacity: 0,
-                    y: 24,
-                    filter: "blur(6px)",
+                    y: 18,
                   }
             }
             whileInView={
@@ -104,16 +170,15 @@ export default function Vision() {
                 : {
                     opacity: 1,
                     y: 0,
-                    filter: "blur(0px)",
                   }
             }
             viewport={{
               once: true,
-              amount: 0.25,
+              amount: 0.2,
             }}
             transition={{
-              duration: 0.95,
-              delay: 0.05,
+              duration: 0.65,
+              delay: 0.04,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="
@@ -155,7 +220,7 @@ export default function Vision() {
                 ? false
                 : {
                     opacity: 0,
-                    y: 14,
+                    y: 12,
                   }
             }
             whileInView={
@@ -168,11 +233,12 @@ export default function Vision() {
             }
             viewport={{
               once: true,
-              amount: 0.2,
+              amount: 0.15,
             }}
             transition={{
-              duration: 0.8,
-              delay: 0.2,
+              duration: 0.6,
+              delay: 0.12,
+              ease: [0.22, 1, 0.36, 1],
             }}
             className="
               mx-auto
@@ -210,10 +276,14 @@ export default function Vision() {
                     scaleX: 1,
                   }
             }
-            viewport={{ once: true }}
+            viewport={{
+              once: true,
+              amount: 0.1,
+            }}
             transition={{
-              duration: 0.8,
-              delay: 0.35,
+              duration: 0.55,
+              delay: 0.2,
+              ease: [0.22, 1, 0.36, 1],
             }}
             className="
               mx-auto

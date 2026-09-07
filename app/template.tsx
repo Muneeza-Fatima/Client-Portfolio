@@ -11,15 +11,12 @@ export default function Template({
   const pathname = usePathname();
 
   useEffect(() => {
-    const resetScroll = () => {
-      window.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth",
-      });
-    };
-
-    const frame = requestAnimationFrame(resetScroll);
+    // Reset scroll position instantly on route change.
+    // Avoid smooth scrolling here to prevent scroll animation
+    // conflicts and mobile/Vercel scroll lag.
+    const frame = requestAnimationFrame(() => {
+      window.scrollTo(0, 0);
+    });
 
     return () => cancelAnimationFrame(frame);
   }, [pathname]);

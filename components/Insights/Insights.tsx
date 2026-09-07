@@ -7,6 +7,7 @@ import {
   Sparkles,
   ArrowUpRight,
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const HEADING_WHITE = "#F8FAFC";
 const SKY_BLUE = "#7FA9FF";
@@ -51,9 +52,30 @@ const boardPoints = [
 
 export default function Insights() {
   const reduceMotion = useReducedMotion();
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+
+    const updatePointer = () => {
+      setFinePointer(mediaQuery.matches);
+    };
+
+    updatePointer();
+
+    mediaQuery.addEventListener("change", updatePointer);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePointer);
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion && finePointer;
 
   const reveal = {
-    initial: reduceMotion ? { opacity: 1 } : { opacity: 0, y: 30 },
+    initial: motionEnabled
+      ? { opacity: 0, y: 20 }
+      : { opacity: 1 },
     whileInView: {
       opacity: 1,
       y: 0,
@@ -63,7 +85,7 @@ export default function Insights() {
       amount: 0.12,
     },
     transition: {
-      duration: 0.9,
+      duration: 0.55,
       ease: [0.22, 1, 0.36, 1] as const,
     },
   };
@@ -71,48 +93,62 @@ export default function Insights() {
   return (
     <section
       id="insights"
-      className="relative overflow-hidden bg-[#0B1624] pt-32 pb-24 sm:py-28 lg:py-32"
+      className="
+        relative
+        overflow-hidden
+        bg-[#0B1624]
+        pt-32
+        pb-24
+        sm:py-28
+        lg:py-32
+      "
     >
       {/* Ambient Background */}
       <div className="pointer-events-none absolute inset-0">
         <div
-          className="ambient-blob absolute left-[8%] top-[10%] h-64 w-64 rounded-full blur-[130px]"
-          style={
-            {
-              backgroundColor: "rgba(127,169,255,0.045)",
-              ...(reduceMotion
-                ? {}
-                : {
-                    "--drift-x": "18px",
-                    "--drift-y": "-10px",
-                    "--drift-scale-from": 1,
-                    "--drift-scale-to": 1.03,
-                    "--drift-duration": "16s",
-                  }),
-            } as any
-          }
+          className="
+            absolute
+            left-[8%]
+            top-[10%]
+            h-40
+            w-40
+            rounded-full
+            blur-[90px]
+            sm:h-56
+            sm:w-56
+            sm:blur-[115px]
+            lg:h-64
+            lg:w-64
+            lg:blur-[130px]
+          "
+          style={{
+            backgroundColor: "rgba(127,169,255,0.035)",
+          }}
         />
 
         <div
-          className="ambient-blob absolute bottom-[8%] right-[5%] h-72 w-72 rounded-full blur-[140px]"
-          style={
-            {
-              backgroundColor: "rgba(140,176,255,0.035)",
-              ...(reduceMotion
-                ? {}
-                : {
-                    "--drift-x": "-15px",
-                    "--drift-y": "15px",
-                    "--drift-scale-from": 1,
-                    "--drift-scale-to": 1.03,
-                    "--drift-duration": "18s",
-                  }),
-            } as any
-          }
+          className="
+            absolute
+            bottom-[8%]
+            right-[5%]
+            h-44
+            w-44
+            rounded-full
+            blur-[95px]
+            sm:h-60
+            sm:w-60
+            sm:blur-[120px]
+            lg:h-72
+            lg:w-72
+            lg:blur-[140px]
+          "
+          style={{
+            backgroundColor: "rgba(140,176,255,0.028)",
+          }}
         />
 
         <div
-          className="absolute inset-0 opacity-60"
+          className="absolute inset-0 opacity-50"
           style={{
             background:
               "radial-gradient(circle at 50% 18%, rgba(127,169,255,0.045), transparent 36%)",
@@ -129,25 +165,28 @@ export default function Insights() {
           <div>
             <motion.div
               initial={
-                reduceMotion
-                  ? { opacity: 1, x: 0 }
-                  : { opacity: 0, x: -20 }
+                motionEnabled
+                  ? { opacity: 0, x: -14 }
+                  : { opacity: 1, x: 0 }
               }
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{
-                duration: 0.8,
+                duration: 0.5,
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="mb-5 flex items-center gap-3"
             >
               <motion.span
-                initial={reduceMotion ? undefined : { width: 0 }}
+                initial={
+                  motionEnabled
+                    ? { width: 0 }
+                    : { width: 32 }
+                }
                 whileInView={{ width: 32 }}
                 viewport={{ once: true }}
                 transition={{
-                  duration: 0.9,
-                  delay: reduceMotion ? 0 : 0.12,
+                  duration: 0.55,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="h-px"
@@ -157,7 +196,12 @@ export default function Insights() {
               />
 
               <span
-                className="text-[10px] font-semibold uppercase tracking-[0.28em]"
+                className="
+                  text-[10px]
+                  font-semibold
+                  uppercase
+                  tracking-[0.28em]
+                "
                 style={{
                   color: SKY_BLUE,
                 }}
@@ -168,9 +212,9 @@ export default function Insights() {
 
             <motion.h1
               initial={
-                reduceMotion
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 28 }
+                motionEnabled
+                  ? { opacity: 0, y: 20 }
+                  : { opacity: 1, y: 0 }
               }
               whileInView={{
                 opacity: 1,
@@ -178,22 +222,36 @@ export default function Insights() {
               }}
               viewport={{ once: true }}
               transition={{
-                duration: 1,
-                delay: reduceMotion ? 0 : 0.08,
+                duration: 0.65,
+                delay: motionEnabled ? 0.05 : 0,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="max-w-2xl text-[3rem] font-semibold leading-[1.08] tracking-[-0.04em] sm:text-[3.7rem] sm:leading-[1.04] lg:text-[4.3rem] lg:leading-[1.04]"
+              className="
+                max-w-2xl
+                text-[3rem]
+                font-semibold
+                leading-[1.08]
+                tracking-[-0.04em]
+                sm:text-[3.7rem]
+                sm:leading-[1.04]
+                lg:text-[4.3rem]
+                lg:leading-[1.04]
+              "
             >
-              <span style={{ color: HEADING_WHITE }}>Ideas.</span>
+              <span style={{ color: HEADING_WHITE }}>
+                Ideas.
+              </span>
               <br />
-              <span style={{ color: HEADING_WHITE }}>Perspectives.</span>
+              <span style={{ color: HEADING_WHITE }}>
+                Perspectives.
+              </span>
               <br />
 
               <motion.span
                 initial={
-                  reduceMotion
-                    ? { opacity: 1, x: 0 }
-                    : { opacity: 0, x: -14 }
+                  motionEnabled
+                    ? { opacity: 0, x: -10 }
+                    : { opacity: 1, x: 0 }
                 }
                 whileInView={{
                   opacity: 1,
@@ -201,8 +259,8 @@ export default function Insights() {
                 }}
                 viewport={{ once: true }}
                 transition={{
-                  duration: 0.8,
-                  delay: reduceMotion ? 0 : 0.35,
+                  duration: 0.55,
+                  delay: motionEnabled ? 0.2 : 0,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 style={{
@@ -219,15 +277,15 @@ export default function Insights() {
 
           <motion.div
             initial={
-              reduceMotion
-                ? { opacity: 1, x: 0 }
-                : { opacity: 0, x: 28 }
+              motionEnabled
+                ? { opacity: 0, x: 18 }
+                : { opacity: 1, x: 0 }
             }
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{
-              duration: 0.9,
-              delay: reduceMotion ? 0 : 0.18,
+              duration: 0.6,
+              delay: motionEnabled ? 0.08 : 0,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="max-w-xl pt-2 lg:justify-self-end lg:pt-0"
@@ -248,22 +306,48 @@ export default function Insights() {
         <motion.article
           {...reveal}
           whileHover={
-            reduceMotion
-              ? undefined
-              : {
-                  y: -7,
-                  scale: 1.003,
+            motionEnabled
+              ? {
+                  y: -5,
+                  scale: 1.002,
                 }
+              : undefined
           }
           transition={{
-            duration: 0.85,
+            duration: 0.35,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="group relative mt-16 overflow-hidden rounded-[2rem] border border-white/[0.13] bg-[#122236] backdrop-blur-xl transition-[border-color,box-shadow,background-color] duration-700 ease-out hover:border-white/[0.2] hover:bg-[#122236] hover:shadow-[0_24px_70px_rgba(0,0,0,0.24)] sm:mt-20"
+          className="
+            group
+            relative
+            mt-16
+            overflow-hidden
+            rounded-[2rem]
+            border
+            border-white/[0.13]
+            bg-[#122236]
+            backdrop-blur-none
+            transition-[border-color,box-shadow,background-color,transform]
+            duration-300
+            ease-out
+            hover:border-white/[0.2]
+            hover:bg-[#122236]
+            hover:shadow-[0_20px_55px_rgba(0,0,0,0.20)]
+            sm:mt-20
+            sm:backdrop-blur-md
+            lg:backdrop-blur-xl
+          "
         >
-          {/* Mobile Outer Border Shine Only — Stable */}
+          {/* Mobile Stable Border */}
           <div
-            className="pointer-events-none absolute inset-0 z-30 rounded-[2rem] lg:hidden"
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              z-30
+              rounded-[2rem]
+              lg:hidden
+            "
             style={{
               padding: "1.5px",
               background:
@@ -275,55 +359,76 @@ export default function Insights() {
             }}
           />
 
-          <motion.div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 transition-opacity duration-700 group-hover:opacity-100">
-            <motion.div
-              initial={{ x: "-120%", opacity: 0 }}
-              whileHover={{
-                x: "120%",
-                opacity: 1,
-              }}
-              transition={{
-                duration: 1.15,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="absolute top-0 h-full w-[38%] -skew-x-12 blur-[28px]"
-              style={{
-                background:
-                  "linear-gradient(90deg, transparent, rgba(255,255,255,0.045), transparent)",
-              }}
-            />
+          {/* Desktop Hover Shine */}
+          {motionEnabled && (
+            <motion.div className="pointer-events-none absolute inset-0 rounded-[2rem] opacity-0 transition-opacity duration-500 group-hover:opacity-100">
+              <motion.div
+                initial={{ x: "-120%", opacity: 0 }}
+                whileHover={{
+                  x: "120%",
+                  opacity: 1,
+                }}
+                transition={{
+                  duration: 0.9,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="
+                  absolute
+                  top-0
+                  h-full
+                  w-[38%]
+                  -skew-x-12
+                  blur-[24px]
+                "
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(255,255,255,0.045), transparent)",
+                }}
+              />
 
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(circle at 72% 40%, rgba(127,169,255,0.045), transparent 48%)",
-              }}
-            />
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(circle at 72% 40%, rgba(127,169,255,0.045), transparent 48%)",
+                }}
+              />
 
-            <div
-              className="absolute inset-x-0 top-0 h-px"
-              style={{
-                background:
-                  "linear-gradient(90deg, transparent, rgba(127,169,255,0.3), transparent)",
-              }}
-            />
-          </motion.div>
+              <div
+                className="absolute inset-x-0 top-0 h-px"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(127,169,255,0.3), transparent)",
+                }}
+              />
+            </motion.div>
+          )}
 
+          {/* Static Atmosphere */}
           <div
-            className="ambient-blob pointer-events-none absolute -right-32 -top-32 h-72 w-72 rounded-full blur-[120px]"
-            style={
-              {
-                backgroundColor: "rgba(127,169,255,0.055)",
-                ...(reduceMotion
-                  ? {}
-                  : {
-                      "--drift-x": "18px",
-                      "--drift-y": "-14px",
-                      "--drift-duration": "14s",
-                    }),
-              } as any
-            }
+            className="
+              pointer-events-none
+              absolute
+              -right-20
+              -top-20
+              h-48
+              w-48
+              rounded-full
+              blur-[90px]
+              sm:-right-28
+              sm:-top-28
+              sm:h-64
+              sm:w-64
+              sm:blur-[110px]
+              lg:-right-32
+              lg:-top-32
+              lg:h-72
+              lg:w-72
+              lg:blur-[120px]
+            "
+            style={{
+              backgroundColor: "rgba(127,169,255,0.04)",
+            }}
           />
 
           <div className="relative grid lg:grid-cols-[1fr_0.65fr]">
@@ -331,15 +436,14 @@ export default function Insights() {
               <div>
                 <motion.span
                   initial={
-                    reduceMotion
-                      ? undefined
-                      : { opacity: 0, y: 10 }
+                    motionEnabled
+                      ? { opacity: 0, y: 8 }
+                      : { opacity: 1, y: 0 }
                   }
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{
-                    duration: 0.7,
-                    ease: [0.22, 1, 0.36, 1],
+                    duration: 0.45,
                   }}
                   className="text-[10px] font-semibold uppercase tracking-[0.25em]"
                   style={{ color: SKY_BLUE }}
@@ -349,9 +453,9 @@ export default function Insights() {
 
                 <motion.h2
                   initial={
-                    reduceMotion
-                      ? { opacity: 1, y: 0 }
-                      : { opacity: 0, y: 22 }
+                    motionEnabled
+                      ? { opacity: 0, y: 18 }
+                      : { opacity: 1, y: 0 }
                   }
                   whileInView={{
                     opacity: 1,
@@ -359,11 +463,22 @@ export default function Insights() {
                   }}
                   viewport={{ once: true }}
                   transition={{
-                    duration: 0.9,
-                    delay: reduceMotion ? 0 : 0.1,
+                    duration: 0.6,
+                    delay: motionEnabled ? 0.06 : 0,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="mt-8 max-w-2xl text-[2.4rem] font-semibold leading-[1.08] tracking-[-0.035em] sm:text-[2.8rem] sm:leading-[1.05] lg:text-[3.25rem] lg:leading-[1.06]"
+                  className="
+                    mt-8
+                    max-w-2xl
+                    text-[2.4rem]
+                    font-semibold
+                    leading-[1.08]
+                    tracking-[-0.035em]
+                    sm:text-[2.8rem]
+                    sm:leading-[1.05]
+                    lg:text-[3.25rem]
+                    lg:leading-[1.06]
+                  "
                 >
                   <span style={{ color: HEADING_WHITE }}>
                     Leadership Is About
@@ -371,9 +486,9 @@ export default function Insights() {
 
                   <motion.span
                     initial={
-                      reduceMotion
-                        ? { opacity: 1, x: 0 }
-                        : { opacity: 0, x: -16 }
+                      motionEnabled
+                        ? { opacity: 0, x: -10 }
+                        : { opacity: 1, x: 0 }
                     }
                     whileInView={{
                       opacity: 1,
@@ -381,9 +496,8 @@ export default function Insights() {
                     }}
                     viewport={{ once: true }}
                     transition={{
-                      duration: 0.8,
-                      delay: reduceMotion ? 0 : 0.25,
-                      ease: [0.22, 1, 0.36, 1],
+                      duration: 0.55,
+                      delay: motionEnabled ? 0.16 : 0,
                     }}
                     className="block"
                     style={{ color: HEADING_WHITE }}
@@ -394,9 +508,9 @@ export default function Insights() {
 
                 <motion.p
                   initial={
-                    reduceMotion
-                      ? { opacity: 1, y: 0 }
-                      : { opacity: 0, y: 15 }
+                    motionEnabled
+                      ? { opacity: 0, y: 12 }
+                      : { opacity: 1, y: 0 }
                   }
                   whileInView={{
                     opacity: 1,
@@ -404,9 +518,8 @@ export default function Insights() {
                   }}
                   viewport={{ once: true }}
                   transition={{
-                    duration: 0.75,
-                    delay: reduceMotion ? 0 : 0.3,
-                    ease: [0.22, 1, 0.36, 1],
+                    duration: 0.5,
+                    delay: motionEnabled ? 0.2 : 0,
                   }}
                   className="mt-5 max-w-xl text-sm leading-7 text-slate-300 sm:leading-7"
                 >
@@ -418,9 +531,9 @@ export default function Insights() {
 
               <motion.div
                 initial={
-                  reduceMotion
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: 12 }
+                  motionEnabled
+                    ? { opacity: 0, y: 10 }
+                    : { opacity: 1, y: 0 }
                 }
                 whileInView={{
                   opacity: 1,
@@ -428,9 +541,8 @@ export default function Insights() {
                 }}
                 viewport={{ once: true }}
                 transition={{
-                  duration: 0.7,
-                  delay: reduceMotion ? 0 : 0.4,
-                  ease: [0.22, 1, 0.36, 1],
+                  duration: 0.5,
+                  delay: motionEnabled ? 0.28 : 0,
                 }}
                 className="mt-10 flex items-center gap-4"
               >
@@ -449,40 +561,43 @@ export default function Insights() {
               </motion.div>
             </div>
 
-            {/* Strategic Board — Centered on Mobile */}
+            {/* Strategic Board */}
             <div className="relative flex min-h-[330px] items-center justify-center overflow-hidden border-t border-white/[0.09] lg:min-h-[440px] lg:border-l lg:border-t-0">
-              <motion.div
-                animate={
-                  reduceMotion
-                    ? undefined
-                    : {
-                        scale: [1, 1.05, 1],
-                        opacity: [0.06, 0.12, 0.06],
-                      }
-                }
-                transition={
-                  reduceMotion
-                    ? undefined
-                    : {
-                        duration: 8,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }
-                }
-                className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full blur-[100px]"
+              <div
+                className="
+                  absolute
+                  left-1/2
+                  top-1/2
+                  h-48
+                  w-48
+                  -translate-x-1/2
+                  -translate-y-1/2
+                  rounded-full
+                  blur-[75px]
+                  sm:h-60
+                  sm:w-60
+                  sm:blur-[90px]
+                  lg:h-64
+                  lg:w-64
+                  lg:blur-[100px]
+                "
                 style={{
-                  backgroundColor: "rgba(127,169,255,0.065)",
+                  backgroundColor: "rgba(127,169,255,0.045)",
                 }}
               />
 
               <motion.div
                 initial={
-                  reduceMotion
-                    ? undefined
-                    : {
+                  motionEnabled
+                    ? {
                         opacity: 0,
-                        scale: 0.82,
+                        scale: 0.88,
                         rotate: -3,
+                      }
+                    : {
+                        opacity: 1,
+                        scale: 1,
+                        rotate: 0,
                       }
                 }
                 whileInView={{
@@ -492,62 +607,62 @@ export default function Insights() {
                 }}
                 viewport={{ once: true }}
                 transition={{
-                  duration: 1.1,
-                  delay: reduceMotion ? 0 : 0.12,
+                  duration: 0.7,
+                  delay: motionEnabled ? 0.08 : 0,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="relative h-[250px] w-[250px] shrink-0 sm:h-[310px] sm:w-[310px]"
               >
-                <motion.div
-                  animate={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          rotate: 360,
-                        }
-                  }
-                  transition={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          duration: 30,
-                          repeat: Infinity,
-                          ease: "linear",
-                        }
-                  }
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    border: `1px solid ${SKY_BLUE}30`,
-                    boxShadow: `
-                      0 0 0 10px rgba(127,169,255,0.018),
-                      0 0 0 11px rgba(127,169,255,0.035),
-                      0 0 35px rgba(127,169,255,0.05)
-                    `,
-                  }}
-                />
+                {/* Outer Ring */}
+                {motionEnabled ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      duration: 30,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      border: `1px solid ${SKY_BLUE}30`,
+                      boxShadow: `
+                        0 0 0 10px rgba(127,169,255,0.018),
+                        0 0 0 11px rgba(127,169,255,0.035),
+                        0 0 35px rgba(127,169,255,0.05)
+                      `,
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      border: `1px solid ${SKY_BLUE}30`,
+                    }}
+                  />
+                )}
 
-                <motion.div
-                  animate={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          rotate: -360,
-                        }
-                  }
-                  transition={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          duration: 24,
-                          repeat: Infinity,
-                          ease: "linear",
-                        }
-                  }
-                  className="absolute inset-[22px] rounded-full sm:inset-[27px]"
-                  style={{
-                    border: `1px solid ${SKY_BLUE}22`,
-                  }}
-                />
+                {/* Inner Ring */}
+                {motionEnabled ? (
+                  <motion.div
+                    animate={{ rotate: -360 }}
+                    transition={{
+                      duration: 24,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
+                    className="absolute inset-[22px] rounded-full sm:inset-[27px]"
+                    style={{
+                      border: `1px solid ${SKY_BLUE}22`,
+                    }}
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-[22px] rounded-full sm:inset-[27px]"
+                    style={{
+                      border: `1px solid ${SKY_BLUE}22`,
+                    }}
+                  />
+                )}
 
                 <div
                   className="absolute inset-[52px] rounded-full sm:inset-[67px]"
@@ -558,16 +673,20 @@ export default function Insights() {
                   }}
                 />
 
+                {/* Radial Lines */}
                 {[0, 45, 90, 135, 180, 225, 270, 315].map(
-                  (rotation) => (
+                  (rotation, index) => (
                     <motion.div
                       key={rotation}
                       initial={
-                        reduceMotion
-                          ? undefined
-                          : {
+                        motionEnabled
+                          ? {
                               opacity: 0,
                               scaleX: 0,
+                            }
+                          : {
+                              opacity: 1,
+                              scaleX: 1,
                             }
                       }
                       whileInView={{
@@ -576,11 +695,10 @@ export default function Insights() {
                       }}
                       viewport={{ once: true }}
                       transition={{
-                        duration: 0.7,
-                        delay: reduceMotion
-                          ? 0
-                          : 0.35 + rotation / 720,
-                        ease: [0.22, 1, 0.36, 1],
+                        duration: 0.45,
+                        delay: motionEnabled
+                          ? 0.2 + index * 0.03
+                          : 0,
                       }}
                       className="absolute left-1/2 top-1/2 h-px w-[115px] origin-left sm:w-[145px]"
                       style={{
@@ -591,15 +709,19 @@ export default function Insights() {
                   ),
                 )}
 
+                {/* Board Nodes */}
                 {boardPoints.map((point, index) => (
                   <motion.div
                     key={`${point.left}-${point.top}`}
                     initial={
-                      reduceMotion
-                        ? undefined
-                        : {
+                      motionEnabled
+                        ? {
                             opacity: 0,
-                            scale: 0.3,
+                            scale: 0.5,
+                          }
+                        : {
+                            opacity: 1,
+                            scale: 1,
                           }
                     }
                     whileInView={{
@@ -608,9 +730,10 @@ export default function Insights() {
                     }}
                     viewport={{ once: true }}
                     transition={{
-                      duration: 0.65,
-                      delay: reduceMotion ? 0 : 0.5 + index * 0.1,
-                      ease: [0.22, 1, 0.36, 1],
+                      duration: 0.45,
+                      delay: motionEnabled
+                        ? 0.3 + index * 0.06
+                        : 0,
                     }}
                     className="absolute"
                     style={{
@@ -619,25 +742,7 @@ export default function Insights() {
                       transform: "translate(-50%, -50%)",
                     }}
                   >
-                    <motion.div
-                      animate={
-                        reduceMotion
-                          ? undefined
-                          : {
-                              scale: [1, 1.1, 1],
-                              opacity: [0.45, 0.78, 0.45],
-                            }
-                      }
-                      transition={
-                        reduceMotion
-                          ? undefined
-                          : {
-                              duration: 3,
-                              delay: index * 0.25,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                            }
-                      }
+                    <div
                       className="relative h-2.5 w-2.5 rounded-full border sm:h-3 sm:w-3"
                       style={{
                         borderColor: `${ROYAL_BLUE}90`,
@@ -651,105 +756,96 @@ export default function Insights() {
                           backgroundColor: ROYAL_BLUE,
                         }}
                       />
-                    </motion.div>
+                    </div>
                   </motion.div>
                 ))}
 
-                {[0, 1, 2, 3].map((index) => {
-                  const positions = [
-                    {
-                      left: "18%",
-                      top: "25%",
-                      rotate: 45,
-                      delay: 0,
-                    },
-                    {
-                      left: "76%",
-                      top: "22%",
-                      rotate: 135,
-                      delay: 0.6,
-                    },
-                    {
-                      left: "88%",
-                      top: "57%",
-                      rotate: 225,
-                      delay: 1.2,
-                    },
-                    {
-                      left: "68%",
-                      top: "82%",
-                      rotate: 315,
-                      delay: 1.8,
-                    },
-                  ];
+                {/* Direction Arrows — Desktop Motion Only */}
+                {motionEnabled &&
+                  [0, 1, 2, 3].map((index) => {
+                    const positions = [
+                      {
+                        left: "18%",
+                        top: "25%",
+                        rotate: 45,
+                        delay: 0,
+                      },
+                      {
+                        left: "76%",
+                        top: "22%",
+                        rotate: 135,
+                        delay: 0.6,
+                      },
+                      {
+                        left: "88%",
+                        top: "57%",
+                        rotate: 225,
+                        delay: 1.2,
+                      },
+                      {
+                        left: "68%",
+                        top: "82%",
+                        rotate: 315,
+                        delay: 1.8,
+                      },
+                    ];
 
-                  const point = positions[index];
+                    const point = positions[index];
 
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{
-                        left: point.left,
-                        top: point.top,
-                        opacity: 0,
-                        scale: 0.7,
-                      }}
-                      animate={
-                        reduceMotion
-                          ? undefined
-                          : {
-                              left: [point.left, "50%"],
-                              top: [point.top, "50%"],
-                              opacity: [0, 1, 0],
-                              scale: [0.7, 1, 0.75],
-                            }
-                      }
-                      transition={
-                        reduceMotion
-                          ? undefined
-                          : {
-                              duration: 2.5,
-                              delay: point.delay,
-                              repeat: Infinity,
-                              repeatDelay: 0.15,
-                              ease: "easeOut",
-                              times: [0, 0.82, 1],
-                            }
-                      }
-                      className="absolute -translate-x-1/2 -translate-y-1/2"
-                    >
-                      <ArrowUpRight
-                        size={18}
-                        strokeWidth={2}
-                        className="sm:h-5 sm:w-5"
-                        style={{
-                          color: ROYAL_BLUE,
-                          filter: `drop-shadow(0 0 6px ${ROYAL_BLUE}A0) drop-shadow(0 0 13px ${ROYAL_BLUE}55)`,
-                          transform: `rotate(${point.rotate}deg)`,
+                    return (
+                      <motion.div
+                        key={index}
+                        initial={{
+                          left: point.left,
+                          top: point.top,
+                          opacity: 0,
+                          scale: 0.7,
                         }}
-                      />
-                    </motion.div>
-                  );
-                })}
-
-                <motion.div
-                  animate={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          scale: [1, 1.05, 1],
-                        }
-                  }
-                  transition={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          duration: 3.2,
+                        animate={{
+                          left: [point.left, "50%"],
+                          top: [point.top, "50%"],
+                          opacity: [0, 1, 0],
+                          scale: [0.7, 1, 0.75],
+                        }}
+                        transition={{
+                          duration: 2.5,
+                          delay: point.delay,
                           repeat: Infinity,
-                          ease: "easeInOut",
-                        }
-                  }
-                  className="absolute left-1/2 top-1/2 h-[48px] w-[48px] -translate-x-1/2 -translate-y-1/2 rounded-full border sm:h-[58px] sm:w-[58px]"
+                          repeatDelay: 0.15,
+                          ease: "easeOut",
+                          times: [0, 0.82, 1],
+                        }}
+                        className="absolute -translate-x-1/2 -translate-y-1/2"
+                      >
+                        <ArrowUpRight
+                          size={18}
+                          strokeWidth={2}
+                          className="sm:h-5 sm:w-5"
+                          style={{
+                            color: ROYAL_BLUE,
+                            filter: `drop-shadow(0 0 6px ${ROYAL_BLUE}A0) drop-shadow(0 0 13px ${ROYAL_BLUE}55)`,
+                            transform: `rotate(${point.rotate}deg)`,
+                          }}
+                        />
+                      </motion.div>
+                    );
+                  })}
+
+                {/* Center */}
+                <div
+                  className="
+                    absolute
+                    left-1/2
+                    top-1/2
+                    h-[48px]
+                    w-[48px]
+                    -translate-x-1/2
+                    -translate-y-1/2
+                    rounded-full
+                    border
+                    sm:h-[58px]
+                    sm:w-[58px]
+                  "
                   style={{
                     borderColor: `${SKY_BLUE}70`,
                     background:
@@ -769,45 +865,62 @@ export default function Insights() {
                   />
 
                   <span
-                    className="absolute left-1/2 top-[calc(100%+12px)] -translate-x-1/2 whitespace-nowrap text-[7px] font-semibold uppercase tracking-[0.28em]"
+                    className="
+                      absolute
+                      left-1/2
+                      top-[calc(100%+12px)]
+                      -translate-x-1/2
+                      whitespace-nowrap
+                      text-[7px]
+                      font-semibold
+                      uppercase
+                      tracking-[0.28em]
+                    "
                     style={{
                       color: `${SKY_BLUE}A0`,
                     }}
                   >
                     Clarity
                   </span>
-                </motion.div>
+                </div>
 
-                <motion.div
-                  animate={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          scale: [0.7, 1.55],
-                          opacity: [0.2, 0],
-                        }
-                  }
-                  transition={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          duration: 3,
-                          repeat: Infinity,
-                          ease: "easeOut",
-                        }
-                  }
-                  className="absolute left-1/2 top-1/2 h-[48px] w-[48px] -translate-x-1/2 -translate-y-1/2 rounded-full border sm:h-[58px] sm:w-[58px]"
-                  style={{
-                    borderColor: `${SKY_BLUE}28`,
-                  }}
-                />
+                {/* Center Pulse — Desktop Only */}
+                {motionEnabled && (
+                  <motion.div
+                    animate={{
+                      scale: [0.7, 1.55],
+                      opacity: [0.2, 0],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeOut",
+                    }}
+                    className="
+                      absolute
+                      left-1/2
+                      top-1/2
+                      h-[48px]
+                      w-[48px]
+                      -translate-x-1/2
+                      -translate-y-1/2
+                      rounded-full
+                      border
+                      sm:h-[58px]
+                      sm:w-[58px]
+                    "
+                    style={{
+                      borderColor: `${SKY_BLUE}28`,
+                    }}
+                  />
+                )}
               </motion.div>
 
               <motion.div
                 initial={
-                  reduceMotion
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0, y: 10 }
+                  motionEnabled
+                    ? { opacity: 0, y: 8 }
+                    : { opacity: 1, y: 0 }
                 }
                 whileInView={{
                   opacity: 1,
@@ -815,9 +928,8 @@ export default function Insights() {
                 }}
                 viewport={{ once: true }}
                 transition={{
-                  duration: 0.7,
-                  delay: reduceMotion ? 0 : 0.7,
-                  ease: [0.22, 1, 0.36, 1],
+                  duration: 0.5,
+                  delay: motionEnabled ? 0.35 : 0,
                 }}
                 className="absolute bottom-5 right-6 text-right sm:bottom-7 sm:right-8"
               >
@@ -840,9 +952,9 @@ export default function Insights() {
         >
           <motion.div
             initial={
-              reduceMotion
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 18 }
+              motionEnabled
+                ? { opacity: 0, y: 14 }
+                : { opacity: 1, y: 0 }
             }
             whileInView={{
               opacity: 1,
@@ -850,8 +962,7 @@ export default function Insights() {
             }}
             viewport={{ once: true }}
             transition={{
-              duration: 0.8,
-              ease: [0.22, 1, 0.36, 1],
+              duration: 0.55,
             }}
             className="mb-8"
           >
@@ -862,7 +973,7 @@ export default function Insights() {
               Perspectives
             </span>
 
-            <h2 className="mt-2 text-[2.25rem] font-medium leading-[1.1] tracking-[-0.03em] transition-all duration-500 sm:text-[2.45rem] sm:leading-[1.08] lg:text-[2.7rem] lg:leading-[1.08]">
+            <h2 className="mt-2 text-[2.25rem] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[2.45rem] sm:leading-[1.08] lg:text-[2.7rem] lg:leading-[1.08]">
               <span style={{ color: HEADING_WHITE }}>
                 Thinking beyond the{" "}
               </span>
@@ -888,9 +999,9 @@ export default function Insights() {
                 <motion.article
                   key={item.category}
                   initial={
-                    reduceMotion
-                      ? { opacity: 1, y: 0 }
-                      : { opacity: 0, y: 30 }
+                    motionEnabled
+                      ? { opacity: 0, y: 20 }
+                      : { opacity: 1, y: 0 }
                   }
                   whileInView={{
                     opacity: 1,
@@ -901,26 +1012,50 @@ export default function Insights() {
                     amount: 0.15,
                   }}
                   transition={{
-                    duration: 0.8,
-                    delay: reduceMotion ? 0 : index * 0.12,
+                    duration: 0.55,
+                    delay: motionEnabled ? index * 0.07 : 0,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   whileHover={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          y: -9,
-                          scale: 1.015,
+                    motionEnabled
+                      ? {
+                          y: -6,
+                          scale: 1.01,
                         }
+                      : undefined
                   }
-                  className="group relative overflow-hidden rounded-[1.35rem] border border-white/[0.22] bg-[#1A3550] p-6 transition-[border-color,box-shadow,transform,background-color] duration-700 ease-out hover:border-white/[0.4] hover:bg-[#1D3B59] hover:shadow-[0_18px_50px_rgba(79,140,255,0.14)] sm:p-7"
+                  className="
+                    group
+                    relative
+                    overflow-hidden
+                    rounded-[1.35rem]
+                    border
+                    border-white/[0.22]
+                    bg-[#1A3550]
+                    p-6
+                    transition-[border-color,box-shadow,transform,background-color]
+                    duration-300
+                    ease-out
+                    hover:border-white/[0.4]
+                    hover:bg-[#1D3B59]
+                    hover:shadow-[0_16px_42px_rgba(79,140,255,0.12)]
+                    sm:p-7
+                  "
                 >
                   <motion.div
-                    initial={{
-                      opacity: 0,
-                      scale: 0.6,
-                      rotate: -8,
-                    }}
+                    initial={
+                      motionEnabled
+                        ? {
+                            opacity: 0,
+                            scale: 0.75,
+                            rotate: -5,
+                          }
+                        : {
+                            opacity: 1,
+                            scale: 1,
+                            rotate: 0,
+                          }
+                    }
                     whileInView={{
                       opacity: 1,
                       scale: 1,
@@ -928,24 +1063,37 @@ export default function Insights() {
                     }}
                     viewport={{ once: true }}
                     transition={{
-                      duration: 0.7,
-                      delay: reduceMotion
-                        ? 0
-                        : 0.18 + index * 0.1,
-                      ease: [0.22, 1, 0.36, 1],
+                      duration: 0.5,
+                      delay: motionEnabled
+                        ? 0.1 + index * 0.06
+                        : 0,
                     }}
                     whileHover={
-                      reduceMotion
-                        ? undefined
-                        : {
-                            scale: 1.1,
-                            rotate: 5,
+                      motionEnabled
+                        ? {
+                            scale: 1.06,
+                            rotate: 3,
                           }
+                        : undefined
                     }
-                    className="relative flex h-10 w-10 items-center justify-center rounded-lg border bg-white/[0.08] transition-[background-color,border-color,box-shadow] duration-500 group-hover:bg-white/[0.14]"
+                    className="
+                      relative
+                      flex
+                      h-10
+                      w-10
+                      items-center
+                      justify-center
+                      rounded-lg
+                      border
+                      bg-white/[0.08]
+                      transition-[background-color,border-color,box-shadow]
+                      duration-300
+                      group-hover:bg-white/[0.14]
+                    "
                     style={{
                       borderColor: `${SKY_BLUE}55`,
-                      boxShadow: `0 0 18px rgba(127,169,255,0.06)`,
+                      boxShadow:
+                        "0 0 18px rgba(127,169,255,0.06)",
                     }}
                   >
                     <Icon
@@ -967,11 +1115,11 @@ export default function Insights() {
                       {item.category}
                     </span>
 
-                    <h3 className="mt-3 max-w-[280px] text-[1.35rem] font-medium leading-[1.25] tracking-[-0.02em] text-white transition-colors duration-500 sm:text-[1.5rem] sm:leading-[1.3]">
+                    <h3 className="mt-3 max-w-[280px] text-[1.35rem] font-medium leading-[1.25] tracking-[-0.02em] text-white sm:text-[1.5rem] sm:leading-[1.3]">
                       {item.title}
                     </h3>
 
-                    <p className="mt-4 max-w-[320px] text-[12px] leading-6 text-slate-200 transition-colors duration-500 group-hover:text-white">
+                    <p className="mt-4 max-w-[320px] text-[12px] leading-6 text-slate-200">
                       {item.description}
                     </p>
                   </div>
@@ -979,13 +1127,12 @@ export default function Insights() {
                   <motion.div
                     initial={{ width: 32 }}
                     whileHover={
-                      reduceMotion
-                        ? undefined
-                        : { width: 58 }
+                      motionEnabled
+                        ? { width: 58 }
+                        : undefined
                     }
                     transition={{
-                      duration: 0.55,
-                      ease: [0.22, 1, 0.36, 1],
+                      duration: 0.3,
                     }}
                     className="relative mt-7 h-px"
                     style={{
@@ -993,35 +1140,32 @@ export default function Insights() {
                     }}
                   />
 
-                  <motion.div
-                    initial={{
-                      opacity: 0,
-                      x: 5,
-                      y: 5,
-                    }}
-                    whileHover={
-                      reduceMotion
-                        ? undefined
-                        : {
-                            opacity: 1,
-                            x: 0,
-                            y: 0,
-                          }
-                    }
-                    transition={{
-                      duration: 0.45,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="absolute bottom-6 right-6"
-                  >
-                    <ArrowUpRight
-                      size={15}
-                      strokeWidth={1.4}
-                      style={{
-                        color: `${SKY_BLUE}D5`,
+                  {motionEnabled && (
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        x: 5,
+                        y: 5,
                       }}
-                    />
-                  </motion.div>
+                      whileHover={{
+                        opacity: 1,
+                        x: 0,
+                        y: 0,
+                      }}
+                      transition={{
+                        duration: 0.3,
+                      }}
+                      className="absolute bottom-6 right-6"
+                    >
+                      <ArrowUpRight
+                        size={15}
+                        strokeWidth={1.4}
+                        style={{
+                          color: `${SKY_BLUE}D5`,
+                        }}
+                      />
+                    </motion.div>
+                  )}
                 </motion.article>
               );
             })}
@@ -1032,48 +1176,65 @@ export default function Insights() {
         <motion.div
           {...reveal}
           whileHover={
-            reduceMotion
-              ? undefined
-              : {
-                  y: -5,
+            motionEnabled
+              ? {
+                  y: -4,
                 }
+              : undefined
           }
           transition={{
-            duration: 0.75,
-            ease: [0.22, 1, 0.36, 1],
+            duration: 0.35,
           }}
-          className="relative mx-auto mt-12 max-w-4xl overflow-hidden rounded-[2rem] border border-slate-300/60 bg-[#F1F2EE] px-7 py-7 transition-[border-color,box-shadow,background-color] duration-700 ease-out hover:border-slate-400/70 hover:bg-[#F1F2EE] hover:shadow-[0_24px_75px_rgba(0,0,0,0.14)] sm:px-10 sm:py-9 lg:px-16 lg:py-11"
+          className="
+            relative
+            mx-auto
+            mt-12
+            max-w-4xl
+            overflow-hidden
+            rounded-[2rem]
+            border
+            border-slate-300/60
+            bg-[#F1F2EE]
+            px-7
+            py-7
+            transition-[border-color,box-shadow,transform]
+            duration-300
+            ease-out
+            hover:border-slate-400/70
+            hover:shadow-[0_20px_55px_rgba(0,0,0,0.12)]
+            sm:px-10
+            sm:py-9
+            lg:px-16
+            lg:py-11
+          "
         >
-          <motion.div
-            animate={
-              reduceMotion
-                ? undefined
-                : {
-                    x: ["-8%", "8%", "-8%"],
-                    opacity: [0.18, 0.28, 0.18],
-                  }
-            }
-            transition={
-              reduceMotion
-                ? undefined
-                : {
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }
-            }
-            className="pointer-events-none absolute left-1/2 top-0 h-40 w-80 -translate-x-1/2 rounded-full blur-[110px]"
+          {/* Static CEO Atmosphere */}
+          <div
+            className="
+              pointer-events-none
+              absolute
+              left-1/2
+              top-0
+              h-28
+              w-56
+              -translate-x-1/2
+              rounded-full
+              blur-[80px]
+              sm:h-36
+              sm:w-72
+              sm:blur-[95px]
+            "
             style={{
-              backgroundColor: "rgba(127,169,255,0.12)",
+              backgroundColor: "rgba(127,169,255,0.08)",
             }}
           />
 
           <div className="relative mx-auto max-w-4xl text-center">
             <motion.span
               initial={
-                reduceMotion
-                  ? undefined
-                  : { opacity: 0, y: 8 }
+                motionEnabled
+                  ? { opacity: 0, y: 8 }
+                  : { opacity: 1, y: 0 }
               }
               whileInView={{
                 opacity: 1,
@@ -1081,8 +1242,7 @@ export default function Insights() {
               }}
               viewport={{ once: true }}
               transition={{
-                duration: 0.7,
-                ease: [0.22, 1, 0.36, 1],
+                duration: 0.45,
               }}
               className="text-[9px] font-semibold uppercase tracking-[0.3em]"
               style={{ color: ROYAL_BLUE }}
@@ -1092,9 +1252,9 @@ export default function Insights() {
 
             <motion.blockquote
               initial={
-                reduceMotion
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0, y: 20 }
+                motionEnabled
+                  ? { opacity: 0, y: 16 }
+                  : { opacity: 1, y: 0 }
               }
               whileInView={{
                 opacity: 1,
@@ -1102,45 +1262,44 @@ export default function Insights() {
               }}
               viewport={{ once: true }}
               transition={{
-                duration: 0.95,
-                delay: reduceMotion ? 0 : 0.12,
-                ease: [0.22, 1, 0.36, 1],
+                duration: 0.6,
+                delay: motionEnabled ? 0.08 : 0,
               }}
-              className="mt-5 text-[1.8rem] font-medium leading-[1.25] tracking-[-0.025em] sm:text-[2.15rem] sm:leading-[1.3] lg:text-[2.5rem] lg:leading-[1.3]"
+              className="
+                mt-5
+                text-[1.8rem]
+                font-medium
+                leading-[1.25]
+                tracking-[-0.025em]
+                sm:text-[2.15rem]
+                sm:leading-[1.3]
+                lg:text-[2.5rem]
+                lg:leading-[1.3]
+              "
             >
               <span className="text-slate-900">
                 “The best opportunities are often found where{" "}
               </span>
 
-              <motion.span
-                initial={
-                  reduceMotion
-                    ? { opacity: 1 }
-                    : { opacity: 0.2 }
-                }
-                whileInView={{
-                  opacity: 1,
-                }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.9,
-                  delay: reduceMotion ? 0 : 0.35,
-                }}
-                style={{ color: ROYAL_BLUE }}
-              >
+              <span style={{ color: ROYAL_BLUE }}>
                 technology, people, and purposeful execution
-              </motion.span>
+              </span>
 
-              <span className="text-slate-900"> meet.”</span>
+              <span className="text-slate-900">
+                {" "}meet.”
+              </span>
             </motion.blockquote>
 
             <motion.div
               initial={
-                reduceMotion
-                  ? undefined
-                  : {
+                motionEnabled
+                  ? {
                       width: 0,
                       opacity: 0,
+                    }
+                  : {
+                      width: 36,
+                      opacity: 1,
                     }
               }
               whileInView={{
@@ -1149,9 +1308,8 @@ export default function Insights() {
               }}
               viewport={{ once: true }}
               transition={{
-                duration: 0.8,
-                delay: reduceMotion ? 0 : 0.45,
-                ease: [0.22, 1, 0.36, 1],
+                duration: 0.55,
+                delay: motionEnabled ? 0.2 : 0,
               }}
               className="mx-auto mt-5 h-px"
               style={{
@@ -1168,9 +1326,9 @@ export default function Insights() {
         >
           <motion.div
             initial={
-              reduceMotion
-                ? { opacity: 1, y: 0 }
-                : { opacity: 0, y: 15 }
+              motionEnabled
+                ? { opacity: 0, y: 12 }
+                : { opacity: 1, y: 0 }
             }
             whileInView={{
               opacity: 1,
@@ -1178,8 +1336,7 @@ export default function Insights() {
             }}
             viewport={{ once: true }}
             transition={{
-              duration: 0.75,
-              ease: [0.22, 1, 0.36, 1],
+              duration: 0.5,
             }}
           >
             <span
@@ -1189,7 +1346,7 @@ export default function Insights() {
               Continue Exploring
             </span>
 
-            <h2 className="mt-2 text-[2.25rem] font-medium leading-[1.1] tracking-[-0.03em] transition-colors duration-500 sm:text-[2.45rem] sm:leading-[1.08] lg:text-[2.7rem] lg:leading-[1.08]">
+            <h2 className="mt-2 text-[2.25rem] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[2.45rem] sm:leading-[1.08] lg:text-[2.7rem] lg:leading-[1.08]">
               <span style={{ color: HEADING_WHITE }}>
                 More perspectives,{" "}
               </span>

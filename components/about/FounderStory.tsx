@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const journey = [
   {
@@ -28,6 +29,26 @@ const journey = [
 
 export default function FounderStory() {
   const reduceMotion = useReducedMotion();
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: fine)");
+
+    const update = () => {
+      setFinePointer(media.matches);
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  // Keep continuous animations for desktop/fine-pointer devices.
+  // Phones/tablets stay visually identical but avoid expensive infinite animations.
+  const motionEnabled = !reduceMotion && finePointer;
 
   return (
     <section className="relative overflow-hidden bg-[#061522] text-white">
@@ -37,7 +58,7 @@ export default function FounderStory() {
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {/* Grid */}
         <div
-          className="absolute inset-0 opacity-[0.025]"
+          className="absolute inset-0 opacity-[0.018] sm:opacity-[0.025]"
           style={{
             backgroundImage:
               "linear-gradient(#67D9F0 1px, transparent 1px), linear-gradient(90deg, #67D9F0 1px, transparent 1px)",
@@ -47,40 +68,79 @@ export default function FounderStory() {
 
         {/* Large glow */}
         <div
-          className="ambient-blob absolute -right-48 -top-48 h-[600px] w-[600px] rounded-full bg-[#0B8DB8]/10 blur-[140px]"
-          style={
-            reduceMotion
-              ? undefined
-              : ({
-                  "--drift-x": "35px",
-                  "--drift-y": "-20px",
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.08,
-                  "--drift-duration": "18s",
-                } as any)
-          }
+          className="
+            absolute -right-40 -top-40
+            h-[400px] w-[400px]
+            rounded-full
+            bg-[#0B8DB8]/10
+            blur-[100px]
+            sm:-right-48 sm:-top-48
+            sm:h-[500px] sm:w-[500px]
+            sm:blur-[120px]
+            lg:h-[600px] lg:w-[600px]
+            lg:blur-[140px]
+          "
         />
 
-        <div className="absolute -bottom-64 -left-48 h-[520px] w-[520px] rounded-full bg-[#075B9A]/10 blur-[150px]" />
+        <div
+          className="
+            absolute -bottom-48 -left-40
+            h-[360px] w-[360px]
+            rounded-full
+            bg-[#075B9A]/10
+            blur-[105px]
+            sm:-bottom-64 sm:-left-48
+            sm:h-[440px] sm:w-[440px]
+            sm:blur-[125px]
+            lg:h-[520px] lg:w-[520px]
+            lg:blur-[150px]
+          "
+        />
 
         {/* Architectural circles */}
         <motion.div
           animate={
-            reduceMotion
-              ? undefined
-              : {
+            motionEnabled
+              ? {
                   rotate: [0, 5, 0],
                 }
+              : undefined
           }
-          transition={{
-            duration: 24,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute -right-[360px] -top-[330px] h-[850px] w-[850px] rounded-full border border-[#38CFF4]/[0.09]"
+          transition={
+            motionEnabled
+              ? {
+                  duration: 24,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }
+              : undefined
+          }
+          className="
+            absolute -right-[300px] -top-[280px]
+            h-[650px] w-[650px]
+            rounded-full
+            border border-[#38CFF4]/[0.07]
+            sm:-right-[340px] sm:-top-[310px]
+            sm:h-[760px] sm:w-[760px]
+            lg:-right-[360px] lg:-top-[330px]
+            lg:h-[850px] lg:w-[850px]
+            lg:border-[#38CFF4]/[0.09]
+          "
         />
 
-        <div className="absolute -right-[245px] -top-[215px] h-[620px] w-[620px] rounded-full border border-[#38CFF4]/[0.055]" />
+        <div
+          className="
+            absolute -right-[210px] -top-[190px]
+            h-[480px] w-[480px]
+            rounded-full
+            border border-[#38CFF4]/[0.045]
+            sm:-right-[230px] sm:-top-[205px]
+            sm:h-[550px] sm:w-[550px]
+            lg:-right-[245px] lg:-top-[215px]
+            lg:h-[620px] lg:w-[620px]
+            lg:border-[#38CFF4]/[0.055]
+          "
+        />
       </div>
 
       {/* =========================================================
@@ -156,7 +216,17 @@ export default function FounderStory() {
             }}
             className="flex items-end"
           >
-            <div className="relative max-w-xl overflow-hidden rounded-2xl border border-white/[0.09] bg-white/[0.025] p-6 backdrop-blur-xl sm:p-8">
+            <div
+              className="
+                relative max-w-xl overflow-hidden rounded-2xl
+                border border-white/[0.09]
+                bg-white/[0.025]
+                p-6
+                backdrop-blur-sm
+                sm:p-8
+                lg:backdrop-blur-xl
+              "
+            >
               {/* Accent */}
               <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-[#42D5F5] via-[#168BD1] to-transparent" />
 
@@ -207,12 +277,8 @@ export default function FounderStory() {
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="
-                absolute
-                inset-0
-                h-full
-                w-full
-                object-cover
-                object-center
+                absolute inset-0 h-full w-full
+                object-cover object-center
                 transition-transform
                 duration-[1.8s]
                 group-hover:scale-[1.04]
@@ -229,7 +295,7 @@ export default function FounderStory() {
 
             {/* Top label */}
             <div className="absolute left-9 top-9 flex items-center gap-3">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#67D9F0]/30 bg-[#061522]/30 backdrop-blur-md">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#67D9F0]/30 bg-[#061522]/30 backdrop-blur-sm">
                 <Sparkles size={12} className="text-[#67D9F0]" />
               </span>
 
@@ -312,14 +378,15 @@ export default function FounderStory() {
                       bg-white/[0.025]
                       px-5
                       py-6
-                      backdrop-blur-sm
-                      transition-all
+                      backdrop-blur-none
+                      transition-[border-color,background-color,transform,box-shadow]
                       duration-500
                       group-hover:-translate-y-1
                       group-hover:border-[#42D5F5]/20
                       group-hover:bg-white/[0.045]
                       sm:px-7
                       sm:py-7
+                      sm:backdrop-blur-sm
                       max-sm:border-[#42D5F5]/25
                       max-sm:shadow-[0_0_18px_rgba(66,213,245,0.08),inset_0_0_18px_rgba(66,213,245,0.025)]
                     "

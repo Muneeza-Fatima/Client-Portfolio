@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowDown,
@@ -16,18 +16,35 @@ export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
   const motionEnabled = !shouldReduceMotion;
 
-  // The hero mounts once and stays in the DOM for the entire session on
-  // this page. Without this, its decorative blurred/animated layers keep
-  // running on every frame even after the user has scrolled far past it,
-  // permanently competing with the browser's scroll compositor.
-  // `isInView` lets us pause those loops while the hero is off-screen and
-  // resume them automatically when it scrolls back into view.
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+
+    const updateViewport = () => {
+      setIsDesktop(mediaQuery.matches);
+    };
+
+    updateViewport();
+
+    mediaQuery.addEventListener("change", updateViewport);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateViewport);
+    };
+  }, []);
+
+  
   const heroRef = useRef<HTMLElement>(null);
+
   const isInView = useInView(heroRef, {
     once: false,
     margin: "200px 0px 200px 0px",
   });
-  const animateBg = motionEnabled && isInView;
+
+  
+  const animateBg = motionEnabled && isInView && isDesktop;
 
   return (
     <section
@@ -368,7 +385,7 @@ export default function Hero() {
                 lg:text-[16px]
               "
             >
-              Badar Ul Haq is a founder and business leader focused on
+              BADAR UL HAQ is a founder and business leader focused on
               building ventures at the intersection of technology,
               innovation, international business, and long-term growth.
             </motion.p>
@@ -566,7 +583,7 @@ export default function Hero() {
                 label="Ventures & Projects"
                 accent="cyan"
                 motionEnabled={motionEnabled}
-                isInView={isInView}
+                isInView={animateBg}
               />
 
               <PremiumStat
@@ -575,7 +592,7 @@ export default function Hero() {
                 label="Global Markets"
                 accent="blue"
                 motionEnabled={motionEnabled}
-                isInView={isInView}
+                isInView={animateBg}
               />
 
               <PremiumStat
@@ -584,7 +601,7 @@ export default function Hero() {
                 label="Business Base"
                 accent="silver"
                 motionEnabled={motionEnabled}
-                isInView={isInView}
+                isInView={animateBg}
               />
             </motion.div>
           </div>

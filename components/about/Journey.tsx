@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ShieldCheck,
@@ -52,29 +51,72 @@ const journey = [
 export default function Journey() {
   const [activeIndex, setActiveIndex] = useState(4);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [finePointer, setFinePointer] = useState(false);
 
   const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: fine)");
+
+    const update = () => {
+      setFinePointer(media.matches);
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion && finePointer;
 
   return (
     <section className="relative overflow-hidden bg-[#0B1F33] py-24 sm:py-28 lg:py-32">
       {/* Ambient background */}
       <div className="pointer-events-none absolute inset-0">
+        {/* Static center atmosphere */}
         <div
-          className="ambient-blob absolute left-[48%] top-[28%] h-[520px] w-[520px] rounded-full bg-[#168BD1]/[0.035] blur-[170px]"
-          style={
-            reduceMotion
-              ? undefined
-              : ({
-                  "--drift-opacity-from": 0.08,
-                  "--drift-opacity-to": 0.14,
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.05,
-                  "--drift-duration": "18s",
-                } as any)
-          }
+          className="
+            absolute
+            left-[48%]
+            top-[28%]
+            h-[340px]
+            w-[340px]
+            rounded-full
+            bg-[#168BD1]/[0.028]
+            blur-[90px]
+            sm:h-[440px]
+            sm:w-[440px]
+            sm:blur-[120px]
+            lg:h-[520px]
+            lg:w-[520px]
+            lg:blur-[160px]
+          "
         />
 
-        <div className="absolute -bottom-40 -right-40 h-[420px] w-[420px] rounded-full bg-[#42D5F5]/[0.018] blur-[150px]" />
+        {/* Static bottom-right atmosphere */}
+        <div
+          className="
+            absolute
+            -bottom-28
+            -right-28
+            h-[280px]
+            w-[280px]
+            rounded-full
+            bg-[#42D5F5]/[0.016]
+            blur-[90px]
+            sm:-bottom-36
+            sm:-right-36
+            sm:h-[360px]
+            sm:w-[360px]
+            sm:blur-[120px]
+            lg:h-[420px]
+            lg:w-[420px]
+            lg:blur-[140px]
+          "
+        />
 
         <div className="absolute inset-x-0 top-0 h-px bg-white/[0.04]" />
       </div>
@@ -82,12 +124,23 @@ export default function Journey() {
       <div className="relative mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
         {/* HEADER */}
         <motion.header
-          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
           whileInView={
-            reduceMotion ? undefined : { opacity: 1, y: 0 }
+            reduceMotion
+              ? undefined
+              : {
+                  opacity: 1,
+                  y: 0,
+                }
           }
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          viewport={{
+            once: true,
+            amount: 0.15,
+          }}
+          transition={{
+            duration: 0.55,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="mb-16 max-w-4xl sm:mb-20 lg:mb-24"
         >
           <div className="flex items-center gap-3">
@@ -100,7 +153,8 @@ export default function Journey() {
 
           <h2
             className="
-              mt-6 max-w-3xl
+              mt-6
+              max-w-3xl
               text-[clamp(2.25rem,4.5vw,4.2rem)]
               font-medium
               leading-[0.94]
@@ -140,16 +194,40 @@ export default function Journey() {
                   key={`${item.year}-${item.title}`}
                   type="button"
                   onClick={() => setActiveIndex(index)}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                  onFocus={() => setHoveredIndex(index)}
-                  onBlur={() => setHoveredIndex(null)}
+                  onMouseEnter={
+                    motionEnabled
+                      ? () => {
+                          setHoveredIndex(index);
+                        }
+                      : undefined
+                  }
+                  onMouseLeave={
+                    motionEnabled
+                      ? () => {
+                          setHoveredIndex(null);
+                        }
+                      : undefined
+                  }
+                  onFocus={
+                    motionEnabled
+                      ? () => {
+                          setHoveredIndex(index);
+                        }
+                      : undefined
+                  }
+                  onBlur={
+                    motionEnabled
+                      ? () => {
+                          setHoveredIndex(null);
+                        }
+                      : undefined
+                  }
                   initial={
                     reduceMotion
                       ? false
                       : {
                           opacity: 0,
-                          y: 12,
+                          y: 10,
                         }
                   }
                   whileInView={
@@ -162,28 +240,35 @@ export default function Journey() {
                   }
                   viewport={{
                     once: true,
-                    amount: 0.12,
+                    amount: 0.08,
                   }}
                   transition={{
-                    duration: 0.6,
-                    delay: index * 0.06,
+                    duration: 0.5,
+                    delay: index * 0.045,
+                    ease: [0.22, 1, 0.36, 1],
                   }}
                   whileHover={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          x: 3,
+                    motionEnabled
+                      ? {
+                          x: 2,
                         }
+                      : undefined
                   }
                   className="group relative block w-full text-left focus:outline-none"
                 >
                   <div
                     className={`
-                      relative grid gap-5
-                      border-b py-7 pl-12
-                      transition-all duration-500
+                      relative
+                      grid
+                      gap-5
+                      border-b
+                      py-7
+                      pl-12
+                      transition-[border-color]
+                      duration-300
                       md:grid-cols-[64px_105px_1fr]
-                      md:gap-7 md:pl-0
+                      md:gap-7
+                      md:pl-0
                       ${
                         active
                           ? "border-white/[0.14]"
@@ -191,48 +276,52 @@ export default function Journey() {
                       }
                     `}
                   >
-                    {/* Hover surface */}
-                    <motion.div
-                      initial={false}
-                      animate={{
-                        opacity: hovered ? 1 : 0,
-                      }}
-                      transition={{ duration: 0.3 }}
-                      className="pointer-events-none absolute inset-y-2 left-0 right-0 rounded-xl bg-white/[0.018]"
-                    />
+                    {/* Hover surface — desktop only */}
+                    {motionEnabled && (
+                      <motion.div
+                        initial={false}
+                        animate={{
+                          opacity: hovered ? 1 : 0,
+                        }}
+                        transition={{
+                          duration: 0.2,
+                          ease: "easeOut",
+                        }}
+                        className="pointer-events-none absolute inset-y-2 left-0 right-0 rounded-xl bg-white/[0.018]"
+                      />
+                    )}
 
                     {/* TIMELINE */}
                     <div className="relative hidden md:block">
                       <motion.div
                         animate={
-                          active && !reduceMotion
+                          motionEnabled && hovered
                             ? {
-                                scale: [1, 1.1, 1],
+                                scale: 1.06,
                               }
-                            : hovered && !reduceMotion
-                              ? {
-                                  scale: 1.08,
-                                }
-                              : {
-                                  scale: 1,
-                                }
+                            : {
+                                scale: 1,
+                              }
                         }
                         transition={{
-                          duration: active ? 2.2 : 0.25,
-                          repeat:
-                            active && !reduceMotion
-                              ? Infinity
-                              : 0,
-                          ease: "easeInOut",
+                          duration: 0.18,
+                          ease: "easeOut",
                         }}
                         className={`
-                          absolute left-[24px] top-3
-                          z-10 h-4 w-4 rounded-full border
-                          transition-all duration-400
+                          absolute
+                          left-[24px]
+                          top-3
+                          z-10
+                          h-4
+                          w-4
+                          rounded-full
+                          border
+                          transition-[border-color,box-shadow]
+                          duration-300
                           ${
                             active
-                              ? "border-[#42D5F5]/75 bg-[#0B1F33] shadow-[0_0_20px_rgba(66,213,245,0.25)]"
-                              : hovered
+                              ? "border-[#42D5F5]/75 bg-[#0B1F33] shadow-[0_0_16px_rgba(66,213,245,0.20)]"
+                              : hovered && motionEnabled
                                 ? "border-[#42D5F5]/45 bg-[#0B1F33]"
                                 : "border-white/25 bg-[#0B1F33]"
                           }
@@ -240,13 +329,16 @@ export default function Journey() {
                       >
                         <span
                           className={`
-                            absolute left-1/2 top-1/2
-                            -translate-x-1/2 -translate-y-1/2
-                            rounded-full transition-all duration-300
+                            absolute
+                            left-1/2
+                            top-1/2
+                            -translate-x-1/2
+                            -translate-y-1/2
+                            rounded-full
                             ${
                               active
                                 ? "h-1.5 w-1.5 bg-[#42D5F5]"
-                                : hovered
+                                : hovered && motionEnabled
                                   ? "h-1.5 w-1.5 bg-[#67D9F0]/70"
                                   : "h-1 w-1 bg-white/35"
                             }
@@ -257,21 +349,30 @@ export default function Journey() {
 
                     {/* YEAR */}
                     <div className="relative z-10 flex items-center md:justify-start">
+                      {/* Mobile timeline point */}
                       <div className="absolute -left-12 top-3 md:hidden">
                         <div
                           className={`
-                            h-4 w-4 rounded-full border
+                            h-4
+                            w-4
+                            rounded-full
+                            border
+                            transition-[border-color,box-shadow]
+                            duration-300
                             ${
                               active
-                                ? "border-[#42D5F5]/75 bg-[#0B1F33] shadow-[0_0_20px_rgba(66,213,245,0.25)]"
+                                ? "border-[#42D5F5]/75 bg-[#0B1F33] shadow-[0_0_16px_rgba(66,213,245,0.18)]"
                                 : "border-white/25 bg-[#0B1F33]"
                             }
                           `}
                         >
                           <span
                             className={`
-                              absolute left-1/2 top-1/2
-                              -translate-x-1/2 -translate-y-1/2
+                              absolute
+                              left-1/2
+                              top-1/2
+                              -translate-x-1/2
+                              -translate-y-1/2
                               rounded-full
                               ${
                                 active
@@ -284,15 +385,23 @@ export default function Journey() {
                       </div>
 
                       <motion.span
-                        animate={{
-                          x: hovered ? 2 : 0,
+                        animate={
+                          motionEnabled
+                            ? {
+                                x: hovered ? 2 : 0,
+                              }
+                            : undefined
+                        }
+                        transition={{
+                          duration: 0.18,
+                          ease: "easeOut",
                         }}
-                        transition={{ duration: 0.25 }}
                         className={`
                           text-[12px]
                           font-medium
                           tracking-[0.12em]
-                          transition-colors duration-400
+                          transition-colors
+                          duration-300
                           ${
                             active
                               ? "text-[#DCE7F5]"
@@ -311,7 +420,7 @@ export default function Journey() {
                         <div className="flex items-center gap-3">
                           <motion.div
                             animate={
-                              hovered && !reduceMotion
+                              motionEnabled && hovered
                                 ? {
                                     y: -1,
                                     rotate: -2,
@@ -321,16 +430,25 @@ export default function Journey() {
                                     rotate: 0,
                                   }
                             }
-                            transition={{ duration: 0.25 }}
+                            transition={{
+                              duration: 0.18,
+                              ease: "easeOut",
+                            }}
                             className={`
-                              flex h-8 w-8 shrink-0
-                              items-center justify-center
-                              rounded-lg border
-                              transition-all duration-400
+                              flex
+                              h-8
+                              w-8
+                              shrink-0
+                              items-center
+                              justify-center
+                              rounded-lg
+                              border
+                              transition-[border-color,background-color]
+                              duration-300
                               ${
                                 active
                                   ? "border-[#42D5F5]/25 bg-[#42D5F5]/[0.07]"
-                                  : hovered
+                                  : hovered && motionEnabled
                                     ? "border-[#42D5F5]/18 bg-[#42D5F5]/[0.045]"
                                     : "border-white/[0.10] bg-white/[0.025]"
                               }
@@ -340,11 +458,12 @@ export default function Journey() {
                               size={14}
                               strokeWidth={1.25}
                               className={`
-                                transition-colors duration-400
+                                transition-colors
+                                duration-300
                                 ${
                                   active
                                     ? "text-[#67D9F0]"
-                                    : hovered
+                                    : hovered && motionEnabled
                                       ? "text-[#67D9F0]/80"
                                       : "text-white/55"
                                 }
@@ -353,17 +472,25 @@ export default function Journey() {
                           </motion.div>
 
                           <motion.h3
-                            animate={{
-                              x: hovered ? 2 : 0,
+                            animate={
+                              motionEnabled
+                                ? {
+                                    x: hovered ? 2 : 0,
+                                  }
+                                : undefined
+                            }
+                            transition={{
+                              duration: 0.18,
+                              ease: "easeOut",
                             }}
-                            transition={{ duration: 0.25 }}
                             className={`
                               text-[19px]
                               font-medium
                               leading-tight
                               tracking-[-0.045em]
                               antialiased
-                              transition-colors duration-400
+                              transition-colors
+                              duration-300
                               sm:text-[21px]
                               ${
                                 active
@@ -379,9 +506,12 @@ export default function Journey() {
                         {/* Mobile description */}
                         <p
                           className={`
-                            mt-3 pl-11
-                            text-[11px] leading-5
-                            transition-colors duration-400
+                            mt-3
+                            pl-11
+                            text-[11px]
+                            leading-5
+                            transition-colors
+                            duration-300
                             lg:hidden
                             ${
                               active
@@ -402,7 +532,8 @@ export default function Journey() {
                             font-semibold
                             uppercase
                             tracking-[0.3em]
-                            transition-colors duration-400
+                            transition-colors
+                            duration-300
                             ${
                               active
                                 ? "text-[#67D9F0]/70"
@@ -415,10 +546,12 @@ export default function Journey() {
 
                         <p
                           className={`
-                            mt-1.5 max-w-lg
+                            mt-1.5
+                            max-w-lg
                             text-[12px]
                             leading-6
-                            transition-colors duration-400
+                            transition-colors
+                            duration-300
                             sm:text-[13px]
                             ${
                               active
@@ -440,12 +573,23 @@ export default function Journey() {
 
         {/* CLOSING */}
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 15 }}
+          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
           whileInView={
-            reduceMotion ? undefined : { opacity: 1, y: 0 }
+            reduceMotion
+              ? undefined
+              : {
+                  opacity: 1,
+                  y: 0,
+                }
           }
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          viewport={{
+            once: true,
+            amount: 0.1,
+          }}
+          transition={{
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="mt-16 max-w-3xl sm:mt-20"
         >
           <div className="flex gap-5">

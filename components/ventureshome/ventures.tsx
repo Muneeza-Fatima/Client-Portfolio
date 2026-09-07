@@ -8,7 +8,11 @@ import {
   Building2,
   TrendingUp,
 } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+} from "framer-motion";
+import { useEffect, useState } from "react";
 
 const ventures = [
   {
@@ -42,7 +46,25 @@ const ventures = [
 
 export default function Ventures() {
   const shouldReduceMotion = useReducedMotion();
-  const motionEnabled = !shouldReduceMotion;
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+
+    const updatePointer = () => {
+      setFinePointer(mediaQuery.matches);
+    };
+
+    updatePointer();
+
+    mediaQuery.addEventListener("change", updatePointer);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePointer);
+    };
+  }, []);
+
+  const motionEnabled = !shouldReduceMotion && finePointer;
 
   return (
     <section
@@ -58,6 +80,7 @@ export default function Ventures() {
         lg:py-24
       "
     >
+      {/* BACKGROUND */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -70,69 +93,72 @@ export default function Ventures() {
           "
         />
 
+        {/* STATIC / LIGHTWEIGHT ATMOSPHERE */}
         <div
           aria-hidden="true"
           className="
-            ambient-blob
             absolute
-            -left-[320px]
-            -top-[320px]
-            h-[620px]
-            w-[620px]
+            -left-[190px]
+            -top-[190px]
+            h-[360px]
+            w-[360px]
             rounded-full
-            bg-[#38BDF8]/[0.08]
-            blur-[180px]
+            bg-[#38BDF8]/[0.055]
+            blur-[110px]
+            sm:-left-[250px]
+            sm:-top-[250px]
+            sm:h-[500px]
+            sm:w-[500px]
+            sm:blur-[150px]
+            lg:-left-[320px]
+            lg:-top-[320px]
+            lg:h-[620px]
+            lg:w-[620px]
+            lg:blur-[180px]
           "
-          style={
-            motionEnabled
-              ? ({
-                  "--drift-x": "18px",
-                  "--drift-y": "-10px",
-                  "--drift-opacity-from": 0.035,
-                  "--drift-opacity-to": 0.055,
-                  "--drift-duration": "24s",
-                } as any)
-              : undefined
-          }
         />
 
         <div
           aria-hidden="true"
           className="
-            ambient-blob
             absolute
-            -right-[320px]
-            top-[18%]
-            h-[600px]
-            w-[600px]
+            -right-[190px]
+            top-[20%]
+            h-[350px]
+            w-[350px]
             rounded-full
-            bg-[#6366F1]/[0.055]
-            blur-[180px]
+            bg-[#6366F1]/[0.04]
+            blur-[110px]
+            sm:-right-[250px]
+            sm:h-[480px]
+            sm:w-[480px]
+            sm:blur-[150px]
+            lg:-right-[320px]
+            lg:h-[600px]
+            lg:w-[600px]
+            lg:blur-[180px]
           "
-          style={
-            motionEnabled
-              ? ({
-                  "--drift-x": "-16px",
-                  "--drift-y": "14px",
-                  "--drift-opacity-from": 0.025,
-                  "--drift-opacity-to": 0.045,
-                  "--drift-duration": "27s",
-                } as any)
-              : undefined
-          }
         />
 
         <div
           className="
             absolute
-            bottom-[-360px]
+            bottom-[-260px]
             left-1/2
-            h-[620px]
-            w-[760px]
+            h-[420px]
+            w-[520px]
             -translate-x-1/2
             rounded-full
-            bg-[#14B8A6]/[0.035]
-            blur-[190px]
+            bg-[#14B8A6]/[0.025]
+            blur-[120px]
+            sm:bottom-[-320px]
+            sm:h-[540px]
+            sm:w-[660px]
+            sm:blur-[150px]
+            lg:bottom-[-360px]
+            lg:h-[620px]
+            lg:w-[760px]
+            lg:blur-[190px]
           "
         />
 
@@ -140,9 +166,9 @@ export default function Ventures() {
           className="
             absolute
             inset-0
-            opacity-[0.009]
             bg-[linear-gradient(rgba(255,255,255,0.65)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.65)_1px,transparent_1px)]
             bg-[size:120px_120px]
+            opacity-[0.009]
           "
         />
 
@@ -180,11 +206,12 @@ export default function Ventures() {
           xl:px-12
         "
       >
+        {/* SECTION LABEL */}
         <motion.div
           initial={motionEnabled ? { opacity: 0, y: 8 } : false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.45 }}
           className="flex items-center gap-3"
         >
           <span
@@ -213,12 +240,13 @@ export default function Ventures() {
           </span>
         </motion.div>
 
+        {/* HEADING */}
         <motion.div
           initial={motionEnabled ? { opacity: 0, y: 14 } : false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
           transition={{
-            duration: 0.65,
+            duration: 0.55,
             delay: 0.03,
             ease: [0.22, 1, 0.36, 1],
           }}
@@ -233,7 +261,9 @@ export default function Ventures() {
               tracking-[-0.055em]
             "
           >
-            <span className="block text-[#F8FAFC]">Ventures</span>
+            <span className="block text-[#F8FAFC]">
+              Ventures
+            </span>
 
             <span
               className="
@@ -268,6 +298,7 @@ export default function Ventures() {
           </p>
         </motion.div>
 
+        {/* PLATFORM */}
         <div className="relative mt-14 sm:mt-16 lg:mt-20">
           <div
             aria-hidden="true"
@@ -291,7 +322,7 @@ export default function Ventures() {
               motionEnabled
                 ? {
                     opacity: 0,
-                    scale: 0.96,
+                    scale: 0.97,
                   }
                 : false
             }
@@ -304,7 +335,7 @@ export default function Ventures() {
               amount: 0.25,
             }}
             transition={{
-              duration: 0.7,
+              duration: 0.55,
               ease: [0.22, 1, 0.36, 1],
             }}
             className="
@@ -341,7 +372,7 @@ export default function Ventures() {
                 border
                 border-[#159BB4]/[0.32]
                 bg-[#0B1F33]
-                shadow-[0_0_65px_rgba(21,155,180,0.13),inset_0_1px_0_rgba(255,255,255,0.08)]
+                shadow-[0_0_55px_rgba(21,155,180,0.11),inset_0_1px_0_rgba(255,255,255,0.08)]
               "
             >
               <div>
@@ -365,35 +396,41 @@ export default function Ventures() {
                 </span>
               </div>
 
-              <motion.span
-                aria-hidden="true"
-                animate={
-                  motionEnabled
-                    ? {
-                        rotate: 360,
-                      }
-                    : undefined
-                }
-                transition={
-                  motionEnabled
-                    ? {
-                        duration: 18,
-                        repeat: Infinity,
-                        ease: "linear",
-                      }
-                    : undefined
-                }
-                className="
-                  absolute
-                  -inset-5
-                  rounded-full
-                  border
-                  border-transparent
-                  border-t-[#14B8A6]
-                  border-r-[#14B8A6]/50
-                  shadow-[0_0_14px_rgba(20,184,166,0.45)]
-                "
-              />
+              {/* ROTATION ONLY ON DESKTOP */}
+              {motionEnabled ? (
+                <motion.span
+                  aria-hidden="true"
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 18,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                  className="
+                    absolute
+                    -inset-5
+                    rounded-full
+                    border
+                    border-transparent
+                    border-t-[#14B8A6]
+                    border-r-[#14B8A6]/50
+                    shadow-[0_0_14px_rgba(20,184,166,0.45)]
+                  "
+                />
+              ) : (
+                <span
+                  aria-hidden="true"
+                  className="
+                    absolute
+                    -inset-5
+                    rounded-full
+                    border
+                    border-transparent
+                    border-t-[#14B8A6]
+                    border-r-[#14B8A6]/50
+                  "
+                />
+              )}
             </div>
 
             <span
@@ -410,6 +447,7 @@ export default function Ventures() {
             </span>
           </motion.div>
 
+          {/* CARDS */}
           <div
             className="
               mt-14
@@ -444,17 +482,17 @@ export default function Ventures() {
                     amount: 0.2,
                   }}
                   transition={{
-                    duration: 0.6,
-                    delay: 0.08 + index * 0.07,
+                    duration: 0.5,
+                    delay: 0.06 + index * 0.06,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   whileHover={
                     motionEnabled
                       ? {
-                          y: -8,
-                          scale: 1.012,
+                          y: -6,
+                          scale: 1.01,
                           transition: {
-                            duration: 0.25,
+                            duration: 0.22,
                             ease: "easeOut",
                           },
                         }
@@ -473,13 +511,15 @@ export default function Ventures() {
                       border-white/[0.14]
                       bg-[linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.052)_48%,rgba(9,30,48,0.55))]
                       p-5
-                      shadow-[0_20px_55px_rgba(1,12,24,0.25),inset_0_1px_0_rgba(255,255,255,0.10)]
-                      backdrop-blur-xl
-                      transition-transform
+                      shadow-[0_20px_45px_rgba(1,12,24,0.22),inset_0_1px_0_rgba(255,255,255,0.10)]
+                      backdrop-blur-none
+                      transition-[border-color,background-color,transform]
                       duration-300
                       ease-out
+                      sm:backdrop-blur-md
                       sm:p-6
                       lg:min-h-[310px]
+                      lg:backdrop-blur-xl
                       lg:p-7
                     "
                   >
@@ -524,7 +564,10 @@ export default function Ventures() {
                           shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
                         "
                       >
-                        <Icon size={17} strokeWidth={1.25} />
+                        <Icon
+                          size={17}
+                          strokeWidth={1.25}
+                        />
                       </span>
                     </div>
 
@@ -610,13 +653,14 @@ export default function Ventures() {
           </div>
         </div>
 
+        {/* FOOTER CTA */}
         <motion.div
           initial={motionEnabled ? { opacity: 0, y: 10 } : false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{
-            duration: 0.6,
-            delay: 0.06,
+            duration: 0.5,
+            delay: 0.05,
           }}
           className="
             mt-10
@@ -684,7 +728,7 @@ export default function Ventures() {
                   border
                   border-white/[0.16]
                   bg-white/[0.025]
-                  transition-all
+                  transition-[border-color,background-color,transform,box-shadow]
                   duration-200
                   group-hover:-translate-y-1
                   group-hover:translate-x-0.5

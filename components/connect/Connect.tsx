@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Mail, MessageCircle } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
-import type { CSSProperties } from "react";
 
 export default function Connect() {
   const shouldReduceMotion = useReducedMotion();
@@ -30,44 +29,55 @@ export default function Connect() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"
       >
-        <div
-          className="
-            ambient-blob
-            absolute
-            -right-[240px]
-            -top-[240px]
-            h-[560px]
-            w-[560px]
-            rounded-full
-            bg-[#38BDF8]/[0.045]
-            blur-[160px]
-          "
-          style={
-            motionEnabled
-              ? ({
-                  "--drift-x": "25px",
-                  "--drift-y": "-15px",
-                  "--drift-opacity-from": 0.12,
-                  "--drift-opacity-to": 0.2,
-                  "--drift-duration": "22s",
-                } as CSSProperties)
-              : undefined
-          }
-        />
-
+        {/* TOP AMBIENT GLOW */}
         <div
           className="
             absolute
-            -left-[280px]
-            bottom-[-300px]
-            h-[580px]
-            w-[580px]
+            -right-[160px]
+            -top-[170px]
+            h-[360px]
+            w-[360px]
             rounded-full
-            bg-[#6366F1]/[0.025]
-            blur-[170px]
+            bg-[#38BDF8]/[0.04]
+            blur-[90px]
+            sm:-right-[210px]
+            sm:-top-[210px]
+            sm:h-[460px]
+            sm:w-[460px]
+            sm:blur-[120px]
+            lg:-right-[240px]
+            lg:-top-[240px]
+            lg:h-[560px]
+            lg:w-[560px]
+            lg:blur-[160px]
           "
         />
 
+        {/* LOWER AMBIENT GLOW */}
+        <div
+          className="
+            absolute
+            -left-[180px]
+            bottom-[-200px]
+            h-[380px]
+            w-[380px]
+            rounded-full
+            bg-[#6366F1]/[0.022]
+            blur-[100px]
+            sm:-left-[230px]
+            sm:bottom-[-250px]
+            sm:h-[480px]
+            sm:w-[480px]
+            sm:blur-[130px]
+            lg:-left-[280px]
+            lg:bottom-[-300px]
+            lg:h-[580px]
+            lg:w-[580px]
+            lg:blur-[170px]
+          "
+        />
+
+        {/* SUBTLE GRID */}
         <div
           className="
             absolute
@@ -78,6 +88,7 @@ export default function Connect() {
           "
         />
 
+        {/* DEPTH GRADIENT */}
         <div
           className="
             absolute
@@ -114,6 +125,7 @@ export default function Connect() {
           "
         >
           <div className="max-w-[920px]">
+            {/* CONNECT LABEL */}
             <motion.div
               initial={
                 motionEnabled
@@ -163,6 +175,7 @@ export default function Connect() {
               </span>
             </motion.div>
 
+            {/* HEADING */}
             <motion.h2
               initial={
                 motionEnabled
@@ -231,6 +244,7 @@ export default function Connect() {
               </span>
             </motion.h2>
 
+            {/* DESCRIPTION */}
             <motion.p
               initial={
                 motionEnabled
@@ -268,6 +282,7 @@ export default function Connect() {
             </motion.p>
           </div>
 
+          {/* CTA */}
           <motion.div
             initial={
               motionEnabled
@@ -314,7 +329,7 @@ export default function Connect() {
                 tracking-[0.15em]
                 !text-[#F8FAFC]
                 shadow-[0_14px_40px_rgba(0,0,0,0.30),inset_0_1px_0_rgba(255,255,255,0.08)]
-                transition-all
+                transition-[border-color,background-color,box-shadow,transform]
                 duration-300
                 hover:-translate-y-1
                 hover:border-[#67E8F9]/85
@@ -359,7 +374,7 @@ export default function Connect() {
                   border-white/[0.12]
                   bg-white/[0.05]
                   text-[#67E8F9]
-                  transition-all
+                  transition-[border-color,background-color,transform]
                   duration-300
                   group-hover:translate-x-1
                   group-hover:border-[#67E8F9]/30
@@ -371,6 +386,7 @@ export default function Connect() {
           </motion.div>
         </div>
 
+        {/* BOTTOM META */}
         <motion.div
           initial={
             motionEnabled

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
   ShieldCheck,
   Building2,
@@ -105,6 +106,26 @@ const experiences = [
 
 export default function Experience() {
   const reduceMotion = useReducedMotion();
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+
+    const updatePointer = () => {
+      setFinePointer(mediaQuery.matches);
+    };
+
+    updatePointer();
+
+    mediaQuery.addEventListener("change", updatePointer);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePointer);
+    };
+  }, []);
+
+  const enableMotion = !reduceMotion;
+  const enableHover = enableMotion && finePointer;
 
   return (
     <section
@@ -113,35 +134,43 @@ export default function Experience() {
     >
       {/* Background */}
       <div className="pointer-events-none absolute inset-0">
-        <motion.div
-          animate={
-            reduceMotion
-              ? undefined
-              : {
-                  opacity: [0.22, 0.3, 0.22],
-                }
-          }
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute left-[48%] top-[5%] h-[680px] w-[680px] -translate-x-1/2 rounded-full bg-[#164E8A]/[0.11] blur-[190px]"
-        />
+        {/* Main ambient glow
+            Continuous animation only runs on fine-pointer devices.
+            Mobile/touch devices use a static glow for smoother scrolling. */}
+        {enableHover ? (
+          <motion.div
+            animate={{
+              opacity: [0.22, 0.3, 0.22],
+            }}
+            transition={{
+              duration: 18,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute left-[48%] top-[5%] h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-[#164E8A]/[0.11] blur-[110px] sm:h-[520px] sm:w-[520px] sm:blur-[145px] lg:h-[680px] lg:w-[680px] lg:blur-[190px]"
+          />
+        ) : (
+          <div className="absolute left-[48%] top-[5%] h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-[#164E8A]/[0.11] blur-[110px] sm:h-[520px] sm:w-[520px] sm:blur-[145px] lg:h-[680px] lg:w-[680px] lg:blur-[190px]" />
+        )}
 
-        <div className="absolute -left-60 top-[35%] h-[500px] w-[500px] rounded-full bg-[#168BD1]/[0.04] blur-[170px]" />
+        <div className="absolute -left-40 top-[35%] h-[320px] w-[320px] rounded-full bg-[#168BD1]/[0.04] blur-[100px] sm:-left-52 sm:h-[400px] sm:w-[400px] sm:blur-[135px] lg:-left-60 lg:h-[500px] lg:w-[500px] lg:blur-[170px]" />
 
-        <div className="absolute -right-60 bottom-[8%] h-[520px] w-[520px] rounded-full bg-[#2DD4BF]/[0.02] blur-[180px]" />
+        <div className="absolute -right-40 bottom-[8%] h-[340px] w-[340px] rounded-full bg-[#2DD4BF]/[0.02] blur-[110px] sm:-right-52 sm:h-[420px] sm:w-[420px] sm:blur-[145px] lg:-right-60 lg:h-[520px] lg:w-[520px] lg:blur-[180px]" />
 
         <div className="absolute inset-x-0 top-0 h-px bg-white/[0.07]" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-10 lg:px-16">
         {/* HEADER */}
         <motion.header
           initial={reduceMotion ? false : { opacity: 0, y: 24 }}
           whileInView={
-            reduceMotion ? undefined : { opacity: 1, y: 0 }
+            reduceMotion
+              ? undefined
+              : {
+                  opacity: 1,
+                  y: 0,
+                }
           }
           viewport={{ once: true, amount: 0.25 }}
           transition={{
@@ -166,7 +195,7 @@ export default function Experience() {
             </span>
           </h2>
 
-          <p className="mt-7 max-w-2xl text-[13px] leading-7 text-white/75 sm:text-[15px] sm:text-white/48">
+          <p className="mt-7 max-w-2xl text-[13px] leading-7 text-white sm:text-[15px] sm:text-white/48">
             A multidisciplinary career spanning cybersecurity, business
             development, leadership and real estate — building a broader
             understanding of technology, people and opportunity.
@@ -175,7 +204,8 @@ export default function Experience() {
 
         {/* TIMELINE */}
         <div className="relative mt-20 sm:mt-24 lg:mt-28">
-          <div className="absolute bottom-10 left-[18px] top-10 w-px bg-gradient-to-b from-[#42D5F5]/55 via-[#168BD1]/25 to-transparent sm:left-[23px]" />
+          {/* MOBILE TIMELINE LINE */}
+          <div className="absolute bottom-10 left-[5px] top-10 w-px bg-gradient-to-b from-[#42D5F5]/80 via-[#168BD1]/45 to-transparent sm:left-[23px]" />
 
           <div className="space-y-10 sm:space-y-12">
             {experiences.map((experience, index) => {
@@ -209,7 +239,7 @@ export default function Experience() {
                     delay: index * 0.07,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="relative grid gap-5 pl-12 sm:grid-cols-[100px_1fr] sm:gap-10 sm:pl-0"
+                  className="relative grid gap-5 pl-4 sm:grid-cols-[100px_1fr] sm:gap-10 sm:pl-0"
                 >
                   {/* YEAR */}
                   <div className="hidden pt-8 sm:block">
@@ -221,8 +251,8 @@ export default function Experience() {
                   </div>
 
                   {/* TIMELINE NODE */}
-                  <div className="absolute left-0 top-8 flex h-9 w-9 items-center justify-center rounded-full border border-[#42D5F5]/30 bg-[#081724] shadow-[0_0_0_6px_rgba(8,23,36,0.95),0_0_20px_rgba(66,213,245,0.08)] sm:left-[5px] sm:h-10 sm:w-10">
-                    <div className="h-1.5 w-1.5 rounded-full bg-[#42D5F5] shadow-[0_0_10px_rgba(66,213,245,0.8)]" />
+                  <div className="absolute left-[-4px] top-8 flex h-5 w-5 items-center justify-center rounded-full border border-[#42D5F5]/45 bg-[#081724] shadow-[0_0_0_3px_rgba(8,23,36,0.98),0_0_16px_rgba(66,213,245,0.18)] sm:left-[5px] sm:h-10 sm:w-10 sm:shadow-[0_0_0_6px_rgba(8,23,36,0.95),0_0_20px_rgba(66,213,245,0.08)]">
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#42D5F5] shadow-[0_0_8px_rgba(66,213,245,0.8)]" />
                   </div>
 
                   {/* MOBILE YEAR */}
@@ -235,11 +265,11 @@ export default function Experience() {
                   {/* PREMIUM CARD */}
                   <motion.div
                     whileHover={
-                      reduceMotion
-                        ? undefined
-                        : {
+                      enableHover
+                        ? {
                             y: -4,
                           }
+                        : undefined
                     }
                     transition={{
                       duration: 0.4,
@@ -304,7 +334,7 @@ export default function Experience() {
                     <div className="absolute inset-x-0 top-0 z-20 h-px bg-gradient-to-r from-transparent via-[#42D5F5]/50 to-transparent" />
 
                     {/* Very subtle ambient glow */}
-                    <div className="pointer-events-none absolute -right-36 -top-36 h-80 w-80 rounded-full bg-[#168BD1]/[0.07] blur-[100px]" />
+                    <div className="pointer-events-none absolute -right-24 -top-24 h-56 w-56 rounded-full bg-[#168BD1]/[0.07] blur-[75px] sm:-right-32 sm:-top-32 sm:h-72 sm:w-72 sm:blur-[90px] lg:-right-36 lg:-top-36 lg:h-80 lg:w-80 lg:blur-[100px]" />
 
                     <div className="relative grid lg:grid-cols-[minmax(0,1fr)_340px]">
                       {/* CONTENT */}
@@ -350,12 +380,12 @@ export default function Experience() {
                           {/* PROMINENT DATE BUTTON */}
                           <motion.div
                             whileHover={
-                              reduceMotion
-                                ? undefined
-                                : {
+                              enableHover
+                                ? {
                                     y: -2,
                                     scale: 1.025,
                                   }
+                                : undefined
                             }
                             transition={{
                               duration: 0.3,
@@ -445,7 +475,7 @@ export default function Experience() {
                           fill
                           priority={index === 0}
                           loading={index === 0 ? "eager" : "lazy"}
-                          sizes="(max-width: 1024px) 100vw, 50vw"
+                          sizes="(max-width: 1024px) 100vw, 340px"
                           className="
                             object-cover
                             object-center
@@ -456,7 +486,6 @@ export default function Experience() {
                         />
 
                         {/* CLEAN IMAGE — NO SHADE / NO TINT */}
-
                         <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/[0.08]" />
 
                         {/* Image label */}

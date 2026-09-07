@@ -8,7 +8,8 @@ import {
   TrendingUp,
   ArrowUpRight,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const expertise = [
   {
@@ -23,7 +24,7 @@ const expertise = [
     hoverGlow:
       "hover:shadow-[0_0_0_1px_rgba(103,232,249,0.16),0_25px_70px_rgba(34,211,238,0.14)]",
     mobileGlow:
-      "shadow-[0_0_28px_rgba(34,211,238,0.10),0_18px_55px_rgba(34,211,238,0.08)]",
+      "shadow-[0_0_24px_rgba(34,211,238,0.08),0_18px_45px_rgba(34,211,238,0.06)]",
     shine: "via-cyan-200/35",
     mobileShine: "via-cyan-200/70",
   },
@@ -39,7 +40,7 @@ const expertise = [
     hoverGlow:
       "hover:shadow-[0_0_0_1px_rgba(94,234,212,0.16),0_25px_70px_rgba(20,184,166,0.14)]",
     mobileGlow:
-      "shadow-[0_0_28px_rgba(20,184,166,0.10),0_18px_55px_rgba(20,184,166,0.08)]",
+      "shadow-[0_0_24px_rgba(20,184,166,0.08),0_18px_45px_rgba(20,184,166,0.06)]",
     shine: "via-teal-200/35",
     mobileShine: "via-teal-200/70",
   },
@@ -55,7 +56,7 @@ const expertise = [
     hoverGlow:
       "hover:shadow-[0_0_0_1px_rgba(147,197,253,0.16),0_25px_70px_rgba(59,130,246,0.14)]",
     mobileGlow:
-      "shadow-[0_0_28px_rgba(59,130,246,0.10),0_18px_55px_rgba(59,130,246,0.08)]",
+      "shadow-[0_0_24px_rgba(59,130,246,0.08),0_18px_45px_rgba(59,130,246,0.06)]",
     shine: "via-blue-200/35",
     mobileShine: "via-blue-200/70",
   },
@@ -71,13 +72,37 @@ const expertise = [
     hoverGlow:
       "hover:shadow-[0_0_0_1px_rgba(196,181,253,0.16),0_25px_70px_rgba(139,92,246,0.14)]",
     mobileGlow:
-      "shadow-[0_0_28px_rgba(139,92,246,0.10),0_18px_55px_rgba(139,92,246,0.08)]",
+      "shadow-[0_0_24px_rgba(139,92,246,0.08),0_18px_45px_rgba(139,92,246,0.06)]",
     shine: "via-violet-200/35",
     mobileShine: "via-violet-200/70",
   },
 ];
 
 export default function Expertise() {
+  const shouldReduceMotion = useReducedMotion();
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+
+    const updatePointer = () => {
+      setFinePointer(mediaQuery.matches);
+    };
+
+    updatePointer();
+    mediaQuery.addEventListener("change", updatePointer);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePointer);
+    };
+  }, []);
+
+  /*
+   * Desktop/laptop = premium hover interactions.
+   * Touch/mobile = lightweight rendering with no hover-heavy effects.
+   */
+  const motionEnabled = !shouldReduceMotion && finePointer;
+
   return (
     <section
       id="expertise"
@@ -92,15 +117,78 @@ export default function Expertise() {
       "
     >
       {/* Background */}
+
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+        "
       >
-        <div className="absolute -left-48 top-[-120px] h-[520px] w-[520px] rounded-full bg-cyan-400/[0.055] blur-[170px]" />
+        {/* Lightweight static atmospheres */}
 
-        <div className="absolute -right-48 bottom-[-120px] h-[520px] w-[520px] rounded-full bg-blue-500/[0.05] blur-[170px]" />
+        <div
+          className="
+            absolute
+            -left-36
+            top-[-90px]
+            h-[360px]
+            w-[360px]
+            rounded-full
+            bg-cyan-400/[0.045]
+            blur-[110px]
+            sm:-left-48
+            sm:top-[-120px]
+            sm:h-[460px]
+            sm:w-[460px]
+            sm:blur-[140px]
+            lg:h-[520px]
+            lg:w-[520px]
+            lg:blur-[170px]
+          "
+        />
 
-        <div className="absolute left-1/2 top-[45%] h-[300px] w-[300px] -translate-x-1/2 rounded-full bg-violet-500/[0.025] blur-[150px]" />
+        <div
+          className="
+            absolute
+            -right-36
+            bottom-[-90px]
+            h-[360px]
+            w-[360px]
+            rounded-full
+            bg-blue-500/[0.04]
+            blur-[110px]
+            sm:-right-48
+            sm:bottom-[-120px]
+            sm:h-[460px]
+            sm:w-[460px]
+            sm:blur-[140px]
+            lg:h-[520px]
+            lg:w-[520px]
+            lg:blur-[170px]
+          "
+        />
+
+        <div
+          className="
+            absolute
+            left-1/2
+            top-[45%]
+            h-[220px]
+            w-[220px]
+            -translate-x-1/2
+            rounded-full
+            bg-violet-500/[0.018]
+            blur-[100px]
+            sm:h-[260px]
+            sm:w-[260px]
+            sm:blur-[125px]
+            lg:h-[300px]
+            lg:w-[300px]
+            lg:blur-[150px]
+          "
+        />
       </div>
 
       <div
@@ -114,18 +202,35 @@ export default function Expertise() {
         "
       >
         {/* Heading */}
+
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 14,
+                }
+          }
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
           viewport={{
             once: true,
             amount: 0.2,
           }}
           transition={{
-            duration: 0.6,
+            duration: 0.4,
             ease: [0.22, 1, 0.36, 1],
           }}
-          className="mx-auto mb-14 max-w-3xl text-center lg:mb-16"
+          className="
+            mx-auto
+            mb-14
+            max-w-3xl
+            text-center
+            lg:mb-16
+          "
         >
           <div className="mb-5 flex items-center justify-center gap-3">
             <span
@@ -179,7 +284,6 @@ export default function Expertise() {
                 to-[#45BCE8]
                 bg-clip-text
                 text-transparent
-                drop-shadow-[0_0_22px_rgba(120,229,247,0.10)]
                 sm:mt-3
               "
             >
@@ -206,40 +310,57 @@ export default function Expertise() {
         </motion.div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+        <div
+          className="
+            grid
+            grid-cols-1
+            gap-4
+            sm:grid-cols-2
+            lg:grid-cols-4
+          "
+        >
           {expertise.map((item, index) => {
             const Icon = item.icon;
 
             return (
               <motion.article
                 key={item.number}
-                initial={{
-                  opacity: 0,
-                  x: -35,
-                  scale: 0.985,
-                }}
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : {
+                        opacity: 0,
+                        y: 16,
+                      }
+                }
                 whileInView={{
                   opacity: 1,
-                  x: 0,
-                  scale: 1,
+                  y: 0,
                 }}
                 viewport={{
                   once: true,
-                  amount: 0.15,
+                  amount: 0.12,
                 }}
                 transition={{
-                  duration: 0.6,
-                  delay: index * 0.1,
+                  duration: 0.42,
+                  delay: shouldReduceMotion
+                    ? 0
+                    : index * 0.045,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                whileHover={{
-                  y: -6,
-                  scale: 1.015,
-                  transition: {
-                    duration: 0.16,
-                    ease: "easeOut",
-                  },
-                }}
+                whileHover={
+                  motionEnabled
+                    ? {
+                        y: -5,
+                        scale: 1.008,
+                        transition: {
+                          duration: 0.18,
+                          ease: "easeOut",
+                        },
+                      }
+                    : undefined
+                }
                 className={`
                   group
                   relative
@@ -250,16 +371,17 @@ export default function Expertise() {
                   ${item.border}
                   bg-[#081A2B]/95
                   ${item.mobileGlow}
-                  shadow-[0_24px_60px_rgba(0,0,0,0.16)]
-                  backdrop-blur-sm
+                  shadow-[0_20px_50px_rgba(0,0,0,0.14)]
                   transition-[transform,border-color,box-shadow,background-color]
-                  duration-500
+                  duration-300
+                  ease-out
                   sm:shadow-[0_24px_60px_rgba(0,0,0,0.16)]
-                  ${item.hoverBorder}
-                  ${item.hoverGlow}
+                  ${motionEnabled ? item.hoverBorder : ""}
+                  ${motionEnabled ? item.hoverGlow : ""}
                 `}
               >
                 {/* Card Accent */}
+
                 <div
                   aria-hidden="true"
                   className={`
@@ -272,6 +394,7 @@ export default function Expertise() {
                 />
 
                 {/* Card Highlight */}
+
                 <div
                   aria-hidden="true"
                   className="
@@ -286,11 +409,18 @@ export default function Expertise() {
                 />
 
                 {/* Subtle Border Shine */}
+
                 <div
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-[22px]"
+                  className="
+                    pointer-events-none
+                    absolute
+                    inset-0
+                    rounded-[22px]
+                  "
                 >
                   {/* Top Shine */}
+
                   <div
                     className={`
                       absolute
@@ -307,6 +437,7 @@ export default function Expertise() {
                   />
 
                   {/* Mobile Top Shine */}
+
                   <div
                     className={`
                       absolute
@@ -318,13 +449,13 @@ export default function Expertise() {
                       from-transparent
                       ${item.mobileShine}
                       to-transparent
-                      opacity-90
-                      blur-[0.4px]
+                      opacity-80
                       sm:hidden
                     `}
                   />
 
                   {/* Bottom Shine */}
+
                   <div
                     className={`
                       absolute
@@ -341,6 +472,7 @@ export default function Expertise() {
                   />
 
                   {/* Mobile Bottom Shine */}
+
                   <div
                     className={`
                       absolute
@@ -352,13 +484,13 @@ export default function Expertise() {
                       from-transparent
                       ${item.mobileShine}
                       to-transparent
-                      opacity-80
-                      blur-[0.4px]
+                      opacity-70
                       sm:hidden
                     `}
                   />
 
                   {/* Left Shine */}
+
                   <div
                     className={`
                       absolute
@@ -370,11 +502,12 @@ export default function Expertise() {
                       from-transparent
                       ${item.shine}
                       to-transparent
-                      opacity-45
+                      opacity-40
                     `}
                   />
 
                   {/* Mobile Left Shine */}
+
                   <div
                     className={`
                       absolute
@@ -386,13 +519,13 @@ export default function Expertise() {
                       from-transparent
                       ${item.mobileShine}
                       to-transparent
-                      opacity-75
-                      blur-[0.35px]
+                      opacity-65
                       sm:hidden
                     `}
                   />
 
                   {/* Right Shine */}
+
                   <div
                     className={`
                       absolute
@@ -404,11 +537,12 @@ export default function Expertise() {
                       from-transparent
                       ${item.shine}
                       to-transparent
-                      opacity-45
+                      opacity-40
                     `}
                   />
 
                   {/* Mobile Right Shine */}
+
                   <div
                     className={`
                       absolute
@@ -420,30 +554,33 @@ export default function Expertise() {
                       from-transparent
                       ${item.mobileShine}
                       to-transparent
-                      opacity-75
-                      blur-[0.35px]
+                      opacity-65
                       sm:hidden
                     `}
                   />
 
-                  {/* Soft Outer Glow */}
-                  <div
-                    className={`
-                      absolute
-                      -inset-[1px]
-                      rounded-[23px]
-                      border
-                      ${item.border}
-                      opacity-25
-                      blur-[1.5px]
-                      transition-[opacity,filter]
-                      duration-500
-                      group-hover:opacity-55
-                      group-hover:blur-[3px]
-                    `}
-                  />
+                  {/* Desktop Soft Outer Glow */}
+
+                  {motionEnabled && (
+                    <div
+                      className={`
+                        absolute
+                        -inset-[1px]
+                        rounded-[23px]
+                        border
+                        ${item.border}
+                        opacity-25
+                        blur-[1.5px]
+                        transition-[opacity,filter]
+                        duration-400
+                        group-hover:opacity-55
+                        group-hover:blur-[3px]
+                      `}
+                    />
+                  )}
 
                   {/* Mobile Outer Shine */}
+
                   <div
                     className={`
                       absolute
@@ -451,13 +588,13 @@ export default function Expertise() {
                       rounded-[23px]
                       border
                       ${item.border}
-                      opacity-40
-                      blur-[1px]
+                      opacity-35
                       sm:hidden
                     `}
                   />
 
                   {/* Fine Border */}
+
                   <div
                     className={`
                       absolute
@@ -470,30 +607,45 @@ export default function Expertise() {
                 </div>
 
                 {/* Card Content */}
-                <div className="relative z-10 flex h-full min-h-[430px] flex-col p-7">
+
+                <div
+                  className="
+                    relative
+                    z-10
+                    flex
+                    h-full
+                    min-h-[430px]
+                    flex-col
+                    p-7
+                  "
+                >
                   {/* Number */}
+
                   <div className="flex items-start justify-between">
                     <span
-                      className="
+                      className={`
                         select-none
                         text-[54px]
                         font-light
                         leading-none
                         tracking-[-0.08em]
                         text-white/[0.055]
-                        transition-colors
-                        duration-500
-                        group-hover:text-cyan-200/[0.11]
-                      "
+                        ${
+                          motionEnabled
+                            ? "transition-colors duration-300 group-hover:text-cyan-200/[0.11]"
+                            : ""
+                        }
+                      `}
                     >
                       {item.number}
                     </span>
                   </div>
 
                   {/* Icon */}
+
                   <div className="mt-7">
                     <div
-                      className="
+                      className={`
                         relative
                         flex
                         h-[58px]
@@ -508,32 +660,38 @@ export default function Expertise() {
                         to-white/[0.025]
                         text-cyan-200
                         shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
-                        transition-[border-color,background-color,color,box-shadow]
-                        duration-500
-                        group-hover:border-cyan-200/25
-                        group-hover:bg-cyan-200/[0.07]
-                        group-hover:text-cyan-100
-                      "
+                        ${
+                          motionEnabled
+                            ? "transition-[border-color,background-color,color,box-shadow] duration-300 group-hover:border-cyan-200/25 group-hover:bg-cyan-200/[0.07] group-hover:text-cyan-100"
+                            : ""
+                        }
+                      `}
                     >
-                      <Icon size={23} strokeWidth={1.25} />
-
-                      <div
-                        aria-hidden="true"
-                        className="
-                          pointer-events-none
-                          absolute
-                          inset-0
-                          rounded-[17px]
-                          shadow-[0_0_24px_rgba(34,211,238,0.025)]
-                          transition-shadow
-                          duration-500
-                          group-hover:shadow-[0_0_30px_rgba(34,211,238,0.07)]
-                        "
+                      <Icon
+                        size={23}
+                        strokeWidth={1.25}
                       />
+
+                      {motionEnabled && (
+                        <div
+                          aria-hidden="true"
+                          className="
+                            pointer-events-none
+                            absolute
+                            inset-0
+                            rounded-[17px]
+                            shadow-[0_0_24px_rgba(34,211,238,0.025)]
+                            transition-shadow
+                            duration-300
+                            group-hover:shadow-[0_0_30px_rgba(34,211,238,0.07)]
+                          "
+                        />
+                      )}
                     </div>
                   </div>
 
                   {/* Text */}
+
                   <div className="mt-9">
                     <h3
                       className="
@@ -550,17 +708,19 @@ export default function Expertise() {
                     </h3>
 
                     <p
-                      className="
+                      className={`
                         mt-6
                         max-w-[255px]
                         text-[13px]
                         font-normal
                         leading-[1.9]
                         text-slate-400/75
-                        transition-colors
-                        duration-500
-                        group-hover:text-slate-300/80
-                      "
+                        ${
+                          motionEnabled
+                            ? "transition-colors duration-300 group-hover:text-slate-300/80"
+                            : ""
+                        }
+                      `}
                     >
                       {item.description}
                     </p>
@@ -568,9 +728,10 @@ export default function Expertise() {
                 </div>
 
                 {/* Bottom Accent */}
+
                 <div
                   aria-hidden="true"
-                  className="
+                  className={`
                     pointer-events-none
                     absolute
                     bottom-0
@@ -582,12 +743,12 @@ export default function Expertise() {
                     via-cyan-200/35
                     to-transparent
                     opacity-50
-                    transition-[left,right,opacity]
-                    duration-500
-                    group-hover:left-0
-                    group-hover:right-0
-                    group-hover:opacity-80
-                  "
+                    ${
+                      motionEnabled
+                        ? "transition-[left,right,opacity] duration-300 group-hover:left-0 group-hover:right-0 group-hover:opacity-80"
+                        : ""
+                    }
+                  `}
                 />
               </motion.article>
             );
@@ -595,16 +756,27 @@ export default function Expertise() {
         </div>
 
         {/* Explore More */}
+
         <motion.div
-          initial={{ opacity: 0, x: 18 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 8,
+                }
+          }
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
           viewport={{
             once: true,
             amount: 0.2,
           }}
           transition={{
-            duration: 0.55,
-            delay: 0.1,
+            duration: 0.35,
+            delay: 0.02,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="mt-7 flex justify-end"
@@ -626,7 +798,7 @@ export default function Expertise() {
               tracking-[0.22em]
               !text-[#F8FAFC]
               transition-[color,border-color]
-              duration-300
+              duration-200
               hover:border-[#42D5F5]/70
               hover:!text-[#42D5F5]
             "
@@ -635,7 +807,7 @@ export default function Expertise() {
               className="
                 !text-[#F8FAFC]
                 transition-colors
-                duration-300
+                duration-200
                 group-hover/explore:!text-[#42D5F5]
               "
             >
@@ -648,7 +820,7 @@ export default function Expertise() {
               className="
                 !text-[#F8FAFC]
                 transition-[transform,color]
-                duration-300
+                duration-200
                 ease-out
                 group-hover/explore:translate-x-1
                 group-hover/explore:-translate-y-0.5

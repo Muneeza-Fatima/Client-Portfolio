@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Brain, Compass, Target } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const mindset = [
   {
@@ -49,13 +50,34 @@ const flow = [
 
 export default function Mindset() {
   const reduceMotion = useReducedMotion();
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: fine)");
+
+    const update = () => {
+      setFinePointer(media.matches);
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  // Continuous / hover-heavy motion is limited to fine-pointer devices.
+  // Phones and tablets keep the same visual appearance without unnecessary
+  // animation/compositing work.
+  const motionEnabled = !reduceMotion && finePointer;
 
   return (
     <section className="relative overflow-hidden bg-[#0A1D2C] pt-12 pb-24 text-white sm:py-28 lg:pt-20 lg:pb-32">
       {/* BACKGROUND */}
       <div className="pointer-events-none absolute inset-0">
         <div
-          className="absolute inset-0 opacity-[0.018]"
+          className="absolute inset-0 opacity-[0.012] sm:opacity-[0.018]"
           style={{
             backgroundImage:
               "linear-gradient(rgba(255,255,255,.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.7) 1px, transparent 1px)",
@@ -63,22 +85,34 @@ export default function Mindset() {
           }}
         />
 
+        {/* Static ambient glow — avoids continuous mobile animation */}
         <div
-          className="ambient-blob absolute right-[-12%] top-[-18%] h-[500px] w-[500px] rounded-full bg-[#21A9C4]/[0.055] blur-[130px]"
-          style={
-            reduceMotion
-              ? undefined
-              : ({
-                  "--drift-opacity-from": 0.45,
-                  "--drift-opacity-to": 0.7,
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.04,
-                  "--drift-duration": "14s",
-                } as any)
-          }
+          className="
+            absolute right-[-12%] top-[-18%]
+            h-[340px] w-[340px]
+            rounded-full
+            bg-[#21A9C4]/[0.055]
+            blur-[90px]
+            sm:h-[420px] sm:w-[420px]
+            sm:blur-[110px]
+            lg:h-[500px] lg:w-[500px]
+            lg:blur-[130px]
+          "
         />
 
-        <div className="absolute bottom-[-20%] left-[-15%] h-[420px] w-[420px] rounded-full bg-[#176FA3]/[0.055] blur-[130px]" />
+        <div
+          className="
+            absolute bottom-[-20%] left-[-15%]
+            h-[300px] w-[300px]
+            rounded-full
+            bg-[#176FA3]/[0.055]
+            blur-[90px]
+            sm:h-[360px] sm:w-[360px]
+            sm:blur-[110px]
+            lg:h-[420px] lg:w-[420px]
+            lg:blur-[130px]
+          "
+        />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-6 sm:px-10 lg:px-16">
@@ -149,11 +183,11 @@ export default function Mindset() {
               <motion.div
                 key={item.title}
                 whileHover={
-                  reduceMotion
-                    ? undefined
-                    : {
+                  motionEnabled
+                    ? {
                         y: -5,
                       }
+                    : undefined
                 }
                 transition={{
                   duration: 0.35,
@@ -162,17 +196,24 @@ export default function Mindset() {
                 className="group relative overflow-hidden border-b border-white/[0.07] p-6 last:border-b-0 sm:border-b-0 sm:border-r sm:p-7 sm:last:border-r-0"
               >
                 {/* BORDER SHINE */}
-                <span className="pointer-events-none absolute inset-0 rounded-[inherit] border border-[#72E7F5]/20 opacity-70 transition-all duration-700 group-hover:border-[#72E7F5]/55 group-hover:opacity-100" />
+                <span
+                  className="
+                    pointer-events-none absolute inset-0 rounded-[inherit]
+                    border border-[#72E7F5]/20
+                    opacity-70
+                    transition-[border-color,opacity]
+                    duration-700
+                    group-hover:border-[#72E7F5]/55
+                    group-hover:opacity-100
+                  "
+                />
 
                 {/* MOVING BORDER LIGHT */}
                 <span
-                  className="
-                    pointer-events-none
-                    absolute
-                    left-[-30%]
-                    top-0
-                    h-px
-                    w-[45%]
+                  className={`
+                    pointer-events-none absolute
+                    left-[-30%] top-0
+                    h-px w-[45%]
                     bg-gradient-to-r
                     from-transparent
                     via-[#8DF3FF]
@@ -182,19 +223,19 @@ export default function Mindset() {
                     transition-all
                     duration-[1400ms]
                     ease-out
-                    group-hover:left-[100%]
-                    group-hover:opacity-100
-                  "
+                    ${
+                      motionEnabled
+                        ? "group-hover:left-[100%] group-hover:opacity-100"
+                        : ""
+                    }
+                  `}
                 />
 
                 <span
-                  className="
-                    pointer-events-none
-                    absolute
-                    right-0
-                    top-[-30%]
-                    h-[45%]
-                    w-px
+                  className={`
+                    pointer-events-none absolute
+                    right-0 top-[-30%]
+                    h-[45%] w-px
                     bg-gradient-to-b
                     from-transparent
                     via-[#8DF3FF]
@@ -204,15 +245,18 @@ export default function Mindset() {
                     transition-all
                     duration-[1400ms]
                     ease-out
-                    group-hover:top-[100%]
-                    group-hover:opacity-90
-                  "
+                    ${
+                      motionEnabled
+                        ? "group-hover:top-[100%] group-hover:opacity-90"
+                        : ""
+                    }
+                  `}
                 />
 
                 {/* ULTRA SUBTLE SHINE */}
                 <span className="pointer-events-none absolute inset-0 overflow-hidden">
                   <span
-                    className="
+                    className={`
                       absolute
                       -left-[70%]
                       top-[-100%]
@@ -228,17 +272,19 @@ export default function Mindset() {
                       transition-all
                       duration-[1200ms]
                       ease-out
-                      group-hover:left-[125%]
-                      group-hover:opacity-100
-                    "
+                      ${
+                        motionEnabled
+                          ? "group-hover:left-[125%] group-hover:opacity-100"
+                          : ""
+                      }
+                    `}
                   />
                 </span>
 
                 {/* VERY SOFT CYAN LIGHT */}
                 <span
-                  className="
-                    pointer-events-none
-                    absolute
+                  className={`
+                    pointer-events-none absolute
                     -left-[60%]
                     top-[-80%]
                     h-[260%]
@@ -250,17 +296,18 @@ export default function Mindset() {
                     transition-all
                     duration-[1250ms]
                     ease-out
-                    group-hover:left-[130%]
-                    group-hover:opacity-100
-                  "
+                    ${
+                      motionEnabled
+                        ? "group-hover:left-[130%] group-hover:opacity-100"
+                        : ""
+                    }
+                  `}
                 />
 
                 {/* SOFT HOVER GLOW */}
                 <span
-                  className="
-                    pointer-events-none
-                    absolute
-                    inset-0
+                  className={`
+                    pointer-events-none absolute inset-0
                     bg-gradient-to-br
                     from-[#4FD8EF]/[0.035]
                     via-transparent
@@ -268,40 +315,45 @@ export default function Mindset() {
                     opacity-0
                     transition-opacity
                     duration-700
-                    group-hover:opacity-100
-                  "
+                    ${
+                      motionEnabled
+                        ? "group-hover:opacity-100"
+                        : ""
+                    }
+                  `}
                 />
 
                 {/* SUBTLE TOP EDGE */}
                 <span
-                  className="
-                    pointer-events-none
-                    absolute
-                    left-0
-                    right-0
-                    top-0
+                  className={`
+                    pointer-events-none absolute
+                    left-0 right-0 top-0
                     h-px
                     bg-gradient-to-r
                     from-transparent
                     via-[#7DECF8]
                     to-transparent
                     opacity-30
-                    transition-all
+                    transition-opacity
                     duration-700
-                    group-hover:opacity-100
-                  "
+                    ${
+                      motionEnabled
+                        ? "group-hover:opacity-100"
+                        : ""
+                    }
+                  `}
                 />
 
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <motion.div
                       whileHover={
-                        reduceMotion
-                          ? undefined
-                          : {
+                        motionEnabled
+                          ? {
                               scale: 1.05,
                               rotate: -2,
                             }
+                          : undefined
                       }
                       transition={{ duration: 0.3 }}
                       className="
@@ -309,7 +361,8 @@ export default function Mindset() {
                         rounded-xl
                         border border-[#4FD8EF]/20
                         bg-[#4FD8EF]/[0.06]
-                        transition-all duration-500
+                        transition-[border-color,background-color,box-shadow]
+                        duration-500
                         group-hover:border-[#6FE7F5]/40
                         group-hover:bg-[#4FD8EF]/[0.09]
                         group-hover:shadow-[0_0_18px_rgba(79,216,239,0.09)]
@@ -373,18 +426,18 @@ export default function Mindset() {
                 delay: index * 0.05,
               }}
               whileHover={
-                reduceMotion
-                  ? undefined
-                  : {
+                motionEnabled
+                  ? {
                       x: 4,
                     }
+                  : undefined
               }
               className="group relative overflow-hidden border-b border-white/[0.06] last:border-b-0"
             >
               {/* ULTRA SUBTLE SHINE */}
               <span className="pointer-events-none absolute inset-0 overflow-hidden">
                 <span
-                  className="
+                  className={`
                     absolute
                     -left-[55%]
                     top-[-120%]
@@ -400,17 +453,19 @@ export default function Mindset() {
                     transition-all
                     duration-[1350ms]
                     ease-out
-                    group-hover:left-[125%]
-                    group-hover:opacity-100
-                  "
+                    ${
+                      motionEnabled
+                        ? "group-hover:left-[125%] group-hover:opacity-100"
+                        : ""
+                    }
+                  `}
                 />
               </span>
 
               {/* VERY SOFT CYAN LIGHT */}
               <span
-                className="
-                  pointer-events-none
-                  absolute
+                className={`
+                  pointer-events-none absolute
                   -left-[45%]
                   top-[-100%]
                   h-[320%]
@@ -422,17 +477,18 @@ export default function Mindset() {
                   transition-all
                   duration-[1400ms]
                   ease-out
-                  group-hover:left-[125%]
-                  group-hover:opacity-100
-                "
+                  ${
+                    motionEnabled
+                      ? "group-hover:left-[125%] group-hover:opacity-100"
+                      : ""
+                  }
+                `}
               />
 
               {/* SOFT BACKGROUND LIGHT */}
               <span
-                className="
-                  pointer-events-none
-                  absolute
-                  inset-0
+                className={`
+                  pointer-events-none absolute inset-0
                   bg-gradient-to-r
                   from-[#4FD8EF]/[0.035]
                   via-[#4FD8EF]/[0.012]
@@ -440,18 +496,19 @@ export default function Mindset() {
                   opacity-0
                   transition-opacity
                   duration-700
-                  group-hover:opacity-100
-                "
+                  ${
+                    motionEnabled
+                      ? "group-hover:opacity-100"
+                      : ""
+                  }
+                `}
               />
 
               {/* SUBTLE LEFT EDGE — ALL DEVICES */}
               <span
                 className="
-                  pointer-events-none
-                  absolute
-                  bottom-0
-                  left-0
-                  top-0
+                  pointer-events-none absolute
+                  bottom-0 left-0 top-0
                   w-px
                   origin-bottom
                   scale-y-100
@@ -466,7 +523,7 @@ export default function Mindset() {
                   {item.number}
                 </span>
 
-                <h4 className="text-[1.15rem] font-medium leading-[1.2] tracking-[-0.035em] text-white/90 transition-all duration-300 group-hover:translate-x-2 group-hover:text-white sm:text-[1.3rem]">
+                <h4 className="text-[1.15rem] font-medium leading-[1.2] tracking-[-0.035em] text-white/90 transition-[transform,color] duration-300 group-hover:translate-x-2 group-hover:text-white sm:text-[1.3rem]">
                   {item.title}
                 </h4>
 

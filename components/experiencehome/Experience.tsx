@@ -9,6 +9,7 @@ import {
   Users,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const experiences = [
   {
@@ -85,7 +86,31 @@ const accentStyles = {
 
 export default function Experience() {
   const shouldReduceMotion = useReducedMotion();
-  const motionEnabled = !shouldReduceMotion;
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+
+    const updatePointer = () => {
+      setFinePointer(mediaQuery.matches);
+    };
+
+    updatePointer();
+
+    mediaQuery.addEventListener("change", updatePointer);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePointer);
+    };
+  }, []);
+
+  /*
+   * Continuous / hover-heavy motion is only enabled on
+   * fine-pointer devices such as desktop/laptop.
+   *
+   * Touch devices get lightweight reveal animations only.
+   */
+  const motionEnabled = !shouldReduceMotion && finePointer;
 
   return (
     <section
@@ -104,8 +129,7 @@ export default function Experience() {
     >
       {/* =========================================================
           PREMIUM LIGHTWEIGHT BACKGROUND
-          No large circles / no continuous animation / no blur.
-          Optimized for Vercel + mobile + tablet + desktop.
+          Static only — no continuous animation / no large blur.
           ========================================================= */}
 
       <div
@@ -134,9 +158,9 @@ export default function Experience() {
           className="
             absolute
             inset-0
-            opacity-[0.012]
             bg-[linear-gradient(rgba(190,220,235,0.75)_1px,transparent_1px),linear-gradient(90deg,rgba(190,220,235,0.75)_1px,transparent_1px)]
             bg-[size:92px_92px]
+            opacity-[0.012]
             [mask-image:linear-gradient(to_bottom,black_0%,black_52%,transparent_100%)]
             sm:opacity-[0.018]
           "
@@ -147,8 +171,8 @@ export default function Experience() {
           className="
             absolute
             inset-0
-            opacity-[0.18]
             bg-[linear-gradient(115deg,transparent_15%,rgba(91,143,180,0.018)_42%,transparent_68%)]
+            opacity-[0.18]
             sm:opacity-[0.28]
           "
         />
@@ -196,11 +220,24 @@ export default function Experience() {
         {/* SECTION LABEL */}
 
         <motion.div
-          initial={motionEnabled ? { opacity: 0, y: 8 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 8,
+                }
+          }
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
           transition={{
-            duration: 0.4,
+            duration: 0.35,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="flex items-center gap-3"
@@ -234,11 +271,24 @@ export default function Experience() {
         {/* MAIN HEADING */}
 
         <motion.div
-          initial={motionEnabled ? { opacity: 0, y: 12 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 10,
+                }
+          }
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
           transition={{
-            duration: 0.45,
+            duration: 0.4,
             delay: 0.02,
             ease: [0.22, 1, 0.36, 1],
           }}
@@ -292,12 +342,12 @@ export default function Experience() {
               <motion.article
                 key={experience.role}
                 initial={
-                  motionEnabled
-                    ? {
+                  shouldReduceMotion
+                    ? false
+                    : {
                         opacity: 0,
-                        y: 14,
+                        y: 12,
                       }
-                    : false
                 }
                 whileInView={{
                   opacity: 1,
@@ -308,8 +358,8 @@ export default function Experience() {
                   amount: 0.08,
                 }}
                 transition={{
-                  duration: 0.4,
-                  delay: index * 0.035,
+                  duration: 0.35,
+                  delay: shouldReduceMotion ? 0 : index * 0.025,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="
@@ -324,7 +374,7 @@ export default function Experience() {
                   px-5
                   py-6
                   shadow-[0_14px_36px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.06)]
-                  transition-colors
+                  transition-[border-color,background-color]
                   duration-200
                   ease-out
                   hover:border-white/[0.14]
@@ -430,7 +480,7 @@ export default function Experience() {
                       border-white/[0.09]
                       bg-white/[0.035]
                       shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]
-                      transition-colors
+                      transition-[border-color,background-color]
                       duration-200
                       group-hover:border-white/[0.16]
                       group-hover:bg-white/[0.055]
@@ -456,8 +506,6 @@ export default function Experience() {
                         leading-[1.25]
                         tracking-[-0.02em]
                         text-[#FFFFFF]
-                        transition-colors
-                        duration-200
                         sm:text-[18px]
                         lg:text-[20px]
                       "
@@ -548,9 +596,13 @@ export default function Experience() {
                     >
                       <motion.div
                         initial={
-                          motionEnabled
-                            ? { scaleX: 0 }
-                            : { scaleX: 1 }
+                          shouldReduceMotion
+                            ? {
+                                scaleX: 1,
+                              }
+                            : {
+                                scaleX: 0,
+                              }
                         }
                         whileInView={{
                           scaleX: 1,
@@ -560,16 +612,16 @@ export default function Experience() {
                           amount: 0.5,
                         }}
                         transition={{
-                          duration: 0.7,
-                          delay: 0.08 + index * 0.05,
+                          duration: 0.55,
+                          delay: 0.05 + index * 0.035,
                           ease: [0.16, 1, 0.3, 1],
                         }}
                         style={{
                           width: `${experience.progress}%`,
                           transformOrigin: "left",
-                          willChange: motionEnabled
-                            ? "transform"
-                            : "auto",
+                          willChange: shouldReduceMotion
+                            ? "auto"
+                            : "transform",
                         }}
                         className={`
                           absolute
@@ -622,12 +674,25 @@ export default function Experience() {
         {/* EXPLORE MORE */}
 
         <motion.div
-          initial={motionEnabled ? { opacity: 0, y: 8 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 8,
+                }
+          }
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
           transition={{
-            duration: 0.4,
-            delay: 0.03,
+            duration: 0.35,
+            delay: 0.02,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="
@@ -683,7 +748,7 @@ export default function Experience() {
               strokeWidth={1.7}
               className="
                 text-[#FFFFFF]
-                transition-transform
+                transition-[transform,color]
                 duration-200
                 group-hover/explore:-translate-y-0.5
                 group-hover/explore:translate-x-0.5
@@ -696,11 +761,24 @@ export default function Experience() {
         {/* BOTTOM STATEMENT */}
 
         <motion.div
-          initial={motionEnabled ? { opacity: 0, y: 10 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
+          initial={
+            shouldReduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 8,
+                }
+          }
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
           transition={{
-            duration: 0.4,
+            duration: 0.35,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="

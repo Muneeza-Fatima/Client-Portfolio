@@ -1,31 +1,75 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, Mail } from "lucide-react";
 
 export default function AboutCTA() {
   const reduceMotion = useReducedMotion();
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: fine)");
+
+    const update = () => {
+      setFinePointer(media.matches);
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion && finePointer;
 
   return (
     <section className="relative overflow-hidden bg-[#071522] py-20 sm:py-28 lg:py-32">
       {/* Background atmosphere */}
       <div className="pointer-events-none absolute inset-0">
+        {/* Static primary atmosphere */}
         <div
-          className="ambient-blob absolute left-[70%] top-1/2 h-[560px] w-[560px] -translate-y-1/2 rounded-full bg-[#168BD1]/[0.055] blur-[180px]"
-          style={
-            reduceMotion
-              ? undefined
-              : ({
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.06,
-                  "--drift-opacity-from": 0.45,
-                  "--drift-opacity-to": 0.65,
-                  "--drift-duration": "18s",
-                } as any)
-          }
+          className="
+            absolute
+            left-[70%]
+            top-1/2
+            h-[340px]
+            w-[340px]
+            -translate-y-1/2
+            rounded-full
+            bg-[#168BD1]/[0.04]
+            blur-[90px]
+            sm:h-[450px]
+            sm:w-[450px]
+            sm:blur-[120px]
+            lg:h-[560px]
+            lg:w-[560px]
+            lg:blur-[160px]
+          "
         />
 
-        <div className="absolute -left-40 bottom-0 h-[320px] w-[320px] rounded-full bg-[#2DD4BF]/[0.025] blur-[150px]" />
+        {/* Static secondary atmosphere */}
+        <div
+          className="
+            absolute
+            -left-28
+            bottom-0
+            h-[220px]
+            w-[220px]
+            rounded-full
+            bg-[#2DD4BF]/[0.02]
+            blur-[90px]
+            sm:-left-40
+            sm:h-[280px]
+            sm:w-[280px]
+            sm:blur-[120px]
+            lg:h-[320px]
+            lg:w-[320px]
+            lg:blur-[140px]
+          "
+        />
 
         <div className="absolute inset-x-0 top-0 h-px bg-white/[0.06]" />
       </div>
@@ -37,7 +81,7 @@ export default function AboutCTA() {
               ? false
               : {
                   opacity: 0,
-                  y: 24,
+                  y: 18,
                 }
           }
           whileInView={
@@ -50,11 +94,11 @@ export default function AboutCTA() {
           }
           viewport={{
             once: true,
-            amount: 0.2,
+            amount: 0.15,
           }}
           transition={{
-            duration: 0.8,
-            ease: "easeOut",
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1],
           }}
           className="
             relative
@@ -65,7 +109,7 @@ export default function AboutCTA() {
             bg-[#0B1F33]
             px-7
             py-10
-            shadow-[0_35px_110px_rgba(0,0,0,0.24)]
+            shadow-[0_35px_90px_rgba(0,0,0,0.22)]
             sm:px-10
             sm:py-14
             lg:px-14
@@ -74,9 +118,43 @@ export default function AboutCTA() {
         >
           {/* Internal light */}
           <div className="pointer-events-none absolute inset-0">
-            <div className="absolute right-[-5%] top-[-45%] h-[460px] w-[460px] rounded-full bg-[#2DD4BF]/[0.055] blur-[130px]" />
+            <div
+              className="
+                absolute
+                right-[-12%]
+                top-[-40%]
+                h-[300px]
+                w-[300px]
+                rounded-full
+                bg-[#2DD4BF]/[0.04]
+                blur-[90px]
+                sm:h-[380px]
+                sm:w-[380px]
+                sm:blur-[110px]
+                lg:h-[460px]
+                lg:w-[460px]
+                lg:blur-[130px]
+              "
+            />
 
-            <div className="absolute bottom-[-50%] left-[32%] h-[340px] w-[340px] rounded-full bg-[#168BD1]/[0.035] blur-[120px]" />
+            <div
+              className="
+                absolute
+                bottom-[-45%]
+                left-[32%]
+                h-[240px]
+                w-[240px]
+                rounded-full
+                bg-[#168BD1]/[0.025]
+                blur-[90px]
+                sm:h-[290px]
+                sm:w-[290px]
+                sm:blur-[105px]
+                lg:h-[340px]
+                lg:w-[340px]
+                lg:blur-[120px]
+              "
+            />
           </div>
 
           <div className="relative grid gap-12 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-center lg:gap-20">
@@ -132,8 +210,20 @@ export default function AboutCTA() {
               {/* EMAIL — PRIMARY */}
               <motion.a
                 href="mailto:lynisbadar838@outlook.com?subject=Hello%20Badar%20Ul%20Haq&body=Hi%20Badar%2C%0A%0AI%20would%20like%20to%20get%20in%20touch."
-                whileHover={reduceMotion ? undefined : { y: -4 }}
-                whileTap={reduceMotion ? undefined : { scale: 0.97 }}
+                whileHover={
+                  motionEnabled
+                    ? {
+                        y: -3,
+                      }
+                    : undefined
+                }
+                whileTap={
+                  reduceMotion
+                    ? undefined
+                    : {
+                        scale: 0.98,
+                      }
+                }
                 className="
                   group
                   relative
@@ -152,12 +242,17 @@ export default function AboutCTA() {
                   px-5
                   text-white
                   shadow-[0_15px_40px_rgba(22,139,209,0.22)]
-                  transition-all
+                  transition-[border-color,box-shadow,transform]
                   duration-300
-                  hover:shadow-[0_20px_48px_rgba(22,139,209,0.32)]
+                  ease-out
+                  hover:border-[#42D5F5]/70
+                  hover:shadow-[0_18px_44px_rgba(22,139,209,0.28)]
                 "
               >
-                <span className="absolute inset-0 bg-white/[0.08] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                {/* Hover surface — desktop only */}
+                {motionEnabled && (
+                  <span className="pointer-events-none absolute inset-0 bg-white/[0.08] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                )}
 
                 <span className="relative flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-black/10">
@@ -176,14 +271,15 @@ export default function AboutCTA() {
                 <ArrowUpRight
                   size={19}
                   strokeWidth={1.5}
-                  className="
+                  className={`
                     relative
                     text-white
-                    transition-transform
-                    duration-300
-                    group-hover:-translate-y-0.5
-                    group-hover:translate-x-0.5
-                  "
+                    ${
+                      motionEnabled
+                        ? "transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                        : ""
+                    }
+                  `}
                 />
               </motion.a>
 
@@ -192,8 +288,20 @@ export default function AboutCTA() {
                 href="https://www.linkedin.com/in/badarulhaq838"
                 target="_blank"
                 rel="noopener noreferrer"
-                whileHover={reduceMotion ? undefined : { y: -4 }}
-                whileTap={reduceMotion ? undefined : { scale: 0.97 }}
+                whileHover={
+                  motionEnabled
+                    ? {
+                        y: -3,
+                      }
+                    : undefined
+                }
+                whileTap={
+                  reduceMotion
+                    ? undefined
+                    : {
+                        scale: 0.98,
+                      }
+                }
                 className="
                   group
                   flex
@@ -208,8 +316,9 @@ export default function AboutCTA() {
                   px-5
                   text-white
                   shadow-[0_12px_35px_rgba(0,0,0,0.2)]
-                  transition-all
+                  transition-[border-color,background-color,box-shadow,transform]
                   duration-300
+                  ease-out
                   hover:border-white/[0.34]
                   hover:bg-[#204157]
                   hover:shadow-[0_16px_40px_rgba(0,0,0,0.24)]
@@ -241,14 +350,14 @@ export default function AboutCTA() {
                 <ArrowUpRight
                   size={19}
                   strokeWidth={1.5}
-                  className="
+                  className={`
                     text-white/80
-                    transition-all
-                    duration-300
-                    group-hover:-translate-y-0.5
-                    group-hover:translate-x-0.5
-                    group-hover:text-[#67E8F9]
-                  "
+                    ${
+                      motionEnabled
+                        ? "transition-[color,transform] duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#67E8F9]"
+                        : ""
+                    }
+                  `}
                 />
               </motion.a>
             </div>

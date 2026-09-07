@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import "lenis/dist/lenis.css";
 import "./globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 

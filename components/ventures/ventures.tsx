@@ -151,6 +151,7 @@ export default function Ventures() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [platformActive, setPlatformActive] = useState(false);
   const [activeStat, setActiveStat] = useState<number | null>(null);
+  const [finePointer, setFinePointer] = useState(false);
 
   const categoryRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const desktopCategoryRefs = useRef<
@@ -161,6 +162,25 @@ export default function Ventures() {
 
   const activeHeadingRef = useRef<HTMLHeadingElement | null>(null);
   const shouldScrollHeadingRef = useRef(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+
+    const updatePointer = () => {
+      setFinePointer(mediaQuery.matches);
+    };
+
+    updatePointer();
+
+    mediaQuery.addEventListener("change", updatePointer);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePointer);
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion;
+  const hoverEnabled = motionEnabled && finePointer;
 
   const active = activities[activeIndex];
 
@@ -252,48 +272,51 @@ export default function Ventures() {
 
       <main className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          {/* TOP AMBIENT GLOW */}
           <div
-            className="ambient-blob absolute left-1/2 top-[-220px] h-[480px] w-[480px] -translate-x-1/2 rounded-full bg-[#174EA6]/[0.13] blur-[125px] sm:top-[-280px] sm:h-[680px] sm:w-[680px] sm:blur-[150px]"
+            className={`${hoverEnabled ? "ambient-blob" : ""} absolute left-1/2 top-[-220px] h-[380px] w-[380px] -translate-x-1/2 rounded-full bg-[#174EA6]/[0.13] blur-[95px] sm:top-[-280px] sm:h-[560px] sm:w-[560px] sm:blur-[135px] lg:h-[680px] lg:w-[680px] lg:blur-[150px]`}
             style={
-              reduceMotion
-                ? undefined
-                : ({
+              hoverEnabled
+                ? ({
                     "--drift-scale-from": 1,
                     "--drift-scale-to": 1.06,
                     "--drift-opacity-from": 0.8,
                     "--drift-opacity-to": 1,
                     "--drift-duration": "12s",
                   } as CSSProperties)
+                : undefined
             }
           />
 
+          {/* LEFT AMBIENT GLOW */}
           <div
-            className="ambient-blob absolute -left-[200px] top-[28%] h-[400px] w-[400px] rounded-full bg-[#168BD1]/[0.055] blur-[125px] sm:-left-[260px] sm:h-[500px] sm:w-[500px] sm:blur-[150px]"
+            className={`${hoverEnabled ? "ambient-blob" : ""} absolute -left-[160px] top-[28%] h-[300px] w-[300px] rounded-full bg-[#168BD1]/[0.055] blur-[90px] sm:-left-[260px] sm:h-[450px] sm:w-[450px] sm:blur-[140px] lg:h-[500px] lg:w-[500px] lg:blur-[150px]`}
             style={
-              reduceMotion
-                ? undefined
-                : ({
+              hoverEnabled
+                ? ({
                     "--drift-x": "25px",
                     "--drift-y": "-18px",
                     "--drift-duration": "14s",
                   } as CSSProperties)
+                : undefined
             }
           />
 
+          {/* RIGHT AMBIENT GLOW */}
           <div
-            className="ambient-blob absolute -right-[210px] top-[58%] h-[400px] w-[400px] rounded-full bg-[#2DD4BF]/[0.04] blur-[125px] sm:-right-[280px] sm:h-[500px] sm:w-[500px] sm:blur-[150px]"
+            className={`${hoverEnabled ? "ambient-blob" : ""} absolute -right-[170px] top-[58%] h-[300px] w-[300px] rounded-full bg-[#2DD4BF]/[0.04] blur-[90px] sm:-right-[280px] sm:h-[450px] sm:w-[450px] sm:blur-[140px] lg:h-[500px] lg:w-[500px] lg:blur-[150px]`}
             style={
-              reduceMotion
-                ? undefined
-                : ({
+              hoverEnabled
+                ? ({
                     "--drift-x": "-20px",
                     "--drift-y": "20px",
                     "--drift-duration": "16s",
                   } as CSSProperties)
+                : undefined
             }
           />
 
-          <div className="absolute left-1/2 top-[42%] h-[360px] w-[360px] -translate-x-1/2 rounded-full bg-[#2878D7]/[0.025] blur-[115px] sm:h-[460px] sm:w-[460px] sm:blur-[140px]" />
+          <div className="absolute left-1/2 top-[42%] h-[280px] w-[280px] -translate-x-1/2 rounded-full bg-[#2878D7]/[0.025] blur-[90px] sm:h-[420px] sm:w-[420px] sm:blur-[130px] lg:h-[460px] lg:w-[460px] lg:blur-[140px]" />
 
           <div
             className="absolute inset-0 opacity-[0.006]"
@@ -330,11 +353,11 @@ export default function Ventures() {
             >
               <motion.div
                 whileHover={
-                  reduceMotion
-                    ? undefined
-                    : {
+                  hoverEnabled
+                    ? {
                         x: 3,
                       }
+                    : undefined
                 }
                 transition={{
                   duration: 0.3,
@@ -342,22 +365,22 @@ export default function Ventures() {
                 }}
                 className="flex w-fit cursor-default items-center gap-3"
               >
-                <motion.span
-                  animate={
-                    reduceMotion
-                      ? undefined
-                      : {
-                          scale: [1, 1.35, 1],
-                          opacity: [0.75, 1, 0.75],
-                        }
-                  }
-                  transition={{
-                    duration: 2.4,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                  className="h-1.5 w-1.5 rounded-full bg-[#42D5F5] shadow-[0_0_10px_rgba(66,213,245,.45)]"
-                />
+                {hoverEnabled ? (
+                  <motion.span
+                    animate={{
+                      scale: [1, 1.35, 1],
+                      opacity: [0.75, 1, 0.75],
+                    }}
+                    transition={{
+                      duration: 2.4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className="h-1.5 w-1.5 rounded-full bg-[#42D5F5] shadow-[0_0_10px_rgba(66,213,245,.45)]"
+                  />
+                ) : (
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#42D5F5] shadow-[0_0_10px_rgba(66,213,245,.45)]" />
+                )}
 
                 <span className="text-[8px] font-semibold uppercase tracking-[0.32em] text-[#42D5F5] sm:text-[9px] sm:tracking-[0.4em]">
                   BH Ventures
@@ -366,11 +389,11 @@ export default function Ventures() {
 
               <motion.h1
                 whileHover={
-                  reduceMotion
-                    ? undefined
-                    : {
+                  hoverEnabled
+                    ? {
                         x: 2,
                       }
+                    : undefined
                 }
                 transition={{
                   duration: 0.4,
@@ -391,11 +414,11 @@ export default function Ventures() {
 
               <motion.p
                 whileHover={
-                  reduceMotion
-                    ? undefined
-                    : {
+                  hoverEnabled
+                    ? {
                         x: 2,
                       }
+                    : undefined
                 }
                 transition={{
                   duration: 0.35,
@@ -424,25 +447,25 @@ export default function Ventures() {
                       aria-pressed={isActive}
                       onClick={() => setActiveStat(index)}
                       whileHover={
-                        reduceMotion
-                          ? undefined
-                          : {
+                        hoverEnabled
+                          ? {
                               y: -6,
                               scale: 1.035,
                             }
+                          : undefined
                       }
                       whileTap={
-                        reduceMotion
-                          ? undefined
-                          : {
+                        motionEnabled
+                          ? {
                               scale: 0.96,
                             }
+                          : undefined
                       }
                       transition={{
                         duration: 0.3,
                         ease,
                       }}
-                      className={`group relative min-w-0 appearance-none overflow-hidden rounded-2xl border px-2.5 py-4.5 text-left backdrop-blur-xl transition-[border-color,background-color,box-shadow,transform] duration-500 ${
+                      className={`group relative min-w-0 appearance-none overflow-hidden rounded-2xl border px-2.5 py-4.5 text-left transition-[border-color,background-color,box-shadow,transform] duration-500 sm:backdrop-blur-xl ${
                         isActive
                           ? "border-[#42D5F5]/[0.58] bg-[#42D5F5]/[0.09] shadow-[0_16px_45px_rgba(66,213,245,.16)]"
                           : index === 1
@@ -450,105 +473,105 @@ export default function Ventures() {
                             : "border-white/[0.08] bg-white/[0.022] hover:border-white/[0.17] hover:bg-white/[0.04] hover:shadow-[0_14px_38px_rgba(0,0,0,.2)]"
                       }`}
                     >
-                      <motion.span
-                        aria-hidden="true"
-                        animate={
-                          reduceMotion
-                            ? undefined
-                            : {
-                                opacity: isActive
-                                  ? [0.5, 1, 0.5]
-                                  : [0.18, 0.65, 0.18],
-                                scaleX: [0.75, 1, 0.75],
-                              }
-                        }
-                        transition={{
-                          duration: isActive ? 1.8 : 2.8,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: index * 0.2,
-                        }}
-                        className={`pointer-events-none absolute left-3 right-3 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#72E2F5] to-transparent ${
-                          isActive
-                            ? "opacity-100"
-                            : "opacity-60"
-                        }`}
-                      />
+                      {hoverEnabled ? (
+                        <>
+                          <motion.span
+                            aria-hidden="true"
+                            animate={{
+                              opacity: isActive
+                                ? [0.5, 1, 0.5]
+                                : [0.18, 0.65, 0.18],
+                              scaleX: [0.75, 1, 0.75],
+                            }}
+                            transition={{
+                              duration: isActive ? 1.8 : 2.8,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                              delay: index * 0.2,
+                            }}
+                            className={`pointer-events-none absolute left-3 right-3 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#72E2F5] to-transparent ${
+                              isActive
+                                ? "opacity-100"
+                                : "opacity-60"
+                            }`}
+                          />
 
-                      <motion.span
-                        aria-hidden="true"
-                        animate={
-                          reduceMotion
-                            ? undefined
-                            : {
-                                opacity: isActive
-                                  ? [0.45, 1, 0.45]
-                                  : [0.15, 0.55, 0.15],
-                                scaleX: [0.75, 1, 0.75],
-                              }
-                        }
-                        transition={{
-                          duration: isActive ? 2 : 3,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: index * 0.25 + 0.4,
-                        }}
-                        className={`pointer-events-none absolute bottom-0 left-3 right-3 z-10 h-px bg-gradient-to-r from-transparent via-[#42D5F5] to-transparent ${
-                          isActive
-                            ? "opacity-100"
-                            : "opacity-50"
-                        }`}
-                      />
+                          <motion.span
+                            aria-hidden="true"
+                            animate={{
+                              opacity: isActive
+                                ? [0.45, 1, 0.45]
+                                : [0.15, 0.55, 0.15],
+                              scaleX: [0.75, 1, 0.75],
+                            }}
+                            transition={{
+                              duration: isActive ? 2 : 3,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                              delay: index * 0.25 + 0.4,
+                            }}
+                            className={`pointer-events-none absolute bottom-0 left-3 right-3 z-10 h-px bg-gradient-to-r from-transparent via-[#42D5F5] to-transparent ${
+                              isActive
+                                ? "opacity-100"
+                                : "opacity-50"
+                            }`}
+                          />
 
-                      <motion.span
-                        aria-hidden="true"
-                        animate={
-                          reduceMotion
-                            ? undefined
-                            : {
-                                opacity: isActive
-                                  ? [0.4, 0.9, 0.4]
-                                  : [0.12, 0.5, 0.12],
-                                scaleY: [0.72, 1, 0.72],
-                              }
-                        }
-                        transition={{
-                          duration: isActive ? 2.1 : 3.1,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: index * 0.18,
-                        }}
-                        className={`pointer-events-none absolute bottom-3 left-0 top-3 z-10 w-px bg-gradient-to-b from-transparent via-[#72E2F5] to-transparent ${
-                          isActive
-                            ? "opacity-100"
-                            : "opacity-50"
-                        }`}
-                      />
+                          <motion.span
+                            aria-hidden="true"
+                            animate={{
+                              opacity: isActive
+                                ? [0.4, 0.9, 0.4]
+                                : [0.12, 0.5, 0.12],
+                              scaleY: [0.72, 1, 0.72],
+                            }}
+                            transition={{
+                              duration: isActive ? 2.1 : 3.1,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                              delay: index * 0.18,
+                            }}
+                            className={`pointer-events-none absolute bottom-3 left-0 top-3 z-10 w-px bg-gradient-to-b from-transparent via-[#72E2F5] to-transparent ${
+                              isActive
+                                ? "opacity-100"
+                                : "opacity-50"
+                            }`}
+                          />
 
-                      <motion.span
-                        aria-hidden="true"
-                        animate={
-                          reduceMotion
-                            ? undefined
-                            : {
-                                opacity: isActive
-                                  ? [0.45, 1, 0.45]
-                                  : [0.14, 0.55, 0.14],
-                                scaleY: [0.72, 1, 0.72],
-                              }
-                        }
-                        transition={{
-                          duration: isActive ? 1.9 : 2.9,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                          delay: index * 0.22 + 0.3,
-                        }}
-                        className={`pointer-events-none absolute bottom-3 right-0 top-3 z-10 w-px bg-gradient-to-b from-transparent via-[#42D5F5] to-transparent ${
-                          isActive
-                            ? "opacity-100"
-                            : "opacity-50"
-                        }`}
-                      />
+                          <motion.span
+                            aria-hidden="true"
+                            animate={{
+                              opacity: isActive
+                                ? [0.45, 1, 0.45]
+                                : [0.14, 0.55, 0.14],
+                              scaleY: [0.72, 1, 0.72],
+                            }}
+                            transition={{
+                              duration: isActive ? 1.9 : 2.9,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                              delay: index * 0.22 + 0.3,
+                            }}
+                            className={`pointer-events-none absolute bottom-3 right-0 top-3 z-10 w-px bg-gradient-to-b from-transparent via-[#42D5F5] to-transparent ${
+                              isActive
+                                ? "opacity-100"
+                                : "opacity-50"
+                            }`}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute left-3 right-3 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#72E2F5]/60 to-transparent"
+                          />
+
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute bottom-0 left-3 right-3 z-10 h-px bg-gradient-to-r from-transparent via-[#42D5F5]/50 to-transparent"
+                          />
+                        </>
+                      )}
 
                       <div className="relative z-20 flex min-w-0 flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline sm:gap-2">
                         <span
@@ -595,36 +618,36 @@ export default function Ventures() {
                 ease,
               }}
               whileHover={
-                reduceMotion
-                  ? undefined
-                  : hoverLift
+                hoverEnabled
+                  ? hoverLift
+                  : undefined
               }
               whileTap={
-                reduceMotion
-                  ? undefined
-                  : {
+                motionEnabled
+                  ? {
                       scale: 0.985,
                       y: -2,
                     }
+                  : undefined
               }
               onClick={() =>
                 setPlatformActive((prev) => !prev)
               }
-              className={`group relative cursor-pointer overflow-hidden rounded-[22px] border bg-[#0C2434] shadow-[0_18px_55px_rgba(0,0,0,.22)] backdrop-blur-xl transition-[border-color,background-color,box-shadow,transform] duration-500 sm:rounded-[30px] ${
+              className={`group relative cursor-pointer overflow-hidden rounded-[22px] border bg-[#0C2434] shadow-[0_18px_55px_rgba(0,0,0,.22)] transition-[border-color,background-color,box-shadow,transform] duration-500 sm:rounded-[30px] sm:backdrop-blur-xl ${
                 platformActive
                   ? "border-[#42D5F5]/[0.28] bg-[#103044] shadow-[0_28px_85px_rgba(66,213,245,.10)]"
                   : "border-white/[0.09] hover:border-[#42D5F5]/[0.18] hover:bg-[#103044] hover:shadow-[0_28px_85px_rgba(0,0,0,.3)]"
               }`}
             >
               <div
-                className={`pointer-events-none absolute -right-32 -top-32 h-[300px] w-[300px] rounded-full bg-[#168BD1]/[0.07] blur-[100px] transition-all duration-700 group-hover:scale-125 group-hover:bg-[#168BD1]/[0.11] ${
+                className={`pointer-events-none absolute -right-24 -top-24 h-[240px] w-[240px] rounded-full bg-[#168BD1]/[0.07] blur-[80px] transition-all duration-700 sm:-right-32 sm:-top-32 sm:h-[300px] sm:w-[300px] sm:blur-[100px] group-hover:scale-125 group-hover:bg-[#168BD1]/[0.11] ${
                   platformActive
                     ? "scale-125 bg-[#168BD1]/[0.12]"
                     : ""
                 }`}
               />
 
-              <div className="pointer-events-none absolute bottom-[-160px] left-[-120px] h-[300px] w-[300px] rounded-full bg-[#2DD4BF]/[0.025] blur-[100px]" />
+              <div className="pointer-events-none absolute bottom-[-130px] left-[-100px] h-[250px] w-[250px] rounded-full bg-[#2DD4BF]/[0.025] blur-[80px] sm:bottom-[-160px] sm:left-[-120px] sm:h-[300px] sm:w-[300px] sm:blur-[100px]" />
 
               <div
                 className={`pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#42D5F5]/[0.45] to-transparent transition-opacity duration-500 ${
@@ -639,7 +662,7 @@ export default function Ventures() {
                   <div className="flex items-start gap-3.5 sm:gap-5">
                     <motion.div
                       animate={
-                        platformActive && !reduceMotion
+                        platformActive && motionEnabled
                           ? {
                               scale: 1.08,
                               rotate: 4,
@@ -647,19 +670,19 @@ export default function Ventures() {
                           : undefined
                       }
                       whileHover={
-                        reduceMotion
-                          ? undefined
-                          : {
+                        hoverEnabled
+                          ? {
                               scale: 1.08,
                               rotate: 4,
                             }
+                          : undefined
                       }
                       whileTap={
-                        reduceMotion
-                          ? undefined
-                          : {
+                        motionEnabled
+                          ? {
                               scale: 0.94,
                             }
+                          : undefined
                       }
                       transition={{
                         duration: 0.3,
@@ -704,19 +727,19 @@ export default function Ventures() {
                       <motion.span
                         key={item}
                         whileHover={
-                          reduceMotion
-                            ? undefined
-                            : {
+                          hoverEnabled
+                            ? {
                                 y: -3,
                                 scale: 1.02,
                               }
+                            : undefined
                         }
                         whileTap={
-                          reduceMotion
-                            ? undefined
-                            : {
+                          motionEnabled
+                            ? {
                                 scale: 0.96,
                               }
+                            : undefined
                         }
                         transition={{
                           duration: 0.25,
@@ -733,27 +756,33 @@ export default function Ventures() {
                     ))}
                   </div>
 
-                  <motion.div
-                    animate={
-                      reduceMotion
-                        ? undefined
-                        : {
-                            opacity: [0.35, 0.7, 0.35],
-                          }
-                    }
-                    transition={{
-                      duration: 2.8,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                    }}
-                    className="mt-5 flex items-center gap-2 text-[#67D9F0]"
-                  >
-                    <span className="h-1 w-1 rounded-full bg-[#42D5F5]" />
+                  {hoverEnabled ? (
+                    <motion.div
+                      animate={{
+                        opacity: [0.35, 0.7, 0.35],
+                      }}
+                      transition={{
+                        duration: 2.8,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="mt-5 flex items-center gap-2 text-[#67D9F0]"
+                    >
+                      <span className="h-1 w-1 rounded-full bg-[#42D5F5]" />
 
-                    <span className="text-[6.5px] font-semibold uppercase tracking-[0.2em]">
-                      Tap to explore
-                    </span>
-                  </motion.div>
+                      <span className="text-[6.5px] font-semibold uppercase tracking-[0.2em]">
+                        Tap to explore
+                      </span>
+                    </motion.div>
+                  ) : (
+                    <div className="mt-5 flex items-center gap-2 text-[#67D9F0]">
+                      <span className="h-1 w-1 rounded-full bg-[#42D5F5]" />
+
+                      <span className="text-[6.5px] font-semibold uppercase tracking-[0.2em]">
+                        Tap to explore
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div
@@ -771,7 +800,7 @@ export default function Ventures() {
                     <div className="mt-2.5 flex min-w-0 items-center gap-3 overflow-visible sm:mt-3">
                       <motion.span
                         animate={
-                          platformActive && !reduceMotion
+                          platformActive && motionEnabled
                             ? {
                                 scale: [1, 1.08, 1],
                               }
@@ -838,11 +867,11 @@ export default function Ventures() {
 
                 <motion.h2
                   whileHover={
-                    reduceMotion
-                      ? undefined
-                      : {
+                    hoverEnabled
+                      ? {
                           x: 2,
                         }
+                      : undefined
                   }
                   transition={{
                     duration: 0.35,
@@ -883,18 +912,18 @@ export default function Ventures() {
                       type="button"
                       onClick={() => selectActivity(index)}
                       whileHover={
-                        reduceMotion
-                          ? undefined
-                          : {
+                        hoverEnabled
+                          ? {
                               y: -2,
                             }
+                          : undefined
                       }
                       whileTap={
-                        reduceMotion
-                          ? undefined
-                          : {
+                        motionEnabled
+                          ? {
                               scale: 0.96,
                             }
+                          : undefined
                       }
                       transition={{
                         duration: 0.25,
@@ -931,11 +960,11 @@ export default function Ventures() {
               <div className="hidden lg:block lg:self-start">
                 <motion.div
                   whileHover={
-                    reduceMotion
-                      ? undefined
-                      : {
+                    hoverEnabled
+                      ? {
                           y: -2,
                         }
+                      : undefined
                   }
                   transition={{
                     duration: 0.35,
@@ -999,18 +1028,18 @@ export default function Ventures() {
                                   selectActivity(index)
                                 }
                                 whileHover={
-                                  reduceMotion
-                                    ? undefined
-                                    : {
+                                  hoverEnabled
+                                    ? {
                                         x: 3,
                                       }
+                                    : undefined
                                 }
                                 whileTap={
-                                  reduceMotion
-                                    ? undefined
-                                    : {
+                                  motionEnabled
+                                    ? {
                                         scale: 0.99,
                                       }
+                                    : undefined
                                 }
                                 transition={{
                                   duration: 0.22,
@@ -1074,23 +1103,23 @@ export default function Ventures() {
               {/* ACTIVE ACTIVITY CARD */}
               <motion.div
                 whileHover={
-                  reduceMotion
-                    ? undefined
-                    : {
+                  hoverEnabled
+                    ? {
                         y: -6,
                       }
+                    : undefined
                 }
                 transition={{
                   duration: 0.4,
                   ease,
                 }}
-                className="group relative min-w-0 overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#091C2B]/90 shadow-[0_22px_65px_rgba(0,0,0,.19)] backdrop-blur-xl transition-[border-color,box-shadow,background-color] duration-500 hover:border-[#42D5F5]/[0.18] hover:bg-[#0A1F30] hover:shadow-[0_32px_95px_rgba(0,0,0,.28)] sm:rounded-[26px]"
+                className="group relative min-w-0 overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#091C2B]/90 shadow-[0_22px_65px_rgba(0,0,0,.19)] transition-[border-color,box-shadow,background-color] duration-500 sm:rounded-[26px] sm:backdrop-blur-xl"
               >
                 <div
                   className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${active.accent} transition-opacity duration-700`}
                 />
 
-                <div className="pointer-events-none absolute -right-28 -top-28 h-[340px] w-[340px] rounded-full bg-[#168BD1]/[0.055] blur-[100px] transition-all duration-700 group-hover:scale-125 group-hover:bg-[#168BD1]/[0.09]" />
+                <div className="pointer-events-none absolute -right-24 -top-24 h-[260px] w-[260px] rounded-full bg-[#168BD1]/[0.055] blur-[80px] transition-all duration-700 sm:-right-28 sm:-top-28 sm:h-[340px] sm:w-[340px] sm:blur-[100px] group-hover:scale-125 group-hover:bg-[#168BD1]/[0.09]" />
 
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.035] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
@@ -1098,7 +1127,7 @@ export default function Ventures() {
                 <motion.div
                   key={`image-${active.number}`}
                   initial={
-                    reduceMotion
+                    reduceMotion || !hoverEnabled
                       ? false
                       : {
                           opacity: 0,
@@ -1106,7 +1135,7 @@ export default function Ventures() {
                         }
                   }
                   animate={
-                    reduceMotion
+                    reduceMotion || !hoverEnabled
                       ? undefined
                       : {
                           opacity: 1,
@@ -1124,6 +1153,7 @@ export default function Ventures() {
                     alt={active.title}
                     fill
                     priority={activeIndex === 0}
+                    loading={activeIndex === 0 ? "eager" : "lazy"}
                     sizes="(max-width: 1023px) 100vw, 900px"
                     className="object-contain object-center"
                   />
@@ -1133,7 +1163,7 @@ export default function Ventures() {
                   <motion.div
                     key={`category-${active.number}`}
                     initial={
-                      reduceMotion
+                      reduceMotion || !hoverEnabled
                         ? false
                         : {
                             opacity: 0,
@@ -1141,7 +1171,7 @@ export default function Ventures() {
                           }
                     }
                     animate={
-                      reduceMotion
+                      reduceMotion || !hoverEnabled
                         ? undefined
                         : {
                             opacity: 1,
@@ -1168,7 +1198,7 @@ export default function Ventures() {
                   <motion.div
                     key={`content-${active.number}`}
                     initial={
-                      reduceMotion
+                      reduceMotion || !hoverEnabled
                         ? false
                         : {
                             opacity: 0,
@@ -1176,7 +1206,7 @@ export default function Ventures() {
                           }
                     }
                     animate={
-                      reduceMotion
+                      reduceMotion || !hoverEnabled
                         ? undefined
                         : {
                             opacity: 1,
@@ -1232,15 +1262,15 @@ export default function Ventures() {
                 ease,
               }}
               whileHover={
-                reduceMotion
-                  ? undefined
-                  : {
+                hoverEnabled
+                  ? {
                       y: -5,
                     }
+                  : undefined
               }
-              className="group relative overflow-hidden rounded-[22px] border border-slate-200 bg-[#D9D8D3] px-5 py-16 text-center shadow-[0_22px_70px_rgba(0,0,0,.12)] backdrop-blur-xl transition-[border-color,background-color,box-shadow] duration-500 hover:border-slate-300 hover:bg-[#D9D8D3] hover:shadow-[0_32px_95px_rgba(0,0,0,.16)] sm:rounded-[30px] sm:px-12 sm:py-16"
+              className="group relative overflow-hidden rounded-[22px] border border-slate-200 bg-[#D9D8D3] px-5 py-16 text-center shadow-[0_22px_70px_rgba(0,0,0,.12)] transition-[border-color,background-color,box-shadow] duration-500 sm:rounded-[30px] sm:px-12 sm:py-16 sm:backdrop-blur-xl hover:border-slate-300 hover:bg-[#D9D8D3] hover:shadow-[0_32px_95px_rgba(0,0,0,.16)]"
             >
-              <div className="pointer-events-none absolute left-1/2 top-[-130px] h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-[#42D5F5]/[0.08] blur-[115px] transition-all duration-700 group-hover:scale-125 group-hover:bg-[#42D5F5]/[0.12]" />
+              <div className="pointer-events-none absolute left-1/2 top-[-110px] h-[320px] w-[320px] -translate-x-1/2 rounded-full bg-[#42D5F5]/[0.08] blur-[90px] transition-all duration-700 sm:top-[-130px] sm:h-[400px] sm:w-[400px] sm:blur-[115px] group-hover:scale-125 group-hover:bg-[#42D5F5]/[0.12]" />
 
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-100/[0.8] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
@@ -1251,11 +1281,11 @@ export default function Ventures() {
 
                 <motion.h2
                   whileHover={
-                    reduceMotion
-                      ? undefined
-                      : {
+                    hoverEnabled
+                      ? {
                           y: -2,
                         }
+                      : undefined
                   }
                   transition={{
                     duration: 0.3,

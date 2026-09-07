@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ShieldCheck,
@@ -46,7 +46,25 @@ const principles = [
 
 export default function Principles() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [finePointer, setFinePointer] = useState(false);
   const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: fine)");
+
+    const update = () => {
+      setFinePointer(media.matches);
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion && finePointer;
 
   const active = principles[activeIndex];
   const ActiveIcon = active.icon;
@@ -74,13 +92,19 @@ export default function Principles() {
             absolute
             left-1/2
             top-[42%]
-            h-[560px]
-            w-[560px]
+            h-[380px]
+            w-[380px]
             -translate-x-1/2
             -translate-y-1/2
             rounded-full
-            bg-[rgba(20,120,175,0.065)]
-            blur-[130px]
+            bg-[rgba(20,120,175,0.05)]
+            blur-[90px]
+            sm:h-[470px]
+            sm:w-[470px]
+            sm:blur-[110px]
+            lg:h-[560px]
+            lg:w-[560px]
+            lg:blur-[130px]
           "
         />
 
@@ -89,11 +113,17 @@ export default function Principles() {
             absolute
             right-[-12%]
             top-[8%]
-            h-[360px]
-            w-[360px]
+            h-[260px]
+            w-[260px]
             rounded-full
-            bg-[rgba(45,212,191,0.028)]
-            blur-[120px]
+            bg-[rgba(45,212,191,0.022)]
+            blur-[80px]
+            sm:h-[310px]
+            sm:w-[310px]
+            sm:blur-[100px]
+            lg:h-[360px]
+            lg:w-[360px]
+            lg:blur-[120px]
           "
         />
 
@@ -102,11 +132,17 @@ export default function Principles() {
             absolute
             bottom-[-18%]
             left-[8%]
-            h-[380px]
-            w-[460px]
+            h-[280px]
+            w-[340px]
             rounded-full
-            bg-[rgba(37,99,235,0.035)]
-            blur-[130px]
+            bg-[rgba(37,99,235,0.028)]
+            blur-[90px]
+            sm:h-[340px]
+            sm:w-[400px]
+            sm:blur-[110px]
+            lg:h-[380px]
+            lg:w-[460px]
+            lg:blur-[130px]
           "
         />
 
@@ -114,7 +150,8 @@ export default function Principles() {
           className="
             absolute
             inset-0
-            opacity-[0.018]
+            opacity-[0.014]
+            sm:opacity-[0.018]
             [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.5)_1px,transparent_1px)]
             [background-size:72px_72px]
           "
@@ -127,13 +164,25 @@ export default function Principles() {
       <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12">
         {/* Header */}
         <motion.div
-          initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-          whileInView={
-            reduceMotion ? undefined : { opacity: 1, y: 0 }
+          initial={
+            reduceMotion
+              ? false
+              : {
+                  opacity: 0,
+                  y: 20,
+                }
           }
-          viewport={{ once: true, amount: 0.3 }}
+          whileInView={
+            reduceMotion
+              ? undefined
+              : {
+                  opacity: 1,
+                  y: 0,
+                }
+          }
+          viewport={{ once: true, amount: 0.25 }}
           transition={{
-            duration: 0.7,
+            duration: 0.55,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="mb-11 max-w-4xl sm:mb-16 lg:mb-20"
@@ -205,7 +254,7 @@ export default function Principles() {
                       ? false
                       : {
                           opacity: 0,
-                          x: -22,
+                          x: -18,
                         }
                   }
                   whileInView={
@@ -216,18 +265,18 @@ export default function Principles() {
                           x: 0,
                         }
                   }
-                  viewport={{ once: true, amount: 0.25 }}
+                  viewport={{ once: true, amount: 0.2 }}
                   transition={{
-                    duration: 0.55,
-                    delay: index * 0.07,
+                    duration: 0.5,
+                    delay: index * 0.05,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   whileHover={
-                    reduceMotion
-                      ? undefined
-                      : {
+                    motionEnabled
+                      ? {
                           x: 3,
                         }
+                      : undefined
                   }
                   className={`
                     group
@@ -238,13 +287,17 @@ export default function Principles() {
                     px-5
                     py-4
                     text-left
-                    transition-all
+                    transition-[border-color,background-color,transform]
                     duration-300
                     sm:py-5
                     ${
                       isActive
                         ? "border-[#42D5F5]/25 bg-[#0D2A40]"
-                        : "border-white/[0.085] bg-[#0A2438] hover:border-white/[0.14] hover:bg-[#0D2940]"
+                        : `border-white/[0.085] bg-[#0A2438] ${
+                            motionEnabled
+                              ? "hover:border-white/[0.14] hover:bg-[#0D2940]"
+                              : ""
+                          }`
                     }
                   `}
                 >
@@ -266,7 +319,9 @@ export default function Principles() {
                       ${
                         isActive
                           ? "opacity-100"
-                          : "opacity-0 group-hover:opacity-50"
+                          : motionEnabled
+                            ? "opacity-0 group-hover:opacity-50"
+                            : "opacity-0"
                       }
                     `}
                   />
@@ -278,11 +333,11 @@ export default function Principles() {
                       absolute
                       -right-12
                       -top-12
-                      h-28
-                      w-28
+                      h-24
+                      w-24
                       rounded-full
-                      bg-[#42D5F5]/[0.045]
-                      blur-3xl
+                      bg-[#42D5F5]/[0.04]
+                      blur-2xl
                       transition-opacity
                       duration-300
                       ${isActive ? "opacity-100" : "opacity-0"}
@@ -300,12 +355,16 @@ export default function Principles() {
                         justify-center
                         rounded-xl
                         border
-                        transition-all
+                        transition-[border-color,background-color,color]
                         duration-300
                         ${
                           isActive
                             ? "border-[#42D5F5]/25 bg-[#42D5F5]/[0.07] text-[#70E4F5]"
-                            : "border-white/[0.09] bg-white/[0.025] text-[#9FB4C1] group-hover:border-[#42D5F5]/20 group-hover:text-[#CBEAF2]"
+                            : `border-white/[0.09] bg-white/[0.025] text-[#9FB4C1] ${
+                                motionEnabled
+                                  ? "group-hover:border-[#42D5F5]/20 group-hover:text-[#CBEAF2]"
+                                  : ""
+                              }`
                         }
                       `}
                     >
@@ -325,7 +384,11 @@ export default function Principles() {
                           ${
                             isActive
                               ? "text-[#69DDF0]"
-                              : "text-[#718997] group-hover:text-[#86A4B4]"
+                              : `text-[#718997] ${
+                                  motionEnabled
+                                    ? "group-hover:text-[#86A4B4]"
+                                    : ""
+                                }`
                           }
                         `}
                       >
@@ -345,7 +408,11 @@ export default function Principles() {
                           ${
                             isActive
                               ? "text-[#F4F8FB]"
-                              : "text-[#C8D5DE] group-hover:text-white"
+                              : `text-[#C8D5DE] ${
+                                  motionEnabled
+                                    ? "group-hover:text-white"
+                                    : ""
+                                }`
                           }
                         `}
                       >
@@ -365,10 +432,12 @@ export default function Principles() {
               className="
                 pointer-events-none
                 absolute
-                -inset-4
+                -inset-3
                 rounded-[2rem]
-                bg-[radial-gradient(circle_at_50%_45%,rgba(45,212,191,0.055),transparent_58%)]
-                blur-2xl
+                bg-[radial-gradient(circle_at_50%_45%,rgba(45,212,191,0.045),transparent_58%)]
+                blur-xl
+                sm:-inset-4
+                sm:blur-2xl
               "
             />
 
@@ -381,7 +450,8 @@ export default function Principles() {
                 border
                 border-white/[0.10]
                 bg-[#0A2032]
-                shadow-[0_24px_65px_rgba(0,0,0,0.22)]
+                shadow-[0_20px_55px_rgba(0,0,0,0.18)]
+                sm:shadow-[0_24px_65px_rgba(0,0,0,0.22)]
               "
             >
               {/* Top architectural accent */}
@@ -418,11 +488,17 @@ export default function Principles() {
                   absolute
                   right-[-14%]
                   top-[-20%]
-                  h-[340px]
-                  w-[340px]
+                  h-[250px]
+                  w-[250px]
                   rounded-full
-                  bg-[#26C9E8]/[0.035]
-                  blur-[110px]
+                  bg-[#26C9E8]/[0.028]
+                  blur-[80px]
+                  sm:h-[300px]
+                  sm:w-[300px]
+                  sm:blur-[95px]
+                  lg:h-[340px]
+                  lg:w-[340px]
+                  lg:blur-[110px]
                 "
               />
 
@@ -432,11 +508,17 @@ export default function Principles() {
                   absolute
                   bottom-[-22%]
                   left-[8%]
-                  h-[260px]
-                  w-[400px]
+                  h-[220px]
+                  w-[320px]
                   rounded-full
-                  bg-[#2563EB]/[0.035]
-                  blur-[110px]
+                  bg-[#2563EB]/[0.028]
+                  blur-[85px]
+                  sm:h-[240px]
+                  sm:w-[360px]
+                  sm:blur-[95px]
+                  lg:h-[260px]
+                  lg:w-[400px]
+                  lg:blur-[110px]
                 "
               />
 
@@ -466,7 +548,7 @@ export default function Principles() {
                       ? false
                       : {
                           opacity: 0,
-                          y: 14,
+                          y: 10,
                         }
                   }
                   animate={
@@ -482,11 +564,11 @@ export default function Principles() {
                       ? undefined
                       : {
                           opacity: 0,
-                          y: -10,
+                          y: -8,
                         }
                   }
                   transition={{
-                    duration: 0.35,
+                    duration: 0.28,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   className="
@@ -606,7 +688,7 @@ export default function Principles() {
                           }%`,
                         }}
                         transition={{
-                          duration: 0.45,
+                          duration: 0.35,
                           ease: [0.22, 1, 0.36, 1],
                         }}
                         className="h-full bg-gradient-to-r from-[#42D5F5] to-[#2DD4BF]"

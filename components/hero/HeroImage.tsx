@@ -1,34 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
 
 export default function HeroImage({
   isInView = true,
 }: {
-  // Whether the parent Hero section is currently visible. The two
-  // infinitely-repeating animations below (the rotating border shine and
-  // the pulsing ring) are paused while the hero is scrolled off-screen so
-  // they stop competing with scroll rendering for no visible benefit.
   isInView?: boolean;
 }) {
-  const shouldReduceMotion = useReducedMotion();
-  const motionEnabled = !shouldReduceMotion && isInView;
-
   return (
     <div className="relative w-full max-w-[520px] lg:ml-auto">
       {/* =====================================================
           BACKGROUND DEPTH
+          Static blur only — no animation/repaint loop
       ===================================================== */}
       <div
         aria-hidden="true"
         className="
           pointer-events-none
           absolute
-          -inset-8
+          -inset-6
           rounded-[44px]
-          bg-[#A78BFA]/[0.035]
-          blur-[70px]
+          bg-[#A78BFA]/[0.028]
+          blur-[55px]
         "
       />
 
@@ -37,8 +30,8 @@ export default function HeroImage({
       ===================================================== */}
       <div className="relative rounded-[32px] p-[1.5px] sm:rounded-[38px]">
         {/* ---------------------------------------------------
-            CONTINUOUS BORDER SHINE
-            ONLY THE BORDER — NEVER OVER THE IMAGE
+            STATIC BORDER LIGHT
+            Replaces rotating conic-gradient animation
         --------------------------------------------------- */}
         <div
           aria-hidden="true"
@@ -48,41 +41,10 @@ export default function HeroImage({
             -inset-[1px]
             overflow-hidden
             rounded-[33px]
+            bg-[conic-gradient(from_210deg,rgba(103,232,249,0.05),rgba(103,232,249,0.65),rgba(255,255,255,0.82),rgba(167,139,250,0.45),rgba(255,255,255,0.08),rgba(103,232,249,0.05))]
             sm:rounded-[39px]
           "
-        >
-          {motionEnabled ? (
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-              className="
-                absolute
-                left-1/2
-                top-1/2
-                h-[190%]
-                w-[190%]
-                -translate-x-1/2
-                -translate-y-1/2
-                bg-[conic-gradient(from_0deg,transparent_0deg,transparent_305deg,rgba(103,232,249,0.15)_320deg,#67E8F9_333deg,#FFFFFF_342deg,#A78BFA_350deg,transparent_360deg)]
-              "
-            />
-          ) : (
-            <div
-              className="
-                absolute
-                inset-0
-                rounded-[33px]
-                border
-                border-white/20
-                sm:rounded-[39px]
-              "
-            />
-          )}
-        </div>
+        />
 
         {/* =================================================
             IMAGE
@@ -95,7 +57,7 @@ export default function HeroImage({
             overflow-hidden
             rounded-[31px]
             bg-[#24272B]
-            shadow-[0_35px_90px_rgba(0,0,0,0.38)]
+            shadow-[0_28px_70px_rgba(0,0,0,0.32)]
             sm:rounded-[37px]
           "
         >
@@ -104,6 +66,7 @@ export default function HeroImage({
             alt="Badar Ul Haq — Founder & CEO"
             fill
             priority
+            sizes="(max-width: 640px) 92vw, (max-width: 1024px) 75vw, 520px"
             className="object-cover object-center"
           />
 
@@ -176,32 +139,22 @@ export default function HeroImage({
         />
 
         {/* =================================================
-            SOFT EDGE LIGHT
-            ONLY AROUND BORDER
+            STATIC EDGE LIGHT
+            No infinite animation
         ================================================= */}
-        {motionEnabled && (
-          <motion.div
-            aria-hidden="true"
-            animate={{
-              opacity: [0.25, 0.6, 0.25],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="
-              pointer-events-none
-              absolute
-              inset-0
-              rounded-[32px]
-              ring-1
-              ring-inset
-              ring-[#C4B5FD]/20
-              sm:rounded-[38px]
-            "
-          />
-        )}
+        <div
+          aria-hidden="true"
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            rounded-[32px]
+            ring-1
+            ring-inset
+            ring-[#C4B5FD]/[0.16]
+            sm:rounded-[38px]
+          "
+        />
       </div>
 
       {/* =====================================================
@@ -220,7 +173,7 @@ export default function HeroImage({
           from-transparent
           via-[#67E8F9]/50
           to-transparent
-          blur-[0.5px]
+          opacity-80
         "
       />
     </div>

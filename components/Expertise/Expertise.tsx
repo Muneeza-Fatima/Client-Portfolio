@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
   useMotionValue,
@@ -71,12 +71,12 @@ const languages = [
   },
   {
     name: "Arabic",
-    level: "Professional",
+    level: "Conversational",
     code: "AR",
   },
   {
     name: "French",
-    level: "Language",
+    level: "Beginner",
     code: "FR",
   },
 ];
@@ -86,8 +86,11 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export default function Expertise() {
   const [active, setActive] = useState(0);
   const [profileHovered, setProfileHovered] = useState(false);
+  const [finePointer, setFinePointer] = useState(false);
 
   const sectionRef = useRef<HTMLElement | null>(null);
+  const mouseFrame = useRef<number | null>(null);
+  const pendingMouse = useRef<{ x: number; y: number } | null>(null);
 
   const reduceMotion = useReducedMotion();
 
@@ -95,26 +98,63 @@ export default function Expertise() {
   const mouseY = useMotionValue(0);
 
   const springX = useSpring(mouseX, {
-    stiffness: 50,
-    damping: 38,
-    mass: 0.7,
+    stiffness: 45,
+    damping: 40,
+    mass: 0.8,
   });
 
   const springY = useSpring(mouseY, {
-    stiffness: 50,
-    damping: 38,
-    mass: 0.7,
+    stiffness: 45,
+    damping: 40,
+    mass: 0.8,
   });
 
+  /*
+   * Keep interaction-heavy effects desktop-only.
+   * Touch devices do not need mouse-follow or hover animation.
+   */
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+
+    const updatePointer = () => {
+      setFinePointer(mediaQuery.matches);
+    };
+
+    updatePointer();
+
+    mediaQuery.addEventListener("change", updatePointer);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePointer);
+
+      if (mouseFrame.current !== null) {
+        cancelAnimationFrame(mouseFrame.current);
+      }
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion && finePointer;
+
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (reduceMotion) return;
+    if (!motionEnabled) return;
 
-    const rect = sectionRef.current?.getBoundingClientRect();
+    pendingMouse.current = {
+      x: e.clientX,
+      y: e.clientY,
+    };
 
-    if (!rect) return;
+    if (mouseFrame.current !== null) return;
 
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
+    mouseFrame.current = requestAnimationFrame(() => {
+      const rect = sectionRef.current?.getBoundingClientRect();
+
+      if (rect && pendingMouse.current) {
+        mouseX.set(pendingMouse.current.x - rect.left);
+        mouseY.set(pendingMouse.current.y - rect.top);
+      }
+
+      mouseFrame.current = null;
+    });
   };
 
   return (
@@ -151,16 +191,23 @@ export default function Expertise() {
           "
         />
 
+        {/* Left atmospheric glow */}
         <div
           className="
             absolute
             left-[4%]
             top-[8%]
-            h-[460px]
-            w-[460px]
+            h-[220px]
+            w-[220px]
             rounded-full
-            bg-[#31577A]/[0.035]
-            blur-[125px]
+            bg-[#31577A]/[0.024]
+            blur-[60px]
+            sm:h-[360px]
+            sm:w-[360px]
+            sm:blur-[95px]
+            lg:h-[460px]
+            lg:w-[460px]
+            lg:blur-[125px]
           "
         />
 
@@ -169,52 +216,76 @@ export default function Expertise() {
             absolute
             inset-x-0
             top-0
-            h-[480px]
-            bg-[radial-gradient(ellipse_at_50%_0%,rgba(92,137,190,0.055),transparent_68%)]
+            h-[300px]
+            bg-[radial-gradient(ellipse_at_50%_0%,rgba(92,137,190,0.045),transparent_68%)]
+            sm:h-[420px]
+            lg:h-[480px]
           "
         />
 
+        {/* Center atmospheric glow */}
         <div
           className="
             absolute
             left-1/2
             top-[38%]
-            h-[580px]
-            w-[580px]
+            h-[280px]
+            w-[280px]
             -translate-x-1/2
             rounded-full
-            bg-[#35638A]/[0.022]
-            blur-[135px]
+            bg-[#35638A]/[0.014]
+            blur-[70px]
+            sm:h-[460px]
+            sm:w-[460px]
+            sm:blur-[105px]
+            lg:h-[580px]
+            lg:w-[580px]
+            lg:blur-[135px]
           "
         />
 
+        {/* Right atmospheric glow */}
         <div
           className="
             absolute
             right-[-12%]
             top-[12%]
-            h-[480px]
-            w-[480px]
+            h-[240px]
+            w-[240px]
             rounded-full
-            bg-[#315E83]/[0.025]
-            blur-[130px]
+            bg-[#315E83]/[0.018]
+            blur-[65px]
+            sm:h-[400px]
+            sm:w-[400px]
+            sm:blur-[100px]
+            lg:h-[480px]
+            lg:w-[480px]
+            lg:blur-[130px]
           "
         />
 
+        {/* Bottom atmospheric glow */}
         <div
           className="
             absolute
             bottom-[-18%]
             left-[-8%]
-            h-[500px]
-            w-[500px]
+            h-[240px]
+            w-[240px]
             rounded-full
-            bg-[#315B76]/[0.025]
-            blur-[125px]
+            bg-[#315B76]/[0.018]
+            blur-[65px]
+            sm:h-[400px]
+            sm:w-[400px]
+            sm:blur-[100px]
+            lg:h-[500px]
+            lg:w-[500px]
+            lg:blur-[125px]
           "
         />
 
-        {!reduceMotion && (
+        {/* Desktop-only mouse-follow glow */}
+        {motionEnabled && (
           <motion.div
             style={{
               left: springX,
@@ -222,13 +293,13 @@ export default function Expertise() {
             }}
             className="
               absolute
-              h-[320px]
-              w-[320px]
+              h-[260px]
+              w-[260px]
               -translate-x-1/2
               -translate-y-1/2
               rounded-full
-              bg-[radial-gradient(circle,rgba(79,140,255,0.035),transparent_68%)]
-              blur-[60px]
+              bg-[radial-gradient(circle,rgba(79,140,255,0.026),transparent_68%)]
+              blur-[45px]
             "
           />
         )}
@@ -237,7 +308,8 @@ export default function Expertise() {
           className="
             absolute
             inset-0
-            opacity-[0.006]
+            opacity-[0.004]
+            sm:opacity-[0.006]
             [background-image:linear-gradient(rgba(190,205,215,.6)_1px,transparent_1px),linear-gradient(90deg,rgba(190,205,215,.6)_1px,transparent_1px)]
             [background-size:140px_140px]
             [mask-image:radial-gradient(ellipse_at_center,black,transparent_78%)]
@@ -252,7 +324,7 @@ export default function Expertise() {
             top-[6%]
             bottom-[6%]
             border
-            border-white/[0.022]
+            border-white/[0.018]
           "
         />
 
@@ -264,7 +336,7 @@ export default function Expertise() {
             h-px
             w-[140px]
             bg-gradient-to-r
-            from-[#4F8CFF]/[0.38]
+            from-[#4F8CFF]/[0.30]
             to-transparent
           "
         />
@@ -277,7 +349,7 @@ export default function Expertise() {
             h-px
             w-[140px]
             bg-gradient-to-l
-            from-[#829CB5]/[0.20]
+            from-[#829CB5]/[0.16]
             to-transparent
           "
         />
@@ -287,11 +359,13 @@ export default function Expertise() {
             absolute
             inset-x-0
             bottom-0
-            h-[200px]
+            h-[140px]
             bg-gradient-to-t
             from-[#03070C]
-            via-[#03070C]/35
+            via-[#03070C]/25
             to-transparent
+            sm:h-[180px]
+            lg:h-[200px]
           "
         />
       </div>
@@ -313,10 +387,10 @@ export default function Expertise() {
         <motion.div
           initial={
             reduceMotion
-              ? undefined
+              ? false
               : {
                   opacity: 0,
-                  y: 18,
+                  y: 16,
                 }
           }
           whileInView={
@@ -332,7 +406,7 @@ export default function Expertise() {
             amount: 0.2,
           }}
           transition={{
-            duration: 0.6,
+            duration: 0.5,
             ease,
           }}
           className="relative mb-12 sm:mb-16 lg:mb-24"
@@ -386,15 +460,11 @@ export default function Expertise() {
                 tracking-[-0.06em]
               "
             >
-              <span className="text-[#F8FAFC]">
-                Many disciplines.
-              </span>
+              <span className="text-[#F8FAFC]">Many disciplines.</span>
 
               <br />
 
-              <span className="text-[#F8FAFC]">
-                One{" "}
-              </span>
+              <span className="text-[#F8FAFC]">One </span>
 
               <span
                 className="
@@ -441,8 +511,8 @@ export default function Expertise() {
                   sm:leading-7
                 "
               >
-                Cybersecurity, technology, strategy and
-                leadership working from one executive perspective.
+                Cybersecurity, technology, strategy and leadership working
+                from one executive perspective.
               </p>
             </div>
           </div>
@@ -454,7 +524,7 @@ export default function Expertise() {
           <motion.div
             initial={
               reduceMotion
-                ? undefined
+                ? false
                 : {
                     opacity: 0,
                     scale: 0.97,
@@ -473,11 +543,15 @@ export default function Expertise() {
               amount: 0.25,
             }}
             transition={{
-              duration: 0.65,
+              duration: 0.55,
               ease,
             }}
-            onMouseEnter={() => setProfileHovered(true)}
-            onMouseLeave={() => setProfileHovered(false)}
+            onMouseEnter={
+              motionEnabled ? () => setProfileHovered(true) : undefined
+            }
+            onMouseLeave={
+              motionEnabled ? () => setProfileHovered(false) : undefined
+            }
             className="
               absolute
               left-1/2
@@ -495,40 +569,38 @@ export default function Expertise() {
               xl:w-[320px]
             "
           >
-            <motion.div
-              aria-hidden="true"
-              animate={
-                reduceMotion
-                  ? undefined
-                  : {
-                      opacity: profileHovered ? 1 : 0.5,
-                      scale: profileHovered ? 1.08 : 1,
-                    }
-              }
-              transition={{
-                duration: 0.5,
-                ease,
-              }}
-              className="
-                absolute
-                inset-[-42px]
-                rounded-full
-                bg-[#4F8CFF]/[0.035]
-                blur-[75px]
-              "
-            />
+            {motionEnabled && (
+              <motion.div
+                aria-hidden="true"
+                animate={{
+                  opacity: profileHovered ? 1 : 0.5,
+                  scale: profileHovered ? 1.08 : 1,
+                }}
+                transition={{
+                  duration: 0.4,
+                  ease,
+                }}
+                className="
+                  absolute
+                  inset-[-42px]
+                  rounded-full
+                  bg-[#4F8CFF]/[0.035]
+                  blur-[60px]
+                "
+              />
+            )}
 
             <motion.div
               animate={
-                reduceMotion
-                  ? undefined
-                  : {
-                      scale: profileHovered ? 1.035 : 1,
-                      y: profileHovered ? -4 : 0,
+                motionEnabled
+                  ? {
+                      scale: profileHovered ? 1.025 : 1,
+                      y: profileHovered ? -3 : 0,
                     }
+                  : undefined
               }
               transition={{
-                duration: 0.45,
+                duration: 0.35,
                 ease,
               }}
               className="
@@ -539,60 +611,64 @@ export default function Expertise() {
                 border
                 border-[#8CA8C2]/[0.20]
                 bg-[radial-gradient(circle_at_50%_25%,#203543_0%,#142531_52%,#09131D_100%)]
-                shadow-[0_35px_100px_rgba(0,0,0,0.52),0_0_55px_rgba(79,140,255,0.045)]
+                shadow-[0_35px_90px_rgba(0,0,0,0.48),0_0_45px_rgba(79,140,255,0.04)]
                 transition-[border-color,box-shadow]
                 duration-500
-                hover:border-[#6F9FFF]/[0.48]
+                lg:hover:border-[#6F9FFF]/[0.48]
               "
             >
-              <motion.div
-                aria-hidden="true"
-                animate={{
-                  opacity: profileHovered ? 1 : 0,
-                }}
-                transition={{
-                  duration: 0.35,
-                }}
-                className="
-                  absolute
-                  inset-0
-                  rounded-full
-                  bg-[radial-gradient(circle_at_70%_20%,rgba(79,140,255,0.13),transparent_42%)]
-                "
-              />
+              {motionEnabled && (
+                <>
+                  <motion.div
+                    aria-hidden="true"
+                    animate={{
+                      opacity: profileHovered ? 1 : 0,
+                    }}
+                    transition={{
+                      duration: 0.3,
+                    }}
+                    className="
+                      absolute
+                      inset-0
+                      rounded-full
+                      bg-[radial-gradient(circle_at_70%_20%,rgba(79,140,255,0.13),transparent_42%)]
+                    "
+                  />
 
-              <motion.div
-                aria-hidden="true"
-                initial={{
-                  x: "-120%",
-                  opacity: 0,
-                }}
-                animate={
-                  profileHovered
-                    ? {
-                        x: "120%",
-                        opacity: 1,
-                      }
-                    : {
-                        x: "-120%",
-                        opacity: 0,
-                      }
-                }
-                transition={{
-                  duration: 0.8,
-                  ease: "easeInOut",
-                }}
-                className="
-                  absolute
-                  inset-y-0
-                  w-[45%]
-                  rotate-[18deg]
-                  bg-gradient-to-r
-                  from-transparent
-                  via-white/[0.075]
-                  to-transparent
-                "
-              />
+                  <motion.div
+                    aria-hidden="true"
+                    initial={{
+                      x: "-120%",
+                      opacity: 0,
+                    }}
+                    animate={
+                      profileHovered
+                        ? {
+                            x: "120%",
+                            opacity: 1,
+                          }
+                        : {
+                            x: "-120%",
+                            opacity: 0,
+                          }
+                    }
+                    transition={{
+                      duration: 0.7,
+                      ease: "easeInOut",
+                    }}
+                    className="
+                      absolute
+                      inset-y-0
+                      w-[45%]
+                      rotate-[18deg]
+                      bg-gradient-to-r
+                      from-transparent
+                      via-white/[0.075]
+                      to-transparent
+                    "
+                  />
+                </>
+              )}
 
               <div
                 className="
@@ -614,26 +690,40 @@ export default function Expertise() {
                 "
               />
 
-              <motion.div
-                animate={{
-                  scale: profileHovered ? 1.35 : 1,
-                  opacity: profileHovered ? 0.95 : 0.55,
-                }}
-                transition={{
-                  duration: 0.3,
-                  ease,
-                }}
-                className="
-                  absolute
-                  right-[26%]
-                  top-[10%]
-                  h-1.5
-                  w-1.5
-                  rounded-full
-                  bg-[#6E9EFF]
-                  shadow-[0_0_16px_rgba(79,140,255,0.45)]
-                "
-              />
+              {motionEnabled ? (
+                <motion.div
+                  animate={{
+                    scale: profileHovered ? 1.25 : 1,
+                    opacity: profileHovered ? 0.9 : 0.55,
+                  }}
+                  transition={{
+                    duration: 0.25,
+                    ease,
+                  }}
+                  className="
+                    absolute
+                    right-[26%]
+                    top-[10%]
+                    h-1.5
+                    w-1.5
+                    rounded-full
+                    bg-[#6E9EFF]
+                    shadow-[0_0_14px_rgba(79,140,255,0.42)]
+                  "
+                />
+              ) : (
+                <div
+                  className="
+                    absolute
+                    right-[26%]
+                    top-[10%]
+                    h-1.5
+                    w-1.5
+                    rounded-full
+                    bg-[#6E9EFF]/80
+                  "
+                />
+              )}
 
               <div
                 className="
@@ -667,22 +757,22 @@ export default function Expertise() {
                   <p
                     className="
                       mt-5
-                      font-serif
-                      text-[36px]
-                      leading-[0.86]
-                      tracking-[-0.06em]
                       bg-gradient-to-r
                       from-[#8DEBFF]
                       via-[#42D5F5]
                       to-[#168BD1]
                       bg-clip-text
+                      font-serif
+                      text-[36px]
+                      leading-[0.86]
+                      tracking-[-0.06em]
                       text-transparent
                       xl:text-[38px]
                     "
                   >
                     BADAR
                     <br />
-                    <span className="inline-block mt-1">UL HAQ</span>
+                    <span className="mt-1 inline-block">UL HAQ</span>
                   </p>
 
                   <div
@@ -771,11 +861,11 @@ export default function Expertise() {
                   key={item.title}
                   initial={
                     reduceMotion
-                      ? undefined
+                      ? false
                       : {
                           opacity: 0,
-                          y: 24,
-                          scale: 0.985,
+                          y: 20,
+                          scale: 0.99,
                         }
                   }
                   whileInView={
@@ -792,8 +882,8 @@ export default function Expertise() {
                     amount: 0.08,
                   }}
                   transition={{
-                    duration: 0.58,
-                    delay: reduceMotion ? 0 : index * 0.09,
+                    duration: 0.5,
+                    delay: reduceMotion ? 0 : index * 0.05,
                     ease,
                   }}
                   onMouseEnter={() => setActive(index)}
@@ -812,16 +902,16 @@ export default function Expertise() {
                     outline-none
                     shadow-[0_18px_55px_rgba(0,0,0,0.34),inset_0_1px_0_rgba(255,255,255,0.045)]
                     transition-[transform,border-color,box-shadow,background]
-                    duration-500
+                    duration-400
                     ease-[cubic-bezier(0.22,1,0.36,1)]
-                    hover:-translate-y-[6px]
-                    hover:scale-[1.018]
-                    hover:border-[#709AFF]/[0.48]
+                    hover:-translate-y-[5px]
+                    hover:scale-[1.012]
+                    hover:border-[#709AFF]/[0.44]
                     hover:bg-[linear-gradient(145deg,#213A4A_0%,#1C3040_52%,#152733_100%)]
-                    hover:shadow-[0_30px_75px_rgba(0,0,0,0.43),0_0_42px_rgba(79,140,255,0.075),inset_0_1px_0_rgba(255,255,255,0.075)]
-                    focus-visible:-translate-y-[6px]
-                    focus-visible:scale-[1.018]
-                    focus-visible:border-[#709AFF]/[0.50]
+                    hover:shadow-[0_28px_70px_rgba(0,0,0,0.40),0_0_38px_rgba(79,140,255,0.06),inset_0_1px_0_rgba(255,255,255,0.07)]
+                    focus-visible:-translate-y-[5px]
+                    focus-visible:scale-[1.012]
+                    focus-visible:border-[#709AFF]/[0.46]
                     sm:min-h-[245px]
                     sm:p-6
                     lg:absolute
@@ -836,51 +926,53 @@ export default function Expertise() {
                       opacity: isActive ? 1 : 0,
                     }}
                     transition={{
-                      duration: 0.35,
+                      duration: 0.22,
                       ease: "easeOut",
                     }}
                     className="
                       pointer-events-none
                       absolute
                       inset-0
-                      bg-[radial-gradient(circle_at_92%_0%,rgba(79,140,255,0.13),transparent_34%),radial-gradient(circle_at_0%_100%,rgba(125,155,180,0.05),transparent_42%)]
+                      bg-[radial-gradient(circle_at_92%_0%,rgba(79,140,255,0.11),transparent_34%),radial-gradient(circle_at_0%_100%,rgba(125,155,180,0.04),transparent_42%)]
                     "
                   />
 
-                  <motion.div
-                    aria-hidden="true"
-                    initial={{
-                      x: "-130%",
-                      opacity: 0,
-                    }}
-                    animate={
-                      isActive
-                        ? {
-                            x: "130%",
-                            opacity: 1,
-                          }
-                        : {
-                            x: "-130%",
-                            opacity: 0,
-                          }
-                    }
-                    transition={{
-                      duration: 0.8,
-                      ease: "easeInOut",
-                    }}
-                    className="
-                      pointer-events-none
-                      absolute
-                      inset-y-0
-                      left-[-10%]
-                      w-[42%]
-                      rotate-[18deg]
-                      bg-gradient-to-r
-                      from-transparent
-                      via-white/[0.065]
-                      to-transparent
-                    "
-                  />
+                  {motionEnabled && (
+                    <motion.div
+                      aria-hidden="true"
+                      initial={{
+                        x: "-130%",
+                        opacity: 0,
+                      }}
+                      animate={
+                        isActive
+                          ? {
+                              x: "130%",
+                              opacity: 1,
+                            }
+                          : {
+                              x: "-130%",
+                              opacity: 0,
+                            }
+                      }
+                      transition={{
+                        duration: 0.7,
+                        ease: "easeInOut",
+                      }}
+                      className="
+                        pointer-events-none
+                        absolute
+                        inset-y-0
+                        left-[-10%]
+                        w-[42%]
+                        rotate-[18deg]
+                        bg-gradient-to-r
+                        from-transparent
+                        via-white/[0.055]
+                        to-transparent
+                      "
+                    />
+                  )}
 
                   <div
                     aria-hidden="true"
@@ -891,9 +983,9 @@ export default function Expertise() {
                       rounded-[12px]
                       border
                       border-white/[0.035]
-                      transition-colors
-                      duration-500
-                      group-hover:border-[#AFC6FF]/[0.10]
+                      transition-[border-color]
+                      duration-400
+                      lg:group-hover:border-[#AFC6FF]/[0.10]
                     "
                   />
 
@@ -910,9 +1002,9 @@ export default function Expertise() {
                       from-transparent
                       via-white/[0.18]
                       to-transparent
-                      transition-all
-                      duration-500
-                      group-hover:via-[#AFC6FF]/[0.55]
+                      transition-[opacity]
+                      duration-400
+                      lg:group-hover:via-[#AFC6FF]/[0.50]
                     "
                   />
 
@@ -920,10 +1012,10 @@ export default function Expertise() {
                     aria-hidden="true"
                     animate={{
                       width: isActive ? 68 : 22,
-                      opacity: isActive ? 0.95 : 0.22,
+                      opacity: isActive ? 0.9 : 0.22,
                     }}
                     transition={{
-                      duration: 0.35,
+                      duration: 0.28,
                       ease,
                     }}
                     className="
@@ -943,15 +1035,15 @@ export default function Expertise() {
                     <div className="flex items-start justify-between">
                       <motion.div
                         animate={
-                          reduceMotion
-                            ? undefined
-                            : {
-                                scale: isActive ? 1.055 : 1,
-                                y: isActive ? -2 : 0,
+                          motionEnabled
+                            ? {
+                                scale: isActive ? 1.045 : 1,
+                                y: isActive ? -1 : 0,
                               }
+                            : undefined
                         }
                         transition={{
-                          duration: 0.3,
+                          duration: 0.25,
                           ease,
                         }}
                         className="
@@ -969,11 +1061,11 @@ export default function Expertise() {
                           text-[#B9D0DF]
                           shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_8px_25px_rgba(0,0,0,0.18)]
                           transition-[border-color,color,box-shadow,background]
-                          duration-500
-                          group-hover:border-[#7EA2FF]/[0.52]
+                          duration-400
+                          group-hover:border-[#7EA2FF]/[0.50]
                           group-hover:bg-[linear-gradient(145deg,#294968,#223D51)]
                           group-hover:text-[#D9E8FF]
-                          group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.13),0_0_28px_rgba(79,140,255,0.12)]
+                          group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.13),0_0_25px_rgba(79,140,255,0.10)]
                         "
                       >
                         <span
@@ -1008,11 +1100,15 @@ export default function Expertise() {
                       </p>
 
                       <motion.h3
-                        animate={{
-                          x: isActive ? 2 : 0,
-                        }}
+                        animate={
+                          motionEnabled
+                            ? {
+                                x: isActive ? 2 : 0,
+                              }
+                            : undefined
+                        }
                         transition={{
-                          duration: 0.25,
+                          duration: 0.2,
                           ease,
                         }}
                         className="
@@ -1037,8 +1133,8 @@ export default function Expertise() {
                           leading-5
                           text-white/[0.53]
                           transition-colors
-                          duration-500
-                          group-hover:text-white/[0.72]
+                          duration-400
+                          group-hover:text-white/[0.70]
                         "
                       >
                         {item.description}
@@ -1068,7 +1164,7 @@ export default function Expertise() {
                                 text-[#D1DCE3]/[0.46]
                                 transition-colors
                                 duration-300
-                                group-hover:text-[#C9D9FF]/[0.88]
+                                group-hover:text-[#C9D9FF]/[0.84]
                               "
                             >
                               {skill}
@@ -1088,11 +1184,11 @@ export default function Expertise() {
             <motion.div
               initial={
                 reduceMotion
-                  ? undefined
+                  ? false
                   : {
                       opacity: 0,
-                      scale: 0.88,
-                      y: -12,
+                      scale: 0.94,
+                      y: -8,
                     }
               }
               whileInView={
@@ -1109,7 +1205,7 @@ export default function Expertise() {
                 amount: 0.25,
               }}
               transition={{
-                duration: 0.7,
+                duration: 0.5,
                 ease,
               }}
               className="
@@ -1129,10 +1225,12 @@ export default function Expertise() {
                 aria-hidden="true"
                 className="
                   absolute
-                  inset-[-36px]
+                  inset-[-25px]
                   rounded-full
-                  bg-[#4F8CFF]/[0.035]
-                  blur-[65px]
+                  bg-[#4F8CFF]/[0.024]
+                  blur-[42px]
+                  sm:inset-[-36px]
+                  sm:blur-[58px]
                 "
               />
 
@@ -1144,7 +1242,7 @@ export default function Expertise() {
                   border
                   border-[#8CA8C2]/[0.22]
                   bg-[radial-gradient(circle_at_50%_25%,#203543_0%,#142531_52%,#09131D_100%)]
-                  shadow-[0_32px_90px_rgba(0,0,0,0.48),0_0_50px_rgba(79,140,255,0.045)]
+                  shadow-[0_28px_70px_rgba(0,0,0,0.42),0_0_38px_rgba(79,140,255,0.035)]
                 "
               />
 
@@ -1193,7 +1291,7 @@ export default function Expertise() {
                   w-1.5
                   rounded-full
                   bg-[#6E9EFF]
-                  shadow-[0_0_15px_rgba(79,140,255,0.50)]
+                  shadow-[0_0_12px_rgba(79,140,255,0.42)]
                 "
               />
 
@@ -1214,15 +1312,15 @@ export default function Expertise() {
                 <p
                   className="
                     mt-5
-                    font-serif
-                    text-[34px]
-                    leading-[0.88]
-                    tracking-[-0.055em]
                     bg-gradient-to-r
                     from-[#8DEBFF]
                     via-[#42D5F5]
                     to-[#168BD1]
                     bg-clip-text
+                    font-serif
+                    text-[34px]
+                    leading-[0.88]
+                    tracking-[-0.055em]
                     text-transparent
                     sm:mt-6
                     sm:text-[40px]
@@ -1230,7 +1328,7 @@ export default function Expertise() {
                 >
                   BADAR
                   <br />
-                  <span className="inline-block mt-1">UL HAQ</span>
+                  <span className="mt-1 inline-block">UL HAQ</span>
                 </p>
 
                 <div
@@ -1296,7 +1394,7 @@ export default function Expertise() {
                 -translate-x-1/2
                 rounded-full
                 bg-[#7FA5FF]
-                shadow-[0_0_12px_rgba(79,140,255,0.45)]
+                shadow-[0_0_10px_rgba(79,140,255,0.40)]
                 sm:top-[277px]
               "
             />
@@ -1323,11 +1421,11 @@ export default function Expertise() {
                     key={item.title}
                     initial={
                       reduceMotion
-                        ? undefined
+                        ? false
                         : {
                             opacity: 0,
-                            y: 35,
-                            scale: 0.96,
+                            y: 18,
+                            scale: 0.99,
                           }
                     }
                     whileInView={
@@ -1341,11 +1439,11 @@ export default function Expertise() {
                     }
                     viewport={{
                       once: true,
-                      amount: 0.12,
+                      amount: 0.08,
                     }}
                     transition={{
-                      duration: 0.65,
-                      delay: reduceMotion ? 0 : index * 0.12,
+                      duration: 0.45,
+                      delay: reduceMotion ? 0 : index * 0.05,
                       ease,
                     }}
                     onTouchStart={() => setActive(index)}
@@ -1364,7 +1462,7 @@ export default function Expertise() {
                       p-7
                       shadow-[0_20px_60px_rgba(0,0,0,0.34),inset_0_1px_0_rgba(255,255,255,0.045)]
                       transition-[transform,border-color,box-shadow,background]
-                      duration-500
+                      duration-300
                       active:scale-[0.985]
                       sm:min-h-[300px]
                       sm:p-8
@@ -1376,50 +1474,52 @@ export default function Expertise() {
                         opacity: isActive ? 1 : 0,
                       }}
                       transition={{
-                        duration: 0.35,
+                        duration: 0.2,
                       }}
                       className="
                         pointer-events-none
                         absolute
                         inset-0
-                        bg-[radial-gradient(circle_at_92%_0%,rgba(79,140,255,0.13),transparent_34%),radial-gradient(circle_at_0%_100%,rgba(125,155,180,0.05),transparent_42%)]
+                        bg-[radial-gradient(circle_at_92%_0%,rgba(79,140,255,0.12),transparent_34%),radial-gradient(circle_at_0%_100%,rgba(125,155,180,0.04),transparent_42%)]
                       "
                     />
 
-                    <motion.div
-                      aria-hidden="true"
-                      initial={{
-                        x: "-130%",
-                        opacity: 0,
-                      }}
-                      animate={
-                        isActive
-                          ? {
-                              x: "130%",
-                              opacity: 1,
-                            }
-                          : {
-                              x: "-130%",
-                              opacity: 0,
-                            }
-                      }
-                      transition={{
-                        duration: 0.8,
-                        ease: "easeInOut",
-                      }}
-                      className="
-                        pointer-events-none
-                        absolute
-                        inset-y-0
-                        left-[-10%]
-                        w-[42%]
-                        rotate-[18deg]
-                        bg-gradient-to-r
-                        from-transparent
-                        via-white/[0.065]
-                        to-transparent
-                      "
-                    />
+                    {motionEnabled && (
+                      <motion.div
+                        aria-hidden="true"
+                        initial={{
+                          x: "-130%",
+                          opacity: 0,
+                        }}
+                        animate={
+                          isActive
+                            ? {
+                                x: "130%",
+                                opacity: 1,
+                              }
+                            : {
+                                x: "-130%",
+                                opacity: 0,
+                              }
+                        }
+                        transition={{
+                          duration: 0.6,
+                          ease: "easeInOut",
+                        }}
+                        className="
+                          pointer-events-none
+                          absolute
+                          inset-y-0
+                          left-[-10%]
+                          w-[42%]
+                          rotate-[18deg]
+                          bg-gradient-to-r
+                          from-transparent
+                          via-white/[0.055]
+                          to-transparent
+                        "
+                      />
+                    )}
 
                     <div
                       aria-hidden="true"
@@ -1453,10 +1553,10 @@ export default function Expertise() {
                       aria-hidden="true"
                       animate={{
                         width: isActive ? 82 : 26,
-                        opacity: isActive ? 0.95 : 0.22,
+                        opacity: isActive ? 0.9 : 0.22,
                       }}
                       transition={{
-                        duration: 0.35,
+                        duration: 0.25,
                         ease,
                       }}
                       className="
@@ -1476,15 +1576,15 @@ export default function Expertise() {
                       <div className="flex items-start gap-5">
                         <motion.div
                           animate={
-                            reduceMotion
-                              ? undefined
-                              : {
-                                  scale: isActive ? 1.06 : 1,
-                                  y: isActive ? -2 : 0,
+                            motionEnabled
+                              ? {
+                                  scale: isActive ? 1.03 : 1,
+                                  y: isActive ? -1 : 0,
                                 }
+                              : undefined
                           }
                           transition={{
-                            duration: 0.3,
+                            duration: 0.22,
                             ease,
                           }}
                           className="
@@ -1536,11 +1636,15 @@ export default function Expertise() {
                           </p>
 
                           <motion.h3
-                            animate={{
-                              x: isActive ? 2 : 0,
-                            }}
+                            animate={
+                              motionEnabled
+                                ? {
+                                    x: isActive ? 2 : 0,
+                                  }
+                                : undefined
+                            }
                             transition={{
-                              duration: 0.25,
+                              duration: 0.18,
                               ease,
                             }}
                             className="
@@ -1567,8 +1671,8 @@ export default function Expertise() {
                           leading-6
                           text-white/[0.53]
                           transition-colors
-                          duration-500
-                          group-hover:text-white/[0.72]
+                          duration-300
+                          group-hover:text-white/[0.70]
                           sm:text-[12px]
                           sm:leading-7
                         "
@@ -1617,10 +1721,10 @@ export default function Expertise() {
         <motion.div
           initial={
             reduceMotion
-              ? undefined
+              ? false
               : {
                   opacity: 0,
-                  y: 16,
+                  y: 14,
                 }
           }
           whileInView={
@@ -1636,7 +1740,7 @@ export default function Expertise() {
             amount: 0.2,
           }}
           transition={{
-            duration: 0.55,
+            duration: 0.5,
             ease,
           }}
           className="
@@ -1652,10 +1756,10 @@ export default function Expertise() {
             py-8
             shadow-[0_25px_70px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.75)]
             transition-[border-color,box-shadow,transform]
-            duration-500
+            duration-400
             hover:-translate-y-[3px]
             hover:border-[#C9C1B2]
-            hover:shadow-[0_32px_82px_rgba(0,0,0,0.26),0_0_40px_rgba(79,140,255,0.045)]
+            hover:shadow-[0_30px_78px_rgba(0,0,0,0.24),0_0_36px_rgba(79,140,255,0.04)]
             sm:px-8
             sm:py-9
             lg:mt-24
@@ -1669,11 +1773,14 @@ export default function Expertise() {
               absolute
               right-[-8%]
               top-[-35%]
-              h-[340px]
-              w-[340px]
+              h-[240px]
+              w-[240px]
               rounded-full
-              bg-[#D8D0C1]/[0.45]
-              blur-[90px]
+              bg-[#D8D0C1]/[0.32]
+              blur-[60px]
+              sm:h-[340px]
+              sm:w-[340px]
+              sm:blur-[85px]
             "
           />
 
@@ -1685,7 +1792,7 @@ export default function Expertise() {
               top-0
               h-full
               w-[55%]
-              bg-[radial-gradient(circle_at_100%_0%,rgba(255,255,255,0.52),transparent_58%)]
+              bg-[radial-gradient(circle_at_100%_0%,rgba(255,255,255,0.48),transparent_58%)]
             "
           />
 
@@ -1703,7 +1810,7 @@ export default function Expertise() {
               to-transparent
               opacity-80
               transition-opacity
-              duration-500
+              duration-400
               group-hover:opacity-100
             "
           />
@@ -1720,8 +1827,8 @@ export default function Expertise() {
               from-[#4F8CFF]/[0.82]
               via-[#759DFF]/[0.38]
               to-transparent
-              transition-all
-              duration-500
+              transition-[width]
+              duration-400
               group-hover:w-[230px]
             "
           />
@@ -1757,8 +1864,8 @@ export default function Expertise() {
                   from-[#4F8CFF]/80
                   via-[#7D9FFF]/40
                   to-transparent
-                  transition-all
-                  duration-500
+                  transition-[width]
+                  duration-400
                   group-hover:w-20
                 "
               />
@@ -1766,12 +1873,14 @@ export default function Expertise() {
 
             <p
               className="
+                -mt-4
                 max-w-5xl
                 font-serif
                 text-[clamp(1.5rem,2.8vw,2.9rem)]
                 leading-[1.12]
                 tracking-[-0.04em]
                 text-[#26313A]
+                sm:mt-0
               "
             >
               Turning complexity into clarity, capability into opportunity,
@@ -1787,10 +1896,10 @@ export default function Expertise() {
         <motion.div
           initial={
             reduceMotion
-              ? undefined
+              ? false
               : {
                   opacity: 0,
-                  y: 14,
+                  y: 12,
                 }
           }
           whileInView={
@@ -1806,7 +1915,7 @@ export default function Expertise() {
             amount: 0.15,
           }}
           transition={{
-            duration: 0.55,
+            duration: 0.5,
             ease,
           }}
           className="
@@ -1876,7 +1985,9 @@ export default function Expertise() {
                   border-white/[0.15]
                   bg-[linear-gradient(135deg,rgba(255,255,255,0.085),rgba(255,255,255,0.035)_42%,rgba(100,135,170,0.045)_100%)]
                   shadow-[0_22px_75px_rgba(0,0,0,0.36),inset_0_1px_0_rgba(255,255,255,0.16),inset_0_-1px_0_rgba(255,255,255,0.025)]
-                  backdrop-blur-2xl
+                  backdrop-blur-none
+                  sm:backdrop-blur-md
+                  lg:backdrop-blur-xl
                 "
               >
                 <div
@@ -1899,13 +2010,18 @@ export default function Expertise() {
                   className="
                     pointer-events-none
                     absolute
-                    -right-20
-                    -top-24
-                    h-72
-                    w-72
+                    -right-16
+                    -top-20
+                    h-48
+                    w-48
                     rounded-full
-                    bg-[#4F8CFF]/[0.055]
-                    blur-[80px]
+                    bg-[#4F8CFF]/[0.035]
+                    blur-[45px]
+                    sm:-right-20
+                    sm:-top-24
+                    sm:h-72
+                    sm:w-72
+                    sm:blur-[75px]
                   "
                 />
 
@@ -1915,10 +2031,10 @@ export default function Expertise() {
                       key={language.name}
                       initial={
                         reduceMotion
-                          ? undefined
+                          ? false
                           : {
                               opacity: 0,
-                              y: 8,
+                              y: 7,
                             }
                       }
                       whileInView={
@@ -1934,8 +2050,8 @@ export default function Expertise() {
                         amount: 0.3,
                       }}
                       transition={{
-                        duration: 0.45,
-                        delay: reduceMotion ? 0 : index * 0.05,
+                        duration: 0.35,
+                        delay: reduceMotion ? 0 : index * 0.035,
                         ease,
                       }}
                       className={`
@@ -1961,19 +2077,21 @@ export default function Expertise() {
                         }
                       `}
                     >
-                      <div
-                        aria-hidden="true"
-                        className="
-                          pointer-events-none
-                          absolute
-                          inset-0
-                          bg-[radial-gradient(circle_at_50%_0%,rgba(130,160,200,0.12),transparent_64%)]
-                          opacity-0
-                          transition-opacity
-                          duration-500
-                          group-hover/language:opacity-100
-                        "
-                      />
+                      {motionEnabled && (
+                        <div
+                          aria-hidden="true"
+                          className="
+                            pointer-events-none
+                            absolute
+                            inset-0
+                            bg-[radial-gradient(circle_at_50%_0%,rgba(130,160,200,0.10),transparent_64%)]
+                            opacity-0
+                            transition-opacity
+                            duration-300
+                            group-hover/language:opacity-100
+                          "
+                        />
+                      )}
 
                       <div className="relative mt-1">
                         <p

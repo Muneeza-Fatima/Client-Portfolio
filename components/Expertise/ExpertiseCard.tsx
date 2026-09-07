@@ -1,6 +1,6 @@
-
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 
@@ -24,6 +24,24 @@ export default function ExpertiseCard({
   reduceMotion,
 }: ExpertiseCardProps) {
   const featured = index === 0;
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(pointer: fine)");
+
+    const updatePointer = () => {
+      setFinePointer(mediaQuery.matches);
+    };
+
+    updatePointer();
+    mediaQuery.addEventListener("change", updatePointer);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePointer);
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion && finePointer;
 
   return (
     <motion.article
@@ -32,7 +50,7 @@ export default function ExpertiseCard({
           ? false
           : {
               opacity: 0,
-              y: 28,
+              y: 20,
             }
       }
       whileInView={
@@ -45,19 +63,19 @@ export default function ExpertiseCard({
       }
       viewport={{
         once: true,
-        amount: 0.15,
+        amount: 0.12,
       }}
       transition={{
-        duration: 0.7,
-        delay: index * 0.07,
+        duration: 0.5,
+        delay: reduceMotion ? 0 : index * 0.05,
         ease: [0.22, 1, 0.36, 1],
       }}
       whileHover={
-        reduceMotion
-          ? undefined
-          : {
-              y: -7,
+        motionEnabled
+          ? {
+              y: -5,
             }
+          : undefined
       }
       tabIndex={0}
       className={`
@@ -73,10 +91,14 @@ export default function ExpertiseCard({
         p-7
         outline-none
         shadow-[0_24px_70px_rgba(0,0,0,0.20)]
-        transition-all
-        duration-500
-        hover:border-[#A8D7FF]/[0.22]
-        hover:shadow-[0_35px_90px_rgba(0,0,0,0.32)]
+        transition-[transform,border-color,box-shadow,background-color]
+        duration-300
+        ease-out
+        ${
+          motionEnabled
+            ? "hover:border-[#A8D7FF]/[0.22] hover:shadow-[0_30px_75px_rgba(0,0,0,0.30)]"
+            : ""
+        }
         focus-visible:border-[#A8D7FF]/[0.38]
         sm:p-8
         ${
@@ -104,7 +126,7 @@ export default function ExpertiseCard({
 
       <div
         aria-hidden="true"
-        className="
+        className={`
           pointer-events-none
           absolute
           -right-4
@@ -116,12 +138,13 @@ export default function ExpertiseCard({
           leading-none
           tracking-[-0.11em]
           text-white/[0.025]
-          transition-all
-          duration-700
-          group-hover:-translate-x-2
-          group-hover:text-[#A8D8FF]/[0.055]
           sm:text-[175px]
-        "
+          ${
+            motionEnabled
+              ? "transition-[transform,color] duration-500 group-hover:-translate-x-2 group-hover:text-[#A8D8FF]/[0.055]"
+              : ""
+          }
+        `}
       >
         {number}
       </div>
@@ -130,41 +153,52 @@ export default function ExpertiseCard({
 
       <div
         aria-hidden="true"
-        className="
+        className={`
           pointer-events-none
           absolute
           -right-28
           -top-28
-          h-72
-          w-72
+          h-64
+          w-64
           rounded-full
-          bg-[#4568E8]/[0.045]
-          blur-[100px]
-          transition-all
-          duration-700
-          group-hover:scale-125
-          group-hover:bg-[#4568E8]/[0.085]
-        "
+          bg-[#4568E8]/[0.035]
+          blur-[75px]
+          sm:h-72
+          sm:w-72
+          sm:blur-[90px]
+          lg:blur-[100px]
+          ${
+            motionEnabled
+              ? "transition-[transform,background-color] duration-500 group-hover:scale-110 group-hover:bg-[#4568E8]/[0.065]"
+              : ""
+          }
+        `}
       />
 
       {/* Ice-blue atmosphere */}
 
       <div
         aria-hidden="true"
-        className="
+        className={`
           pointer-events-none
           absolute
           -bottom-32
           -left-20
-          h-64
-          w-64
+          h-56
+          w-56
           rounded-full
-          bg-[#8CE6FF]/[0.025]
-          blur-[100px]
-          transition-all
-          duration-700
-          group-hover:bg-[#8CE6FF]/[0.055]
-        "
+          bg-[#8CE6FF]/[0.022]
+          blur-[75px]
+          sm:h-64
+          sm:w-64
+          sm:blur-[90px]
+          lg:blur-[100px]
+          ${
+            motionEnabled
+              ? "transition-[background-color] duration-500 group-hover:bg-[#8CE6FF]/[0.045]"
+              : ""
+          }
+        `}
       />
 
       {/* =========================================================
@@ -173,7 +207,7 @@ export default function ExpertiseCard({
 
       <div
         aria-hidden="true"
-        className="
+        className={`
           absolute
           left-8
           right-8
@@ -183,17 +217,19 @@ export default function ExpertiseCard({
           from-transparent
           via-white/[0.16]
           to-transparent
-          transition-all
-          duration-500
-          group-hover:via-[#BDEBFF]/[0.48]
-        "
+          ${
+            motionEnabled
+              ? "transition-[background] duration-300 group-hover:via-[#BDEBFF]/[0.48]"
+              : ""
+          }
+        `}
       />
 
       {/* Active left edge */}
 
       <div
         aria-hidden="true"
-        className="
+        className={`
           absolute
           bottom-8
           left-0
@@ -203,11 +239,12 @@ export default function ExpertiseCard({
           from-transparent
           via-[#A7E4FF]/[0.25]
           to-transparent
-          transition-all
-          duration-500
-          group-hover:h-24
-          group-hover:via-[#A7E4FF]/[0.65]
-        "
+          ${
+            motionEnabled
+              ? "transition-[height,background] duration-300 group-hover:h-24 group-hover:via-[#A7E4FF]/[0.65]"
+              : ""
+          }
+        `}
       />
 
       {/* =========================================================
@@ -221,7 +258,7 @@ export default function ExpertiseCard({
           {/* Icon */}
 
           <div
-            className="
+            className={`
               relative
               flex
               h-12
@@ -235,11 +272,12 @@ export default function ExpertiseCard({
               bg-[#12273B]
               text-[#BFEAFF]
               shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
-              transition-all
-              duration-500
-              group-hover:border-[#B9E7FF]/[0.34]
-              group-hover:bg-[#183650]
-            "
+              ${
+                motionEnabled
+                  ? "transition-[border-color,background-color,box-shadow,color] duration-300 group-hover:border-[#B9E7FF]/[0.34] group-hover:bg-[#183650]"
+                  : ""
+              }
+            `}
           >
             <div
               aria-hidden="true"
@@ -255,12 +293,11 @@ export default function ExpertiseCard({
             <Icon
               size={19}
               strokeWidth={1.15}
-              className="
-                relative
-                transition-transform
-                duration-500
-                group-hover:scale-[1.12]
-              "
+              className={
+                motionEnabled
+                  ? "relative transition-transform duration-300 group-hover:scale-[1.08]"
+                  : "relative"
+              }
             />
           </div>
 
@@ -268,27 +305,30 @@ export default function ExpertiseCard({
 
           <div className="flex items-center gap-3">
             <span
-              className="
+              className={`
                 h-px
                 w-8
                 bg-white/[0.10]
-                transition-all
-                duration-500
-                group-hover:w-12
-                group-hover:bg-[#BDEBFF]/[0.35]
-              "
+                ${
+                  motionEnabled
+                    ? "transition-[width,background-color] duration-300 group-hover:w-12 group-hover:bg-[#BDEBFF]/[0.35]"
+                    : ""
+                }
+              `}
             />
 
             <span
-              className="
+              className={`
                 font-serif
                 text-[11px]
                 tracking-[0.16em]
                 text-white/[0.34]
-                transition-colors
-                duration-500
-                group-hover:text-[#BFE7FF]/[0.75]
-              "
+                ${
+                  motionEnabled
+                    ? "transition-colors duration-300 group-hover:text-[#BFE7FF]/[0.75]"
+                    : ""
+                }
+              `}
             >
               {number}
             </span>
@@ -319,13 +359,15 @@ export default function ExpertiseCard({
               leading-[0.92]
               tracking-[-0.055em]
               text-[#F7F9FC]
-              transition-all
-              duration-500
-              group-hover:text-white
               ${
                 featured
                   ? "text-[clamp(2.5rem,4vw,4.2rem)]"
                   : "text-[clamp(2rem,3vw,2.8rem)]"
+              }
+              ${
+                motionEnabled
+                  ? "transition-colors duration-300 group-hover:text-white"
+                  : ""
               }
             `}
           >
@@ -333,17 +375,19 @@ export default function ExpertiseCard({
           </h3>
 
           <p
-            className="
+            className={`
               mt-5
               max-w-[500px]
               text-[12px]
               leading-[1.85]
               text-white/[0.48]
-              transition-colors
-              duration-500
-              group-hover:text-white/[0.68]
               sm:text-[13px]
-            "
+              ${
+                motionEnabled
+                  ? "transition-colors duration-300 group-hover:text-white/[0.68]"
+                  : ""
+              }
+            `}
           >
             {description}
           </p>
@@ -365,7 +409,7 @@ export default function ExpertiseCard({
           {skills.map((skill) => (
             <span
               key={skill}
-              className="
+              className={`
                 border
                 border-white/[0.09]
                 bg-white/[0.025]
@@ -376,12 +420,12 @@ export default function ExpertiseCard({
                 uppercase
                 tracking-[0.13em]
                 text-white/[0.38]
-                transition-all
-                duration-300
-                group-hover:border-[#B4DDF5]/[0.17]
-                group-hover:bg-[#B4DDF5]/[0.035]
-                group-hover:text-[#C4E5F7]/[0.65]
-              "
+                ${
+                  motionEnabled
+                    ? "transition-[border-color,background-color,color] duration-300 group-hover:border-[#B4DDF5]/[0.17] group-hover:bg-[#B4DDF5]/[0.035] group-hover:text-[#C4E5F7]/[0.65]"
+                    : ""
+                }
+              `}
             >
               {skill}
             </span>
@@ -404,22 +448,24 @@ export default function ExpertiseCard({
           "
         >
           <span
-            className="
+            className={`
               text-[7px]
               font-medium
               uppercase
               tracking-[0.25em]
               text-white/[0.25]
-              transition-colors
-              duration-300
-              group-hover:text-[#BFE4F8]/[0.48]
-            "
+              ${
+                motionEnabled
+                  ? "transition-colors duration-300 group-hover:text-[#BFE4F8]/[0.48]"
+                  : ""
+              }
+            `}
           >
             Strategic Capability
           </span>
 
           <span
-            className="
+            className={`
               flex
               h-8
               w-8
@@ -429,21 +475,19 @@ export default function ExpertiseCard({
               border-white/[0.09]
               bg-white/[0.02]
               text-white/[0.30]
-              transition-all
-              duration-500
-              group-hover:border-[#B7E6FF]/[0.30]
-              group-hover:bg-[#B7E6FF]/[0.06]
-              group-hover:text-[#D9F5FF]
-            "
+              ${
+                motionEnabled
+                  ? "transition-[border-color,background-color,color] duration-300 group-hover:border-[#B7E6FF]/[0.30] group-hover:bg-[#B7E6FF]/[0.06] group-hover:text-[#D9F5FF]"
+                  : ""
+              }
+            `}
           >
             <span
-              className="
-                block
-                transition-transform
-                duration-500
-                group-hover:translate-x-0.5
-                group-hover:-translate-y-0.5
-              "
+              className={
+                motionEnabled
+                  ? "block transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  : "block"
+              }
             >
               ↗
             </span>
@@ -452,10 +496,10 @@ export default function ExpertiseCard({
       </div>
 
       {/* =========================================================
-          PREMIUM SHINE
+          PREMIUM SHINE — DESKTOP ONLY
       ========================================================= */}
 
-      {!reduceMotion && (
+      {motionEnabled && (
         <motion.div
           aria-hidden="true"
           initial={{
@@ -465,7 +509,7 @@ export default function ExpertiseCard({
             x: "180%",
           }}
           transition={{
-            duration: 1.15,
+            duration: 0.85,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="

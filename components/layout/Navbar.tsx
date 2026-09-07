@@ -431,28 +431,6 @@ export default function Navbar() {
               `}
             >
               <span>{item.label}</span>
-
-              <span
-                aria-hidden="true"
-                className="
-                  flex
-                  h-6
-                  w-6
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-[#0B1F33]/10
-                  bg-white/55
-                  text-[10px]
-                  transition-all
-                  duration-200
-                  group-hover:border-[#5E8D9D]/45
-                  group-hover:bg-[#5E8D9D]/[0.08]
-                "
-              >
-                💬
-              </span>
             </Link>
           ))}
 

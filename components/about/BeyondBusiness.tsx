@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ShieldCheck,
@@ -48,6 +48,24 @@ export default function BeyondBusiness() {
   const reduceMotion = useReducedMotion();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
+  const [finePointer, setFinePointer] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: fine)");
+
+    const update = () => {
+      setFinePointer(media.matches);
+    };
+
+    update();
+    media.addEventListener("change", update);
+
+    return () => {
+      media.removeEventListener("change", update);
+    };
+  }, []);
+
+  const motionEnabled = !reduceMotion && finePointer;
 
   return (
     <section
@@ -73,70 +91,66 @@ export default function BeyondBusiness() {
             absolute
             left-1/2
             top-[30%]
-            h-[560px]
-            w-[560px]
+            h-[380px]
+            w-[380px]
             -translate-x-1/2
             rounded-full
-            bg-[#176FA3]/[0.045]
-            blur-[150px]
+            bg-[#176FA3]/[0.038]
+            blur-[90px]
+            sm:h-[470px]
+            sm:w-[470px]
+            sm:blur-[120px]
+            lg:h-[560px]
+            lg:w-[560px]
+            lg:blur-[150px]
           "
         />
 
+        {/* Static left atmosphere — no continuous animation */}
         <div
           className="
-            ambient-blob
             absolute
             left-[-18%]
             top-[8%]
-            h-[400px]
-            w-[400px]
+            h-[280px]
+            w-[280px]
             rounded-full
-            bg-[#21A9C4]/[0.045]
-            blur-[130px]
+            bg-[#21A9C4]/[0.035]
+            blur-[90px]
+            sm:h-[340px]
+            sm:w-[340px]
+            sm:blur-[110px]
+            lg:h-[400px]
+            lg:w-[400px]
+            lg:blur-[130px]
           "
-          style={
-            reduceMotion
-              ? undefined
-              : ({
-                  "--drift-opacity-from": 0.25,
-                  "--drift-opacity-to": 0.38,
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.04,
-                  "--drift-duration": "12s",
-                } as any)
-          }
         />
 
+        {/* Static right atmosphere — no continuous animation */}
         <div
           className="
-            ambient-blob
             absolute
-            right-[-15%]
             bottom-[-8%]
-            h-[460px]
-            w-[460px]
+            right-[-15%]
+            h-[320px]
+            w-[320px]
             rounded-full
-            bg-[#176FA3]/[0.04]
-            blur-[140px]
+            bg-[#176FA3]/[0.032]
+            blur-[95px]
+            sm:h-[390px]
+            sm:w-[390px]
+            sm:blur-[115px]
+            lg:h-[460px]
+            lg:w-[460px]
+            lg:blur-[140px]
           "
-          style={
-            reduceMotion
-              ? undefined
-              : ({
-                  "--drift-opacity-from": 0.22,
-                  "--drift-opacity-to": 0.34,
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.03,
-                  "--drift-duration": "14s",
-                } as any)
-          }
         />
 
         <div
           className="
             absolute
             inset-0
-            bg-[radial-gradient(circle_at_50%_35%,rgba(45,212,191,0.03),transparent_42%)]
+            bg-[radial-gradient(circle_at_50%_35%,rgba(45,212,191,0.025),transparent_42%)]
           "
         />
       </div>
@@ -152,7 +166,7 @@ export default function BeyondBusiness() {
                 ? false
                 : {
                     opacity: 0,
-                    x: -16,
+                    x: -14,
                   }
             }
             whileInView={
@@ -168,7 +182,7 @@ export default function BeyondBusiness() {
               amount: 0.2,
             }}
             transition={{
-              duration: 0.65,
+              duration: 0.55,
               ease: [0.22, 1, 0.36, 1],
             }}
           >
@@ -196,7 +210,7 @@ export default function BeyondBusiness() {
                 ? false
                 : {
                     opacity: 0,
-                    y: 20,
+                    y: 18,
                   }
             }
             whileInView={
@@ -212,8 +226,8 @@ export default function BeyondBusiness() {
               amount: 0.2,
             }}
             transition={{
-              duration: 0.7,
-              delay: 0.05,
+              duration: 0.6,
+              delay: 0.04,
               ease: [0.22, 1, 0.36, 1],
             }}
           >
@@ -285,7 +299,7 @@ export default function BeyondBusiness() {
                     ? false
                     : {
                         opacity: 0,
-                        y: 20,
+                        y: 18,
                       }
                 }
                 whileInView={
@@ -298,37 +312,53 @@ export default function BeyondBusiness() {
                 }
                 viewport={{
                   once: true,
-                  amount: 0.12,
+                  amount: 0.1,
                 }}
                 transition={{
-                  duration: 0.55,
-                  delay: index * 0.07,
+                  duration: 0.5,
+                  delay: index * 0.05,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 whileHover={
-                  reduceMotion
-                    ? undefined
-                    : {
+                  motionEnabled
+                    ? {
                         y: -4,
                       }
+                    : undefined
                 }
-                onMouseEnter={() => {
-                  setHovered(index);
-                  setActiveIndex(index);
-                }}
-                onMouseLeave={() => {
-                  setHovered(null);
-                  setActiveIndex(null);
-                }}
-                onFocus={() => {
-                  setHovered(index);
-                  setActiveIndex(index);
-                }}
-                onBlur={() => {
-                  setHovered(null);
-                  setActiveIndex(null);
-                }}
-                className="
+                onMouseEnter={
+                  motionEnabled
+                    ? () => {
+                        setHovered(index);
+                        setActiveIndex(index);
+                      }
+                    : undefined
+                }
+                onMouseLeave={
+                  motionEnabled
+                    ? () => {
+                        setHovered(null);
+                        setActiveIndex(null);
+                      }
+                    : undefined
+                }
+                onFocus={
+                  motionEnabled
+                    ? () => {
+                        setHovered(index);
+                        setActiveIndex(index);
+                      }
+                    : undefined
+                }
+                onBlur={
+                  motionEnabled
+                    ? () => {
+                        setHovered(null);
+                        setActiveIndex(null);
+                      }
+                    : undefined
+                }
+                className={`
                   group
                   relative
                   min-h-[235px]
@@ -342,25 +372,32 @@ export default function BeyondBusiness() {
                   transition-[border-color,background-color]
                   duration-300
                   ease-out
-                  hover:border-[#4FD8EF]/[0.34]
-                  hover:bg-[#11344A]
                   sm:min-h-[260px]
                   sm:p-7
-                "
+                  ${
+                    motionEnabled
+                      ? "hover:border-[#4FD8EF]/[0.34] hover:bg-[#11344A]"
+                      : ""
+                  }
+                `}
               >
                 {/* SUBTLE HOVER EDGE */}
                 <span
-                  className="
+                  className={`
                     pointer-events-none
                     absolute
                     inset-0
                     rounded-2xl
                     border
                     border-transparent
-                    transition-colors
+                    transition-[border-color]
                     duration-300
-                    group-hover:border-[#5DE5F5]/[0.10]
-                  "
+                    ${
+                      motionEnabled
+                        ? "group-hover:border-[#5DE5F5]/[0.10]"
+                        : ""
+                    }
+                  `}
                 />
 
                 {/* CONTENT */}
@@ -368,17 +405,17 @@ export default function BeyondBusiness() {
                   {/* ICON */}
                   <motion.div
                     animate={
-                      reduceMotion
-                        ? undefined
-                        : {
+                      motionEnabled
+                        ? {
                             scale: isHovered ? 1.02 : 1,
                           }
+                        : undefined
                     }
                     transition={{
-                      duration: 0.2,
+                      duration: 0.18,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="
+                    className={`
                       flex
                       h-10
                       w-10
@@ -390,33 +427,38 @@ export default function BeyondBusiness() {
                       bg-[#4FD8EF]/[0.055]
                       transition-[border-color,background-color]
                       duration-300
-                      group-hover:border-[#6FE7F5]/[0.32]
-                      group-hover:bg-[#4FD8EF]/[0.075]
-                    "
+                      ${
+                        motionEnabled
+                          ? "group-hover:border-[#6FE7F5]/[0.32] group-hover:bg-[#4FD8EF]/[0.075]"
+                          : ""
+                      }
+                    `}
                   >
                     <Icon
                       size={18}
                       strokeWidth={1.3}
-                      className="
+                      className={`
                         text-[#8BEAF4]
-                        transition-colors
-                        duration-300
-                        group-hover:text-white
-                      "
+                        ${
+                          motionEnabled
+                            ? "transition-colors duration-300 group-hover:text-white"
+                            : ""
+                        }
+                      `}
                     />
                   </motion.div>
 
                   {/* TITLE */}
                   <motion.h3
                     animate={
-                      reduceMotion
-                        ? undefined
-                        : {
+                      motionEnabled
+                        ? {
                             x: isActive ? 1 : 0,
                           }
+                        : undefined
                     }
                     transition={{
-                      duration: 0.2,
+                      duration: 0.18,
                       ease: "easeOut",
                     }}
                     className="
@@ -433,26 +475,28 @@ export default function BeyondBusiness() {
                   {/* DESCRIPTION */}
                   <motion.p
                     animate={
-                      reduceMotion
-                        ? undefined
-                        : {
+                      motionEnabled
+                        ? {
                             x: isActive ? 1 : 0,
                           }
+                        : undefined
                     }
                     transition={{
-                      duration: 0.2,
+                      duration: 0.18,
                       ease: "easeOut",
                     }}
-                    className="
+                    className={`
                       mt-3
                       max-w-[280px]
                       text-[12px]
                       leading-6
                       text-[#A9BAC6]
-                      transition-colors
-                      duration-300
-                      group-hover:text-[#C3D2DB]
-                    "
+                      ${
+                        motionEnabled
+                          ? "transition-colors duration-300 group-hover:text-[#C3D2DB]"
+                          : ""
+                      }
+                    `}
                   >
                     {item.text}
                   </motion.p>
@@ -460,15 +504,17 @@ export default function BeyondBusiness() {
                   {/* BOTTOM INDEX */}
                   <div className="mt-auto pt-7">
                     <span
-                      className="
+                      className={`
                         font-mono
                         text-[8px]
                         tracking-[0.25em]
                         text-[#78D8E8]/40
-                        transition-colors
-                        duration-300
-                        group-hover:text-[#5ED9EA]/60
-                      "
+                        ${
+                          motionEnabled
+                            ? "transition-colors duration-300 group-hover:text-[#5ED9EA]/60"
+                            : ""
+                        }
+                      `}
                     >
                       0{index + 1}
                     </span>
