@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -999,29 +1000,6 @@ export default function Expertise() {
                     "
                   />
 
-                  <motion.div
-                    aria-hidden="true"
-                    animate={{
-                      width: isActive ? 68 : 22,
-                      opacity: isActive ? 0.9 : 0.22,
-                    }}
-                    transition={{
-                      duration: 0.28,
-                      ease,
-                    }}
-                    className="
-                      pointer-events-none
-                      absolute
-                      bottom-0
-                      left-7
-                      h-[2px]
-                      bg-gradient-to-r
-                      from-[#4F8CFF]
-                      via-[#759DFF]
-                      to-transparent
-                    "
-                  />
-
                   <div className="relative z-10 flex h-full flex-col">
                     <div className="flex items-start justify-between">
                       <motion.div
@@ -1540,29 +1518,6 @@ export default function Expertise() {
                       "
                     />
 
-                    <motion.div
-                      aria-hidden="true"
-                      animate={{
-                        width: isActive ? 82 : 26,
-                        opacity: isActive ? 0.9 : 0.22,
-                      }}
-                      transition={{
-                        duration: 0.25,
-                        ease,
-                      }}
-                      className="
-                        pointer-events-none
-                        absolute
-                        bottom-0
-                        left-8
-                        h-[2px]
-                        bg-gradient-to-r
-                        from-[#4F8CFF]
-                        via-[#759DFF]
-                        to-transparent
-                      "
-                    />
-
                     <div className="relative z-10">
                       <div className="flex items-start gap-5">
                         <motion.div
@@ -1828,7 +1783,7 @@ export default function Expertise() {
             className="
               relative
               grid
-              gap-7
+              gap-6
               lg:grid-cols-[150px_1fr]
               lg:gap-16
             "

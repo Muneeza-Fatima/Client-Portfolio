@@ -160,9 +160,10 @@ export default function Mindset() {
                 max-w-4xl
                 text-[clamp(3.2rem,9vw,7rem)]
                 font-medium
-                leading-[0.94]
+                leading-[1]
                 tracking-[-0.065em]
                 lg:text-[clamp(2.6rem,6vw,5.2rem)]
+                lg:leading-[0.94]
               "
             >
               <span className="text-white">Think clearly.</span>

@@ -64,7 +64,11 @@ export default function Ventures() {
   }, []);
 
   const motionEnabled = !shouldReduceMotion && finePointer;
-  const ringAnimated = !shouldReduceMotion;
+
+  // Continuous animation is only needed on fine-pointer devices.
+  // Phones/tablets keep the exact same visual ring without the
+  // constant animation workload.
+  const ringAnimated = !shouldReduceMotion && finePointer;
 
   return (
     <section
@@ -397,7 +401,7 @@ export default function Ventures() {
                 </span>
               </div>
 
-              {/* ROTATING LINE — DESKTOP + PHONE */}
+              {/* ROTATING LINE — DESKTOP ONLY FOR PERFORMANCE */}
               {ringAnimated && (
                 <motion.span
                   aria-hidden="true"
@@ -471,11 +475,6 @@ export default function Ventures() {
               return (
                 <motion.div
                   key={venture.title}
-                  /*
-                   * Reveal is intentionally enabled on mobile too.
-                   * This is a one-time animation, not a continuous loop,
-                   * so it stays lightweight on phones.
-                   */
                   initial={
                     shouldReduceMotion
                       ? false

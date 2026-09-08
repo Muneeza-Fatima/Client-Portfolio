@@ -2,12 +2,8 @@
 
 import Link from "next/link";
 import { Mail, MessageCircle } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
 
 export default function Connect() {
-  const shouldReduceMotion = useReducedMotion();
-  const motionEnabled = !shouldReduceMotion;
-
   return (
     <section
       id="connect"
@@ -25,6 +21,7 @@ export default function Connect() {
         lg:pb-28
       "
     >
+      {/* BACKGROUND */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -33,23 +30,23 @@ export default function Connect() {
         <div
           className="
             absolute
-            -right-[160px]
-            -top-[170px]
-            h-[360px]
-            w-[360px]
+            -right-[110px]
+            -top-[120px]
+            h-[260px]
+            w-[260px]
             rounded-full
-            bg-[#38BDF8]/[0.04]
-            blur-[90px]
-            sm:-right-[210px]
-            sm:-top-[210px]
-            sm:h-[460px]
-            sm:w-[460px]
-            sm:blur-[120px]
+            bg-[#38BDF8]/[0.035]
+            blur-[45px]
+            sm:-right-[170px]
+            sm:-top-[170px]
+            sm:h-[360px]
+            sm:w-[360px]
+            sm:blur-[70px]
             lg:-right-[240px]
             lg:-top-[240px]
             lg:h-[560px]
             lg:w-[560px]
-            lg:blur-[160px]
+            lg:blur-[120px]
           "
         />
 
@@ -57,23 +54,23 @@ export default function Connect() {
         <div
           className="
             absolute
-            -left-[180px]
-            bottom-[-200px]
-            h-[380px]
-            w-[380px]
+            -left-[120px]
+            bottom-[-150px]
+            h-[280px]
+            w-[280px]
             rounded-full
-            bg-[#6366F1]/[0.022]
-            blur-[100px]
-            sm:-left-[230px]
-            sm:bottom-[-250px]
-            sm:h-[480px]
-            sm:w-[480px]
-            sm:blur-[130px]
+            bg-[#6366F1]/[0.018]
+            blur-[50px]
+            sm:-left-[180px]
+            sm:bottom-[-210px]
+            sm:h-[360px]
+            sm:w-[360px]
+            sm:blur-[75px]
             lg:-left-[280px]
             lg:bottom-[-300px]
             lg:h-[580px]
             lg:w-[580px]
-            lg:blur-[170px]
+            lg:blur-[130px]
           "
         />
 
@@ -82,8 +79,8 @@ export default function Connect() {
           className="
             absolute
             inset-0
-            opacity-[0.009]
-            bg-[linear-gradient(rgba(255,255,255,0.65)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.65)_1px,transparent_1px)]
+            opacity-[0.006]
+            bg-[linear-gradient(rgba(255,255,255,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.55)_1px,transparent_1px)]
             bg-[size:110px_110px]
           "
         />
@@ -93,11 +90,12 @@ export default function Connect() {
           className="
             absolute
             inset-0
-            bg-[radial-gradient(circle_at_50%_35%,transparent_0%,rgba(17,28,39,0.18)_45%,rgba(4,15,27,0.72)_100%)]
+            bg-[radial-gradient(circle_at_50%_35%,transparent_0%,rgba(17,28,39,0.16)_45%,rgba(4,15,27,0.68)_100%)]
           "
         />
       </div>
 
+      {/* CONTENT */}
       <div
         className="
           relative
@@ -126,78 +124,16 @@ export default function Connect() {
         >
           <div className="max-w-[920px]">
             {/* CONNECT LABEL */}
-            <motion.div
-              initial={
-                motionEnabled
-                  ? {
-                      opacity: 0,
-                      y: 10,
-                    }
-                  : false
-              }
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.3,
-              }}
-              transition={{
-                duration: 0.55,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="flex items-center gap-3"
-            >
-              <span
-                className="
-                  h-px
-                  w-9
-                  bg-gradient-to-r
-                  from-[#64748B]
-                  via-[#67E8F9]
-                  to-[#60A5FA]
-                  sm:w-11
-                "
-              />
+            <div className="flex items-center gap-3">
+              <span className="h-px w-9 bg-gradient-to-r from-[#64748B] via-[#67E8F9] to-[#60A5FA] sm:w-11" />
 
-              <span
-                className="
-                  text-[9px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.3em]
-                  text-[#A9D8E8]
-                  sm:text-[10px]
-                "
-              >
+              <span className="text-[9px] font-semibold uppercase tracking-[0.3em] text-[#A9D8E8] sm:text-[10px]">
                 Connect
               </span>
-            </motion.div>
+            </div>
 
             {/* HEADING */}
-            <motion.h2
-              initial={
-                motionEnabled
-                  ? {
-                      opacity: 0,
-                      y: 22,
-                    }
-                  : false
-              }
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.25,
-              }}
-              transition={{
-                duration: 0.75,
-                delay: 0.05,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+            <h2
               className="
                 mt-7
                 max-w-[920px]
@@ -212,100 +148,25 @@ export default function Connect() {
                 lg:text-[clamp(2.7rem,5.5vw,5.5rem)]
               "
             >
-              <span
-                className="
-                  block
-                  bg-gradient-to-r
-                  from-[#F8FAFC]
-                  via-[#D7E5EF]
-                  to-[#9DB8CA]
-                  bg-clip-text
-                  pb-[0.06em]
-                  text-transparent
-                "
-              >
+              <span className="block bg-gradient-to-r from-[#F8FAFC] via-[#D7E5EF] to-[#9DB8CA] bg-clip-text pb-[0.06em] text-transparent">
                 Open to meaningful
               </span>
 
-              <span
-                className="
-                  block
-                  bg-gradient-to-r
-                  from-[#B9D7E8]
-                  via-[#5FB8D4]
-                  to-[#3B82B6]
-                  bg-clip-text
-                  pb-2
-                  text-transparent
-                  drop-shadow-[0_0_26px_rgba(95,184,212,0.10)]
-                "
-              >
+              <span className="block bg-gradient-to-r from-[#B9D7E8] via-[#5FB8D4] to-[#3B82B6] bg-clip-text pb-2 text-transparent">
                 conversations.
               </span>
-            </motion.h2>
+            </h2>
 
             {/* DESCRIPTION */}
-            <motion.p
-              initial={
-                motionEnabled
-                  ? {
-                      opacity: 0,
-                      y: 12,
-                    }
-                  : false
-              }
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.25,
-              }}
-              transition={{
-                duration: 0.6,
-                delay: 0.12,
-              }}
-              className="
-                mt-6
-                max-w-[650px]
-                text-[13px]
-                leading-7
-                text-[#CBD5E1]
-                sm:text-[15px]
-                sm:leading-8
-              "
-            >
+            <p className="mt-6 max-w-[650px] text-[13px] leading-7 text-[#CBD5E1] sm:text-[15px] sm:leading-8">
               Whether you have an idea, an opportunity or simply want to
               start a conversation, I&apos;m open to exploring what we can
               build together.
-            </motion.p>
+            </p>
           </div>
 
           {/* CTA */}
-          <motion.div
-            initial={
-              motionEnabled
-                ? {
-                    opacity: 0,
-                    y: 18,
-                  }
-                : false
-            }
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.25,
-            }}
-            transition={{
-              duration: 0.65,
-              delay: 0.18,
-            }}
-            className="flex -translate-y-1"
-          >
+          <div className="flex -translate-y-1">
             <Link
               href="/contact"
               className="
@@ -330,7 +191,7 @@ export default function Connect() {
                 !text-[#F8FAFC]
                 shadow-[0_14px_40px_rgba(0,0,0,0.30),inset_0_1px_0_rgba(255,255,255,0.08)]
                 transition-[border-color,background-color,box-shadow,transform]
-                duration-300
+                duration-200
                 hover:-translate-y-1
                 hover:border-[#67E8F9]/85
                 hover:bg-[#102D48]
@@ -375,7 +236,7 @@ export default function Connect() {
                   bg-white/[0.05]
                   text-[#67E8F9]
                   transition-[border-color,background-color,transform]
-                  duration-300
+                  duration-200
                   group-hover:translate-x-1
                   group-hover:border-[#67E8F9]/30
                 "
@@ -383,31 +244,11 @@ export default function Connect() {
                 <MessageCircle size={15} strokeWidth={1.7} />
               </span>
             </Link>
-          </motion.div>
+          </div>
         </div>
 
         {/* BOTTOM META */}
-        <motion.div
-          initial={
-            motionEnabled
-              ? {
-                  opacity: 0,
-                  y: 10,
-                }
-              : false
-          }
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
-          transition={{
-            duration: 0.6,
-            delay: 0.2,
-          }}
+        <div
           className="
             mt-12
             flex
@@ -440,31 +281,15 @@ export default function Connect() {
               <Mail size={13} strokeWidth={1.4} />
             </span>
 
-            <span
-              className="
-                text-[9px]
-                font-medium
-                uppercase
-                tracking-[0.16em]
-                text-white
-              "
-            >
+            <span className="text-[9px] font-medium uppercase tracking-[0.16em] text-white">
               Open for selected opportunities
             </span>
           </div>
 
-          <span
-            className="
-              text-[8px]
-              font-semibold
-              uppercase
-              tracking-[0.22em]
-              text-white
-            "
-          >
+          <span className="text-[8px] font-semibold uppercase tracking-[0.22em] text-white">
             Technology · Business · Ventures
           </span>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
