@@ -67,9 +67,9 @@ export default function Mindset() {
     };
   }, []);
 
-  // Continuous / hover-heavy motion is limited to fine-pointer devices.
-  // Phones and tablets keep the same visual appearance without unnecessary
-  // animation/compositing work.
+  // Hover-heavy motion is limited to fine-pointer devices.
+  // Phones and tablets keep the same visual appearance without
+  // unnecessary animation/compositing work.
   const motionEnabled = !reduceMotion && finePointer;
 
   return (
@@ -120,9 +120,14 @@ export default function Mindset() {
         <div className="grid gap-10 lg:grid-cols-[0.55fr_1.45fr] lg:gap-20">
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, x: -14 }}
-            whileInView={reduceMotion ? undefined : { opacity: 1, x: 0 }}
+            whileInView={
+              reduceMotion ? undefined : { opacity: 1, x: 0 }
+            }
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{
+              duration: 0.55,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <div className="flex items-center gap-3">
               <span className="h-px w-8 bg-[#4FD8EF]" />
@@ -140,9 +145,15 @@ export default function Mindset() {
 
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            whileInView={
+              reduceMotion ? undefined : { opacity: 1, y: 0 }
+            }
             viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.06 }}
+            transition={{
+              duration: 0.6,
+              delay: 0.05,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <h2
               className="
@@ -156,7 +167,7 @@ export default function Mindset() {
             >
               <span className="text-white">Think clearly.</span>
 
-              <span className="block text-[#67DDF2]">
+              <span className="block bg-gradient-to-r from-[#8DEBFF] via-[#42D5F5] to-[#168BD1] bg-clip-text text-transparent">
                 Move with purpose.
               </span>
             </h2>
@@ -171,9 +182,15 @@ export default function Mindset() {
         {/* STRATEGIC FLOW */}
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          whileInView={
+            reduceMotion ? undefined : { opacity: 1, y: 0 }
+          }
           viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7, delay: 0.1 }}
+          transition={{
+            duration: 0.6,
+            delay: 0.08,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="mt-10 grid overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0D2233]/75 backdrop-blur-sm sm:mt-14 sm:grid-cols-3 lg:mt-20"
         >
           {flow.map((item) => {
@@ -185,12 +202,12 @@ export default function Mindset() {
                 whileHover={
                   motionEnabled
                     ? {
-                        y: -5,
+                        y: -4,
                       }
                     : undefined
                 }
                 transition={{
-                  duration: 0.35,
+                  duration: 0.3,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="group relative overflow-hidden border-b border-white/[0.07] p-6 last:border-b-0 sm:border-b-0 sm:border-r sm:p-7 sm:last:border-r-0"
@@ -202,7 +219,7 @@ export default function Mindset() {
                     border border-[#72E7F5]/20
                     opacity-70
                     transition-[border-color,opacity]
-                    duration-700
+                    duration-500
                     group-hover:border-[#72E7F5]/55
                     group-hover:opacity-100
                   "
@@ -218,10 +235,9 @@ export default function Mindset() {
                     from-transparent
                     via-[#8DF3FF]
                     to-transparent
-                    blur-[1px]
                     opacity-40
-                    transition-all
-                    duration-[1400ms]
+                    transition-[left,opacity]
+                    duration-1000
                     ease-out
                     ${
                       motionEnabled
@@ -240,10 +256,9 @@ export default function Mindset() {
                     from-transparent
                     via-[#8DF3FF]
                     to-transparent
-                    blur-[1px]
                     opacity-30
-                    transition-all
-                    duration-[1400ms]
+                    transition-[top,opacity]
+                    duration-1000
                     ease-out
                     ${
                       motionEnabled
@@ -267,10 +282,9 @@ export default function Mindset() {
                       from-transparent
                       via-white/[0.065]
                       to-transparent
-                      blur-[10px]
                       opacity-0
-                      transition-all
-                      duration-[1200ms]
+                      transition-[left,opacity]
+                      duration-1000
                       ease-out
                       ${
                         motionEnabled
@@ -291,10 +305,9 @@ export default function Mindset() {
                     w-[20%]
                     rotate-[22deg]
                     bg-[#4FD8EF]/[0.055]
-                    blur-[30px]
                     opacity-0
-                    transition-all
-                    duration-[1250ms]
+                    transition-[left,opacity]
+                    duration-1000
                     ease-out
                     ${
                       motionEnabled
@@ -314,7 +327,7 @@ export default function Mindset() {
                     to-[#168BD1]/[0.018]
                     opacity-0
                     transition-opacity
-                    duration-700
+                    duration-500
                     ${
                       motionEnabled
                         ? "group-hover:opacity-100"
@@ -335,7 +348,7 @@ export default function Mindset() {
                     to-transparent
                     opacity-30
                     transition-opacity
-                    duration-700
+                    duration-500
                     ${
                       motionEnabled
                         ? "group-hover:opacity-100"
@@ -350,19 +363,21 @@ export default function Mindset() {
                       whileHover={
                         motionEnabled
                           ? {
-                              scale: 1.05,
+                              scale: 1.04,
                               rotate: -2,
                             }
                           : undefined
                       }
-                      transition={{ duration: 0.3 }}
+                      transition={{
+                        duration: 0.25,
+                      }}
                       className="
                         flex h-10 w-10 items-center justify-center
                         rounded-xl
                         border border-[#4FD8EF]/20
                         bg-[#4FD8EF]/[0.06]
                         transition-[border-color,background-color,box-shadow]
-                        duration-500
+                        duration-300
                         group-hover:border-[#6FE7F5]/40
                         group-hover:bg-[#4FD8EF]/[0.09]
                         group-hover:shadow-[0_0_18px_rgba(79,216,239,0.09)]
@@ -396,9 +411,14 @@ export default function Mindset() {
         {/* WORKING PRINCIPLES */}
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-          whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+          whileInView={
+            reduceMotion ? undefined : { opacity: 1, y: 0 }
+          }
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          transition={{
+            duration: 0.6,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="mt-14 sm:mt-24"
         >
           <p className="text-[8px] font-semibold uppercase tracking-[0.34em] text-[#63DDEC]/80">
@@ -416,14 +436,17 @@ export default function Mindset() {
             <motion.article
               key={item.number}
               initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-              whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+              whileInView={
+                reduceMotion ? undefined : { opacity: 1, y: 0 }
+              }
               viewport={{
                 once: true,
                 amount: 0.12,
               }}
               transition={{
-                duration: 0.5,
-                delay: index * 0.05,
+                duration: 0.45,
+                delay: index * 0.04,
+                ease: [0.22, 1, 0.36, 1],
               }}
               whileHover={
                 motionEnabled
@@ -448,10 +471,9 @@ export default function Mindset() {
                     from-transparent
                     via-white/[0.05]
                     to-transparent
-                    blur-[11px]
                     opacity-0
-                    transition-all
-                    duration-[1350ms]
+                    transition-[left,opacity]
+                    duration-1100
                     ease-out
                     ${
                       motionEnabled
@@ -472,10 +494,9 @@ export default function Mindset() {
                   w-[14%]
                   rotate-[18deg]
                   bg-[#4FD8EF]/[0.045]
-                  blur-[28px]
                   opacity-0
-                  transition-all
-                  duration-[1400ms]
+                  transition-[left,opacity]
+                  duration-1100
                   ease-out
                   ${
                     motionEnabled
@@ -495,7 +516,7 @@ export default function Mindset() {
                   to-transparent
                   opacity-0
                   transition-opacity
-                  duration-700
+                  duration-500
                   ${
                     motionEnabled
                       ? "group-hover:opacity-100"
@@ -510,8 +531,6 @@ export default function Mindset() {
                   pointer-events-none absolute
                   bottom-0 left-0 top-0
                   w-px
-                  origin-bottom
-                  scale-y-100
                   bg-[#5DE5F5]
                   opacity-100
                   shadow-[0_0_12px_rgba(93,229,245,0.65)]
@@ -538,9 +557,14 @@ export default function Mindset() {
         {/* CLOSING */}
         <motion.div
           initial={reduceMotion ? false : { opacity: 0 }}
-          whileInView={reduceMotion ? undefined : { opacity: 1 }}
+          whileInView={
+            reduceMotion ? undefined : { opacity: 1 }
+          }
           viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.15 }}
+          transition={{
+            duration: 0.6,
+            delay: 0.1,
+          }}
           className="mt-10 flex flex-col gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between"
         >
           <p className="max-w-xl text-[12px] leading-6 text-[#B8C8D3]">

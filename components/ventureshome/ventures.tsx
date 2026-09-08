@@ -56,7 +56,6 @@ export default function Ventures() {
     };
 
     updatePointer();
-
     mediaQuery.addEventListener("change", updatePointer);
 
     return () => {
@@ -65,6 +64,7 @@ export default function Ventures() {
   }, []);
 
   const motionEnabled = !shouldReduceMotion && finePointer;
+  const ringAnimated = !shouldReduceMotion;
 
   return (
     <section
@@ -95,7 +95,6 @@ export default function Ventures() {
 
         {/* STATIC / LIGHTWEIGHT ATMOSPHERE */}
         <div
-          aria-hidden="true"
           className="
             absolute
             -left-[190px]
@@ -104,7 +103,7 @@ export default function Ventures() {
             w-[360px]
             rounded-full
             bg-[#38BDF8]/[0.055]
-            blur-[110px]
+            blur-[90px]
             sm:-left-[250px]
             sm:-top-[250px]
             sm:h-[500px]
@@ -119,7 +118,6 @@ export default function Ventures() {
         />
 
         <div
-          aria-hidden="true"
           className="
             absolute
             -right-[190px]
@@ -128,7 +126,7 @@ export default function Ventures() {
             w-[350px]
             rounded-full
             bg-[#6366F1]/[0.04]
-            blur-[110px]
+            blur-[90px]
             sm:-right-[250px]
             sm:h-[480px]
             sm:w-[480px]
@@ -150,7 +148,7 @@ export default function Ventures() {
             -translate-x-1/2
             rounded-full
             bg-[#14B8A6]/[0.025]
-            blur-[120px]
+            blur-[100px]
             sm:bottom-[-320px]
             sm:h-[540px]
             sm:w-[660px]
@@ -211,7 +209,10 @@ export default function Ventures() {
           initial={motionEnabled ? { opacity: 0, y: 8 } : false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.45 }}
+          transition={{
+            duration: 0.45,
+            ease: [0.22, 1, 0.36, 1],
+          }}
           className="flex items-center gap-3"
         >
           <span
@@ -396,8 +397,8 @@ export default function Ventures() {
                 </span>
               </div>
 
-              {/* ROTATION ONLY ON DESKTOP */}
-              {motionEnabled ? (
+              {/* ROTATING LINE — DESKTOP + PHONE */}
+              {ringAnimated && (
                 <motion.span
                   aria-hidden="true"
                   animate={{ rotate: 360 }}
@@ -407,6 +408,7 @@ export default function Ventures() {
                     ease: "linear",
                   }}
                   className="
+                    pointer-events-none
                     absolute
                     -inset-5
                     rounded-full
@@ -415,12 +417,16 @@ export default function Ventures() {
                     border-t-[#14B8A6]
                     border-r-[#14B8A6]/50
                     shadow-[0_0_14px_rgba(20,184,166,0.45)]
+                    will-change-transform
                   "
                 />
-              ) : (
+              )}
+
+              {!ringAnimated && (
                 <span
                   aria-hidden="true"
                   className="
+                    pointer-events-none
                     absolute
                     -inset-5
                     rounded-full
@@ -452,7 +458,7 @@ export default function Ventures() {
             className="
               mt-14
               grid
-              gap-7
+              gap-6
               sm:mt-16
               sm:gap-8
               lg:grid-cols-3
@@ -465,34 +471,52 @@ export default function Ventures() {
               return (
                 <motion.div
                   key={venture.title}
+                  /*
+                   * Reveal is intentionally enabled on mobile too.
+                   * This is a one-time animation, not a continuous loop,
+                   * so it stays lightweight on phones.
+                   */
                   initial={
-                    motionEnabled
-                      ? {
+                    shouldReduceMotion
+                      ? false
+                      : {
                           opacity: 0,
-                          y: 18,
+                          y: 22,
+                          scale: 0.985,
                         }
-                      : false
                   }
                   whileInView={{
                     opacity: 1,
                     y: 0,
+                    scale: 1,
                   }}
                   viewport={{
                     once: true,
-                    amount: 0.2,
+                    amount: 0.18,
                   }}
                   transition={{
-                    duration: 0.5,
-                    delay: 0.06 + index * 0.06,
+                    duration: 0.55,
+                    delay: 0.08 + index * 0.08,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   whileHover={
                     motionEnabled
                       ? {
-                          y: -6,
-                          scale: 1.01,
+                          y: -7,
+                          scale: 1.012,
                           transition: {
-                            duration: 0.22,
+                            duration: 0.28,
+                            ease: [0.22, 1, 0.36, 1],
+                          },
+                        }
+                      : undefined
+                  }
+                  whileTap={
+                    !shouldReduceMotion
+                      ? {
+                          scale: 0.985,
+                          transition: {
+                            duration: 0.14,
                             ease: "easeOut",
                           },
                         }
@@ -500,7 +524,7 @@ export default function Ventures() {
                   }
                   className="group relative"
                 >
-                  {/* CLEAN PREMIUM CARD */}
+                  {/* PREMIUM CARD */}
                   <div
                     className="
                       relative
@@ -513,14 +537,16 @@ export default function Ventures() {
                       p-5
                       shadow-[0_20px_45px_rgba(1,12,24,0.22),inset_0_1px_0_rgba(255,255,255,0.10)]
                       backdrop-blur-none
-                      transition-[border-color,background-color,transform]
+                      transition-[border-color,background-color,box-shadow,transform]
                       duration-300
-                      ease-out
+                      ease-[cubic-bezier(0.22,1,0.36,1)]
+                      sm:min-h-[310px]
                       sm:backdrop-blur-md
                       sm:p-6
-                      lg:min-h-[310px]
                       lg:backdrop-blur-xl
                       lg:p-7
+                      lg:group-hover:border-[#14B8A6]/35
+                      lg:group-hover:shadow-[0_28px_60px_rgba(1,12,24,0.30),0_0_28px_rgba(20,184,166,0.08),inset_0_1px_0_rgba(255,255,255,0.12)]
                     "
                   >
                     {/* SUBTLE INNER DEPTH */}
@@ -532,8 +558,35 @@ export default function Ventures() {
                         inset-0
                         rounded-[24px]
                         bg-[radial-gradient(circle_at_85%_10%,rgba(56,189,248,0.07),transparent_28%),radial-gradient(circle_at_10%_90%,rgba(20,184,166,0.035),transparent_30%)]
+                        opacity-100
+                        transition-opacity
+                        duration-300
+                        ease-out
                       "
                     />
+
+                    {/* DESKTOP HOVER LIGHT */}
+                    {motionEnabled && (
+                      <div
+                        aria-hidden="true"
+                        className="
+                          pointer-events-none
+                          absolute
+                          -right-16
+                          -top-16
+                          h-32
+                          w-32
+                          rounded-full
+                          bg-[#14B8A6]/[0.06]
+                          blur-2xl
+                          opacity-0
+                          transition-opacity
+                          duration-300
+                          ease-out
+                          group-hover:opacity-100
+                        "
+                      />
+                    )}
 
                     <div className="relative z-10 flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
@@ -543,6 +596,11 @@ export default function Ventures() {
                             font-semibold
                             tracking-[0.24em]
                             text-[#67E8F9]
+                            transition-[color,transform]
+                            duration-300
+                            ease-out
+                            lg:group-hover:-translate-y-0.5
+                            lg:group-hover:text-[#8DEBFF]
                           "
                         >
                           {venture.number}
@@ -562,11 +620,24 @@ export default function Ventures() {
                           bg-[#071725]/75
                           text-[#67E8F9]
                           shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
+                          transition-[border-color,background-color,box-shadow,transform]
+                          duration-300
+                          ease-out
+                          lg:group-hover:-translate-y-1
+                          lg:group-hover:border-[#67E8F9]/45
+                          lg:group-hover:bg-[#0B2638]
+                          lg:group-hover:shadow-[0_0_20px_rgba(103,232,249,0.12),inset_0_1px_0_rgba(255,255,255,0.10)]
                         "
                       >
                         <Icon
                           size={17}
                           strokeWidth={1.25}
+                          className="
+                            transition-transform
+                            duration-300
+                            ease-out
+                            lg:group-hover:scale-110
+                          "
                         />
                       </span>
                     </div>
@@ -586,6 +657,11 @@ export default function Ventures() {
                           h-px
                           w-7
                           bg-[#14B8A6]/70
+                          transition-[width,opacity]
+                          duration-300
+                          ease-out
+                          lg:group-hover:w-10
+                          lg:group-hover:bg-[#14B8A6]
                         "
                       />
 
@@ -596,6 +672,10 @@ export default function Ventures() {
                           uppercase
                           tracking-[0.25em]
                           text-[#B5E4EC]
+                          transition-colors
+                          duration-300
+                          ease-out
+                          lg:group-hover:text-[#C8F3F7]
                         "
                       >
                         {venture.category}
@@ -612,7 +692,11 @@ export default function Ventures() {
                         leading-[1.18]
                         tracking-[-0.04em]
                         text-[#F8FAFC]
+                        transition-[transform,color]
+                        duration-300
+                        ease-out
                         sm:text-[23px]
+                        lg:group-hover:-translate-y-0.5
                       "
                     >
                       {venture.title}
@@ -628,6 +712,10 @@ export default function Ventures() {
                         uppercase
                         tracking-[0.17em]
                         text-[#A9D2DE]
+                        transition-colors
+                        duration-300
+                        ease-out
+                        lg:group-hover:text-[#C0E7EE]
                       "
                     >
                       {venture.subtitle}
@@ -642,6 +730,11 @@ export default function Ventures() {
                         text-[11px]
                         leading-[1.85]
                         text-[#E3F0F4]/80
+                        transition-[color,transform]
+                        duration-300
+                        ease-out
+                        lg:group-hover:-translate-y-px
+                        lg:group-hover:text-[#E8F5F7]/90
                       "
                     >
                       {venture.description}

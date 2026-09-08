@@ -32,6 +32,8 @@ const leadershipPoints = [
   },
 ];
 
+const ease = [0.22, 1, 0.36, 1] as const;
+
 export default function Leadership() {
   const reduceMotion = useReducedMotion();
   const [finePointer, setFinePointer] = useState(false);
@@ -57,6 +59,7 @@ export default function Leadership() {
     <section className="relative overflow-hidden bg-[#E9E9E5] pt-12 pb-20 sm:py-24 lg:py-28">
       {/* Background */}
       <div
+        aria-hidden="true"
         className="
           pointer-events-none
           absolute
@@ -104,8 +107,8 @@ export default function Leadership() {
               amount: 0.15,
             }}
             transition={{
-              duration: 0.55,
-              ease: [0.22, 1, 0.36, 1],
+              duration: 0.5,
+              ease,
             }}
           >
             {/* EYEBROW */}
@@ -145,7 +148,7 @@ export default function Leadership() {
                       ? false
                       : {
                           opacity: 0,
-                          y: 16,
+                          y: 14,
                         }
                   }
                   whileInView={
@@ -161,9 +164,9 @@ export default function Leadership() {
                     amount: 0.08,
                   }}
                   transition={{
-                    duration: 0.5,
-                    delay: index * 0.05,
-                    ease: [0.22, 1, 0.36, 1],
+                    duration: 0.45,
+                    delay: reduceMotion ? 0 : index * 0.04,
+                    ease,
                   }}
                   whileHover={
                     motionEnabled
@@ -184,11 +187,13 @@ export default function Leadership() {
                     hover:bg-[#1B5277]
                     sm:p-8
                     max-sm:bg-[#164566]
+                    will-change-transform
                   "
                 >
-                  {/* SUBTLE BORDER — desktop hover only */}
+                  {/* SUBTLE BORDER — desktop only */}
                   {motionEnabled && (
                     <div
+                      aria-hidden="true"
                       className="
                         pointer-events-none
                         absolute
@@ -196,9 +201,11 @@ export default function Leadership() {
                         rounded-[inherit]
                         border
                         border-transparent
-                        transition-[border-color]
+                        opacity-0
+                        transition-opacity
                         duration-300
                         group-hover:border-[#42D5F5]/40
+                        group-hover:opacity-100
                       "
                     />
                   )}
@@ -206,6 +213,7 @@ export default function Leadership() {
                   {/* LEFT SHINE — desktop only */}
                   {motionEnabled && (
                     <div
+                      aria-hidden="true"
                       className="
                         pointer-events-none
                         absolute
@@ -228,6 +236,7 @@ export default function Leadership() {
                   {/* TOP HIGHLIGHT — desktop only */}
                   {motionEnabled && (
                     <div
+                      aria-hidden="true"
                       className="
                         pointer-events-none
                         absolute
@@ -250,6 +259,7 @@ export default function Leadership() {
                   {/* SUBTLE HOVER SURFACE — desktop only */}
                   {motionEnabled && (
                     <div
+                      aria-hidden="true"
                       className="
                         pointer-events-none
                         absolute
@@ -269,6 +279,7 @@ export default function Leadership() {
                   {/* SOFT LIGHT — desktop only */}
                   {motionEnabled && (
                     <div
+                      aria-hidden="true"
                       className="
                         pointer-events-none
                         absolute
@@ -362,8 +373,8 @@ export default function Leadership() {
             amount: 0.1,
           }}
           transition={{
-            duration: 0.6,
-            ease: [0.22, 1, 0.36, 1],
+            duration: 0.5,
+            ease,
           }}
           className="mt-12 border-t border-[#0B1F33]/10 pt-7 sm:mt-14 sm:pt-8"
         >

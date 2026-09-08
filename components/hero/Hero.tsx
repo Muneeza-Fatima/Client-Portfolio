@@ -8,43 +8,65 @@ import {
   Globe2,
   Building2,
 } from "lucide-react";
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+} from "framer-motion";
 
 import HeroImage from "@/components/hero/HeroImage";
 
 export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
-  const motionEnabled = !shouldReduceMotion;
 
+  const [finePointer, setFinePointer] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
-  
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const pointerQuery = window.matchMedia("(pointer: fine)");
+    const desktopQuery = window.matchMedia("(min-width: 1024px)");
 
-    const updateViewport = () => {
-      setIsDesktop(mediaQuery.matches);
+    const updateQueries = () => {
+      setFinePointer(pointerQuery.matches);
+      setIsDesktop(desktopQuery.matches);
     };
 
-    updateViewport();
+    updateQueries();
 
-    mediaQuery.addEventListener("change", updateViewport);
+    pointerQuery.addEventListener("change", updateQueries);
+    desktopQuery.addEventListener("change", updateQueries);
 
     return () => {
-      mediaQuery.removeEventListener("change", updateViewport);
+      pointerQuery.removeEventListener("change", updateQueries);
+      desktopQuery.removeEventListener("change", updateQueries);
     };
   }, []);
 
-  
+  const motionEnabled = !shouldReduceMotion && finePointer;
+
   const heroRef = useRef<HTMLElement>(null);
 
   const isInView = useInView(heroRef, {
-    once: false,
-    margin: "200px 0px 200px 0px",
+    once: true,
+    margin: "120px 0px 120px 0px",
   });
 
-  
-  const animateBg = motionEnabled && isInView && isDesktop;
+  /*
+   * Heavy background / HeroImage motion is intentionally
+   * desktop-only. Mobile receives a static version.
+   */
+  const animateBg =
+    motionEnabled &&
+    isDesktop &&
+    isInView;
+
+  /*
+   * HeroImage can contain its own visual motion.
+   * Do not allow that motion to activate on phones.
+   */
+  const heroImageInView =
+    isDesktop &&
+    isInView;
 
   return (
     <section
@@ -58,17 +80,25 @@ export default function Hero() {
         text-[#F5F5F2]
       "
     >
+      {/* BACKGROUND */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 overflow-hidden"
+        className="
+          pointer-events-none
+          absolute
+          inset-0
+          overflow-hidden
+        "
       >
         <div
           className="
-            absolute inset-0
+            absolute
+            inset-0
             bg-[radial-gradient(circle_at_48%_34%,rgba(143,199,216,0.09),transparent_34%),radial-gradient(circle_at_82%_22%,rgba(99,102,241,0.07),transparent_30%),radial-gradient(circle_at_15%_70%,rgba(45,212,191,0.045),transparent_28%)]
           "
         />
 
+        {/* LEFT ATMOSPHERE */}
         <motion.div
           animate={
             animateBg
@@ -92,15 +122,23 @@ export default function Hero() {
             absolute
             -left-[220px]
             top-[15%]
-            h-[480px]
-            w-[480px]
+            h-[340px]
+            w-[340px]
             rounded-full
-            bg-[#244B67]/30
-            blur-[130px]
+            bg-[#244B67]/20
+            blur-[90px]
+            sm:h-[480px]
+            sm:w-[480px]
+            sm:bg-[#244B67]/30
+            sm:blur-[130px]
+            lg:h-[480px]
+            lg:w-[480px]
+            lg:blur-[130px]
             will-change-transform
           "
         />
 
+        {/* RIGHT ATMOSPHERE */}
         <motion.div
           animate={
             animateBg
@@ -122,17 +160,25 @@ export default function Hero() {
           }
           className="
             absolute
-            -right-[240px]
+            -right-[220px]
             top-[8%]
-            h-[520px]
-            w-[520px]
+            h-[350px]
+            w-[350px]
             rounded-full
-            bg-[#6366F1]/[0.065]
-            blur-[140px]
+            bg-[#6366F1]/[0.045]
+            blur-[90px]
+            sm:h-[520px]
+            sm:w-[520px]
+            sm:bg-[#6366F1]/[0.065]
+            sm:blur-[140px]
+            lg:h-[520px]
+            lg:w-[520px]
+            lg:blur-[140px]
             will-change-transform
           "
         />
 
+        {/* CENTER ATMOSPHERE */}
         <motion.div
           animate={
             animateBg
@@ -155,34 +201,47 @@ export default function Hero() {
             absolute
             left-1/2
             top-[40%]
-            h-[420px]
-            w-[420px]
+            h-[300px]
+            w-[300px]
             -translate-x-1/2
             rounded-full
-            bg-[#A78BFA]/[0.03]
-            blur-[130px]
+            bg-[#A78BFA]/[0.02]
+            blur-[90px]
+            sm:h-[420px]
+            sm:w-[420px]
+            sm:bg-[#A78BFA]/[0.03]
+            sm:blur-[130px]
+            lg:h-[420px]
+            lg:w-[420px]
+            lg:blur-[130px]
             will-change-transform
           "
         />
 
+        {/* GRID */}
         <div
           className="
-            absolute inset-0
-            opacity-[0.022]
+            absolute
+            inset-0
             bg-[linear-gradient(rgba(255,255,255,0.65)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.65)_1px,transparent_1px)]
             bg-[size:76px_76px]
+            opacity-[0.014]
+            sm:opacity-[0.022]
             [mask-image:linear-gradient(to_bottom,black_0%,black_55%,transparent_100%)]
           "
         />
 
+        {/* VIGNETTE */}
         <div
           className="
-            absolute inset-0
+            absolute
+            inset-0
             bg-[radial-gradient(circle_at_50%_35%,transparent_0%,rgba(11,31,51,0.05)_48%,rgba(4,15,27,0.78)_100%)]
           "
         />
       </div>
 
+      {/* CONTENT */}
       <div
         className="
           relative
@@ -213,11 +272,16 @@ export default function Hero() {
             xl:gap-12
           "
         >
+          {/* LEFT CONTENT */}
           <div className="relative z-20 max-w-[760px]">
+            {/* LABEL */}
             <motion.div
               initial={
                 motionEnabled
-                  ? { opacity: 0, y: 10 }
+                  ? {
+                      opacity: 0,
+                      y: 10,
+                    }
                   : false
               }
               animate={{
@@ -290,10 +354,14 @@ export default function Hero() {
               />
             </motion.div>
 
+            {/* HEADING */}
             <motion.h1
               initial={
                 motionEnabled
-                  ? { opacity: 0, y: 22 }
+                  ? {
+                      opacity: 0,
+                      y: 22,
+                    }
                   : false
               }
               animate={{
@@ -319,8 +387,8 @@ export default function Hero() {
               <span
                 className="
                   block
-                  text-[#F8FAFC]
                   pb-[0.08em]
+                  text-[#F8FAFC]
                 "
               >
                 Building
@@ -329,8 +397,8 @@ export default function Hero() {
               <span
                 className="
                   block
-                  text-[#F8FAFC]
                   pb-[0.08em]
+                  text-[#F8FAFC]
                 "
               >
                 Businesses.
@@ -339,8 +407,8 @@ export default function Hero() {
               <span
                 className="
                   block
-                  text-[#F8FAFC]
                   pb-[0.08em]
+                  text-[#F8FAFC]
                 "
               >
                 Shaping the{" "}
@@ -360,10 +428,14 @@ export default function Hero() {
               </span>
             </motion.h1>
 
+            {/* DESCRIPTION */}
             <motion.p
               initial={
                 motionEnabled
-                  ? { opacity: 0, y: 12 }
+                  ? {
+                      opacity: 0,
+                      y: 12,
+                    }
                   : false
               }
               animate={{
@@ -390,10 +462,14 @@ export default function Hero() {
               innovation, international business, and long-term growth.
             </motion.p>
 
+            {/* BUTTONS */}
             <motion.div
               initial={
                 motionEnabled
-                  ? { opacity: 0, y: 12 }
+                  ? {
+                      opacity: 0,
+                      y: 12,
+                    }
                   : false
               }
               animate={{
@@ -404,7 +480,13 @@ export default function Hero() {
                 duration: 0.55,
                 delay: 0.22,
               }}
-              className="mt-8 flex flex-col gap-3 sm:flex-row"
+              className="
+                mt-8
+                flex
+                flex-col
+                gap-3
+                sm:flex-row
+              "
             >
               <Link
                 href="/about"
@@ -426,8 +508,9 @@ export default function Hero() {
                   font-semibold
                   !text-[#F5F5F2]
                   shadow-[0_0_0_1px_rgba(143,168,199,0.08),0_12px_35px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.10)]
-                  transition-all
+                  transition-[border-color,background-color,box-shadow,transform]
                   duration-300
+                  ease-out
                   hover:-translate-y-1
                   hover:border-[#9CB7D8]/70
                   hover:bg-[#102D48]
@@ -499,8 +582,9 @@ export default function Hero() {
                   font-semibold
                   !text-[#F5F5F2]
                   shadow-[0_0_0_1px_rgba(143,168,199,0.07),0_12px_35px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.09)]
-                  transition-all
+                  transition-[border-color,background-color,box-shadow,transform]
                   duration-300
+                  ease-out
                   hover:-translate-y-1
                   hover:border-[#8FA8C7]/60
                   hover:bg-[#102D48]
@@ -553,10 +637,14 @@ export default function Hero() {
               </Link>
             </motion.div>
 
+            {/* STATS */}
             <motion.div
               initial={
                 motionEnabled
-                  ? { opacity: 0, y: 10 }
+                  ? {
+                      opacity: 0,
+                      y: 10,
+                    }
                   : false
               }
               animate={{
@@ -606,6 +694,7 @@ export default function Hero() {
             </motion.div>
           </div>
 
+          {/* HERO IMAGE */}
           <motion.div
             initial={
               motionEnabled
@@ -638,34 +727,40 @@ export default function Hero() {
               lg:pt-0
             "
           >
+            {/* IMAGE ATMOSPHERE */}
             <div
               className="
                 pointer-events-none
                 absolute
                 right-[5%]
                 top-1/2
-                h-[340px]
-                w-[340px]
+                h-[260px]
+                w-[260px]
                 -translate-y-1/2
                 rounded-full
-                bg-[#31558A]/[0.10]
-                blur-[110px]
+                bg-[#31558A]/[0.07]
+                blur-[80px]
                 sm:h-[430px]
                 sm:w-[430px]
+                sm:bg-[#31558A]/[0.10]
+                sm:blur-[110px]
               "
             />
 
             <div className="relative z-20 w-full">
-              <HeroImage isInView={isInView} />
+              <HeroImage isInView={heroImageInView} />
             </div>
           </motion.div>
         </div>
       </div>
 
+      {/* SCROLL INDICATOR */}
       <motion.div
         initial={
           motionEnabled
-            ? { opacity: 0 }
+            ? {
+                opacity: 0,
+              }
             : false
         }
         animate={{
@@ -773,15 +868,17 @@ function PremiumStat({
         to-white/[0.015]
         px-3
         py-3.5
-        backdrop-blur-2xl
-        shadow-[0_12px_35px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.07)]
-        transition-all
+        backdrop-blur-none
+        shadow-[0_10px_28px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.07)]
+        transition-[border-color,background-color,box-shadow,transform]
         duration-300
         ${style.border}
         hover:bg-white/[0.07]
         hover:shadow-[0_18px_42px_rgba(0,0,0,0.28)]
         sm:px-4
         sm:py-4
+        sm:backdrop-blur-md
+        lg:backdrop-blur-xl
       `}
     >
       <div
@@ -810,10 +907,11 @@ function PremiumStat({
           w-24
           rounded-full
           ${style.glow}
-          blur-3xl
+          blur-2xl
           transition-transform
           duration-500
-          group-hover:scale-150
+          lg:blur-3xl
+          lg:group-hover:scale-150
         `}
       />
 
@@ -847,7 +945,11 @@ function PremiumStat({
           <Icon
             size={15}
             strokeWidth={1.7}
-            className={`relative z-10 ${style.icon}`}
+            className={`
+              relative
+              z-10
+              ${style.icon}
+            `}
           />
         </div>
 
@@ -883,6 +985,7 @@ function PremiumStat({
         </div>
       </div>
 
+      {/* DESKTOP-ONLY CONTINUOUS SHINE */}
       {motionEnabled && isInView && (
         <motion.div
           aria-hidden="true"

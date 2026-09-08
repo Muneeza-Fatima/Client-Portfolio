@@ -8,57 +8,43 @@ export default function HeroImage({
   isInView?: boolean;
 }) {
   return (
-    <div className="relative w-full max-w-[520px] lg:ml-auto">
-      {/* =====================================================
-          BACKGROUND DEPTH
-          Static blur only — no animation/repaint loop
-      ===================================================== */}
+    <div className="relative w-full max-w-[570px] lg:ml-[24px] lg:mr-auto lg:mt-[12px]">
       <div
         aria-hidden="true"
         className="
           pointer-events-none
           absolute
-          -inset-6
-          rounded-[44px]
-          bg-[#A78BFA]/[0.028]
-          blur-[55px]
+          -inset-5
+          rounded-[40px]
+          bg-[#67E8F9]/[0.055]
+          blur-[50px]
         "
       />
 
-      {/* =====================================================
-          PREMIUM IMAGE FRAME
-      ===================================================== */}
-      <div className="relative rounded-[32px] p-[1.5px] sm:rounded-[38px]">
-        {/* ---------------------------------------------------
-            STATIC BORDER LIGHT
-            Replaces rotating conic-gradient animation
-        --------------------------------------------------- */}
+      <div className="relative rounded-[30px] p-[1.5px] sm:rounded-[34px]">
         <div
           aria-hidden="true"
           className="
             pointer-events-none
             absolute
-            -inset-[1px]
+            -inset-[2px]
             overflow-hidden
-            rounded-[33px]
-            bg-[conic-gradient(from_210deg,rgba(103,232,249,0.05),rgba(103,232,249,0.65),rgba(255,255,255,0.82),rgba(167,139,250,0.45),rgba(255,255,255,0.08),rgba(103,232,249,0.05))]
-            sm:rounded-[39px]
+            rounded-[31px]
+            bg-[conic-gradient(from_210deg,rgba(103,232,249,0.12),rgba(103,232,249,0.95),rgba(255,255,255,1),rgba(103,232,249,0.55),rgba(167,139,250,0.7),rgba(255,255,255,0.95),rgba(103,232,249,0.18),rgba(103,232,249,0.12))]
+            sm:rounded-[35px]
           "
         />
 
-        {/* =================================================
-            IMAGE
-        ================================================= */}
         <div
           className="
             relative
             aspect-[4/5]
             w-full
             overflow-hidden
-            rounded-[31px]
+            rounded-[29px]
             bg-[#24272B]
-            shadow-[0_28px_70px_rgba(0,0,0,0.32)]
-            sm:rounded-[37px]
+            shadow-[0_24px_60px_rgba(0,0,0,0.32),0_0_30px_rgba(103,232,249,0.10)]
+            sm:rounded-[33px]
           "
         >
           <Image
@@ -66,13 +52,10 @@ export default function HeroImage({
             alt="Badar Ul Haq — Founder & CEO"
             fill
             priority
-            sizes="(max-width: 640px) 92vw, (max-width: 1024px) 75vw, 520px"
-            className="object-cover object-center"
+            sizes="(max-width: 640px) 92vw, (max-width: 1024px) 72vw, 570px"
+            className="object-cover object-top scale-[1.12]"
           />
 
-          {/* -------------------------------------------------
-              EDITORIAL CONTRAST
-          ------------------------------------------------- */}
           <div
             aria-hidden="true"
             className="
@@ -86,94 +69,83 @@ export default function HeroImage({
             "
           />
 
-          {/* -------------------------------------------------
-              SUBTLE TOP REFLECTION
-          ------------------------------------------------- */}
           <div
             aria-hidden="true"
             className="
               pointer-events-none
               absolute
-              inset-x-8
+              inset-x-7
               top-0
               h-px
               bg-gradient-to-r
               from-transparent
-              via-white/25
+              via-white/60
               to-transparent
+              shadow-[0_0_10px_rgba(255,255,255,0.55)]
             "
           />
 
-          {/* -------------------------------------------------
-              INNER EDGE
-          ------------------------------------------------- */}
           <div
             aria-hidden="true"
             className="
               pointer-events-none
               absolute
               inset-0
-              rounded-[31px]
+              rounded-[29px]
               ring-1
               ring-inset
-              ring-white/[0.11]
-              sm:rounded-[37px]
+              ring-white/[0.22]
+              shadow-[inset_0_0_18px_rgba(103,232,249,0.08)]
+              sm:rounded-[33px]
             "
           />
         </div>
 
-        {/* =================================================
-            STATIC LUXURY FRAME
-        ================================================= */}
         <div
           aria-hidden="true"
           className="
             pointer-events-none
             absolute
             inset-0
-            rounded-[32px]
+            rounded-[30px]
             border
-            border-white/[0.15]
-            sm:rounded-[38px]
+            border-white/[0.30]
+            shadow-[0_0_14px_rgba(103,232,249,0.16)]
+            sm:rounded-[34px]
           "
         />
 
-        {/* =================================================
-            STATIC EDGE LIGHT
-            No infinite animation
-        ================================================= */}
         <div
           aria-hidden="true"
           className="
             pointer-events-none
             absolute
             inset-0
-            rounded-[32px]
+            rounded-[30px]
             ring-1
             ring-inset
-            ring-[#C4B5FD]/[0.16]
-            sm:rounded-[38px]
+            ring-[#67E8F9]/[0.32]
+            shadow-[inset_0_0_20px_rgba(103,232,249,0.09)]
+            sm:rounded-[34px]
           "
         />
       </div>
 
-      {/* =====================================================
-          SMALL EXECUTIVE ACCENT
-      ===================================================== */}
       <div
         aria-hidden="true"
         className="
           pointer-events-none
           absolute
           -bottom-3
-          right-8
+          right-7
           h-px
-          w-20
+          w-16
           bg-gradient-to-r
           from-transparent
-          via-[#67E8F9]/50
+          via-[#67E8F9]/70
           to-transparent
-          opacity-80
+          opacity-90
+          shadow-[0_0_8px_rgba(103,232,249,0.55)]
         "
       />
     </div>

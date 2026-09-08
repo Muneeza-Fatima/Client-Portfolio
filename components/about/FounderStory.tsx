@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -46,17 +47,12 @@ export default function FounderStory() {
     };
   }, []);
 
-  // Keep continuous animations for desktop/fine-pointer devices.
-  // Phones/tablets stay visually identical but avoid expensive infinite animations.
   const motionEnabled = !reduceMotion && finePointer;
 
   return (
     <section className="relative overflow-hidden bg-[#061522] text-white">
-      {/* =========================================================
-          BACKGROUND
-      ========================================================= */}
+      {/* Background */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Grid */}
         <div
           className="absolute inset-0 opacity-[0.018] sm:opacity-[0.025]"
           style={{
@@ -66,38 +62,10 @@ export default function FounderStory() {
           }}
         />
 
-        {/* Large glow */}
-        <div
-          className="
-            absolute -right-40 -top-40
-            h-[400px] w-[400px]
-            rounded-full
-            bg-[#0B8DB8]/10
-            blur-[100px]
-            sm:-right-48 sm:-top-48
-            sm:h-[500px] sm:w-[500px]
-            sm:blur-[120px]
-            lg:h-[600px] lg:w-[600px]
-            lg:blur-[140px]
-          "
-        />
+        <div className="absolute -right-40 -top-40 h-[400px] w-[400px] rounded-full bg-[#0B8DB8]/10 blur-[100px] sm:-right-48 sm:-top-48 sm:h-[500px] sm:w-[500px] sm:blur-[120px] lg:h-[600px] lg:w-[600px] lg:blur-[140px]" />
 
-        <div
-          className="
-            absolute -bottom-48 -left-40
-            h-[360px] w-[360px]
-            rounded-full
-            bg-[#075B9A]/10
-            blur-[105px]
-            sm:-bottom-64 sm:-left-48
-            sm:h-[440px] sm:w-[440px]
-            sm:blur-[125px]
-            lg:h-[520px] lg:w-[520px]
-            lg:blur-[150px]
-          "
-        />
+        <div className="absolute -bottom-48 -left-40 h-[360px] w-[360px] rounded-full bg-[#075B9A]/10 blur-[105px] sm:-bottom-64 sm:-left-48 sm:h-[440px] sm:w-[440px] sm:blur-[125px] lg:h-[520px] lg:w-[520px] lg:blur-[150px]" />
 
-        {/* Architectural circles */}
         <motion.div
           animate={
             motionEnabled
@@ -115,43 +83,15 @@ export default function FounderStory() {
                 }
               : undefined
           }
-          className="
-            absolute -right-[300px] -top-[280px]
-            h-[650px] w-[650px]
-            rounded-full
-            border border-[#38CFF4]/[0.07]
-            sm:-right-[340px] sm:-top-[310px]
-            sm:h-[760px] sm:w-[760px]
-            lg:-right-[360px] lg:-top-[330px]
-            lg:h-[850px] lg:w-[850px]
-            lg:border-[#38CFF4]/[0.09]
-          "
+          className="absolute -right-[300px] -top-[280px] h-[650px] w-[650px] rounded-full border border-[#38CFF4]/[0.07] sm:-right-[340px] sm:-top-[310px] sm:h-[760px] sm:w-[760px] lg:-right-[360px] lg:-top-[330px] lg:h-[850px] lg:w-[850px] lg:border-[#38CFF4]/[0.09]"
         />
 
-        <div
-          className="
-            absolute -right-[210px] -top-[190px]
-            h-[480px] w-[480px]
-            rounded-full
-            border border-[#38CFF4]/[0.045]
-            sm:-right-[230px] sm:-top-[205px]
-            sm:h-[550px] sm:w-[550px]
-            lg:-right-[245px] lg:-top-[215px]
-            lg:h-[620px] lg:w-[620px]
-            lg:border-[#38CFF4]/[0.055]
-          "
-        />
+        <div className="absolute -right-[210px] -top-[190px] h-[480px] w-[480px] rounded-full border border-[#38CFF4]/[0.045] sm:-right-[230px] sm:-top-[205px] sm:h-[550px] sm:w-[550px] lg:-right-[245px] lg:-top-[215px] lg:h-[620px] lg:w-[620px] lg:border-[#38CFF4]/[0.055]" />
       </div>
 
-      {/* =========================================================
-          CONTENT
-      ========================================================= */}
       <div className="relative mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-24 lg:px-12 lg:py-32">
-        {/* =======================================================
-            HEADER
-        ======================================================= */}
+        {/* Header */}
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-          {/* Heading */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -169,42 +109,17 @@ export default function FounderStory() {
               </span>
             </div>
 
-            {/* Heading */}
-            <h2
-              className="
-                max-w-2xl
-                overflow-visible
-                font-sans
-                text-[clamp(3rem,7vw,6.6rem)]
-                font-semibold
-                leading-[1.02]
-                tracking-[-0.065em]
-                lg:text-[clamp(2.8rem,5.8vw,6rem)]
-              "
-            >
+            <h2 className="max-w-2xl overflow-visible font-sans text-[clamp(3rem,7vw,6.6rem)] font-semibold leading-[1.02] tracking-[-0.065em] lg:text-[clamp(2.8rem,5.8vw,6rem)]">
               <span className="block whitespace-nowrap">
                 Built across
               </span>
 
-              <span
-                className="
-                  mt-3
-                  block
-                  pb-[0.08em]
-                  bg-gradient-to-r
-                  from-white
-                  via-[#7DE6FF]
-                  to-[#21BCE8]
-                  bg-clip-text
-                  text-transparent
-                "
-              >
+              <span className="mt-3 block pb-[0.08em] bg-gradient-to-r from-white via-[#7DE6FF] to-[#21BCE8] bg-clip-text text-transparent">
                 disciplines.
               </span>
             </h2>
           </motion.div>
 
-          {/* Intro */}
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -216,18 +131,7 @@ export default function FounderStory() {
             }}
             className="flex items-end"
           >
-            <div
-              className="
-                relative max-w-xl overflow-hidden rounded-2xl
-                border border-white/[0.09]
-                bg-white/[0.025]
-                p-6
-                backdrop-blur-sm
-                sm:p-8
-                lg:backdrop-blur-xl
-              "
-            >
-              {/* Accent */}
+            <div className="relative max-w-xl overflow-hidden rounded-2xl border border-white/[0.09] bg-white/[0.025] p-6 backdrop-blur-sm sm:p-8 lg:backdrop-blur-xl">
               <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-[#42D5F5] via-[#168BD1] to-transparent" />
 
               <p className="text-base leading-8 text-white/80 sm:text-lg">
@@ -249,54 +153,51 @@ export default function FounderStory() {
           </motion.div>
         </div>
 
-        {/* =======================================================
-            MAIN CONTENT
-        ======================================================= */}
+        {/* Main Content */}
         <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
-          {/* =====================================================
-              IMAGE
-          ===================================================== */}
+          {/* Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.97 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{
-              duration: 1,
+              duration: 0.8,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="group relative min-h-[520px] overflow-hidden rounded-[2rem] border border-white/[0.1] bg-[#03101C] shadow-2xl sm:min-h-[590px]"
+            className="group relative z-0 min-h-[520px] overflow-hidden rounded-[2rem] border border-white/[0.1] bg-[#03101C] shadow-2xl sm:min-h-[590px]"
           >
-            <motion.img
-              src="/images/about/1.jfif"
+            <Image
+              src="/images/about/about.jpeg"
               alt="Dubai architecture at night"
-              initial={{ scale: 1.08 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 1.8,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              fill
+              sizes="(max-width: 1024px) 100vw, 45vw"
               className="
-                absolute inset-0 h-full w-full
-                object-cover object-center
+                z-0
+                object-cover
+                object-center
+                brightness-[1.08]
+                contrast-[1.05]
+                saturate-[1.08]
+                transform-gpu
                 transition-transform
-                duration-[1.8s]
-                group-hover:scale-[1.04]
+                duration-[1.2s]
+                ease-out
+                group-hover:scale-[1.025]
               "
             />
 
-            {/* Image overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#020A11] via-[#031827]/35 to-transparent" />
+            <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#020A11]/45 via-transparent to-transparent" />
 
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0A73B7]/20 via-transparent to-[#20C7E8]/10 opacity-80" />
+            <div className="absolute inset-0 z-10 bg-gradient-to-br from-[#0A73B7]/[0.06] via-transparent to-[#20C7E8]/[0.035]" />
 
-            {/* Frame */}
-            <div className="absolute inset-5 rounded-[1.5rem] border border-white/[0.15]" />
+            <div className="absolute inset-5 z-20 rounded-[1.5rem] border border-white/[0.15]" />
 
-            {/* Top label */}
-            <div className="absolute left-9 top-9 flex items-center gap-3">
+            <div className="absolute left-9 top-9 z-30 flex items-center gap-3">
               <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#67D9F0]/30 bg-[#061522]/30 backdrop-blur-sm">
-                <Sparkles size={12} className="text-[#67D9F0]" />
+                <Sparkles
+                  size={12}
+                  className="text-[#67D9F0]"
+                />
               </span>
 
               <span className="text-[9px] uppercase tracking-[0.3em] text-white/85">
@@ -304,8 +205,7 @@ export default function FounderStory() {
               </span>
             </div>
 
-            {/* Image content */}
-            <div className="absolute bottom-8 left-8 right-8">
+            <div className="absolute bottom-8 left-8 right-8 z-30">
               <p className="mb-2 text-[9px] font-medium uppercase tracking-[0.28em] text-[#67D9F0]">
                 The environment
               </p>
@@ -323,17 +223,14 @@ export default function FounderStory() {
             </div>
           </motion.div>
 
-          {/* =====================================================
-              JOURNEY
-          ===================================================== */}
+          {/* Journey */}
           <div className="relative">
-            {/* Timeline */}
             <motion.div
               initial={{ scaleY: 0 }}
               whileInView={{ scaleY: 1 }}
               viewport={{ once: true, amount: 0.1 }}
               transition={{
-                duration: 1.5,
+                duration: 1.2,
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="absolute bottom-5 left-[11px] top-5 w-px origin-top bg-gradient-to-b from-[#42D5F5]/50 via-white/10 to-transparent"
@@ -343,61 +240,28 @@ export default function FounderStory() {
               {journey.map((item, index) => (
                 <motion.article
                   key={item.number}
-                  initial={{
-                    opacity: 0,
-                    x: 28,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    x: 0,
-                  }}
+                  initial={{ opacity: 0, x: 28 }}
+                  whileInView={{ opacity: 1, x: 0 }}
                   viewport={{
                     once: true,
                     amount: 0.2,
                   }}
                   transition={{
-                    duration: 0.65,
-                    delay: index * 0.08,
+                    duration: 0.55,
+                    delay: index * 0.07,
                     ease: [0.22, 1, 0.36, 1],
                   }}
                   className="group relative pl-10 sm:pl-12"
                 >
-                  {/* Timeline node */}
                   <div className="absolute left-0 top-7 flex h-6 w-6 items-center justify-center rounded-full bg-[#061522]">
                     <span className="h-2.5 w-2.5 rounded-full bg-[#42D5F5] shadow-[0_0_0_5px_rgba(66,213,245,0.08)] transition-all duration-300 group-hover:scale-125 group-hover:shadow-[0_0_0_7px_rgba(66,213,245,0.12)]" />
                   </div>
 
-                  {/* Journey item */}
-                  <div
-                    className="
-                      relative
-                      overflow-hidden
-                      rounded-2xl
-                      border
-                      border-white/[0.07]
-                      bg-white/[0.025]
-                      px-5
-                      py-6
-                      backdrop-blur-none
-                      transition-[border-color,background-color,transform,box-shadow]
-                      duration-500
-                      group-hover:-translate-y-1
-                      group-hover:border-[#42D5F5]/20
-                      group-hover:bg-white/[0.045]
-                      sm:px-7
-                      sm:py-7
-                      sm:backdrop-blur-sm
-                      max-sm:border-[#42D5F5]/25
-                      max-sm:shadow-[0_0_18px_rgba(66,213,245,0.08),inset_0_0_18px_rgba(66,213,245,0.025)]
-                    "
-                  >
-                    {/* Left accent shine — always visible */}
+                  <div className="relative overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 py-6 backdrop-blur-none transition-[border-color,background-color,transform,box-shadow] duration-500 group-hover:-translate-y-1 group-hover:border-[#42D5F5]/20 group-hover:bg-white/[0.045] sm:px-7 sm:py-7 sm:backdrop-blur-sm max-sm:border-[#42D5F5]/25 max-sm:shadow-[0_0_18px_rgba(66,213,245,0.08),inset_0_0_18px_rgba(66,213,245,0.025)]">
                     <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-[#42D5F5] to-transparent opacity-100 transition-opacity duration-500" />
 
-                    {/* Mobile border shine */}
                     <div className="pointer-events-none absolute inset-0 rounded-2xl border border-[#67D9F0]/0 max-sm:border-[#67D9F0]/10" />
 
-                    {/* Number */}
                     <div className="flex items-center gap-4">
                       <span className="text-[9px] font-semibold tracking-[0.28em] text-[#42D5F5]/65">
                         {item.number}
@@ -406,25 +270,10 @@ export default function FounderStory() {
                       <span className="h-px flex-1 bg-white/[0.07]" />
                     </div>
 
-                    {/* Title */}
-                    <h3
-                      className="
-                        mt-5
-                        text-[1.45rem]
-                        font-semibold
-                        leading-[1.2]
-                        tracking-[-0.035em]
-                        text-white
-                        transition-colors
-                        duration-300
-                        group-hover:text-[#7DE6FF]
-                        sm:text-[1.65rem]
-                      "
-                    >
+                    <h3 className="mt-5 text-[1.45rem] font-semibold leading-[1.2] tracking-[-0.035em] text-white transition-colors duration-300 group-hover:text-[#7DE6FF] sm:text-[1.65rem]">
                       {item.title}
                     </h3>
 
-                    {/* Description */}
                     <p className="mt-3 max-w-xl text-sm leading-7 text-white/70 sm:text-[15px]">
                       {item.text}
                     </p>
@@ -435,9 +284,7 @@ export default function FounderStory() {
           </div>
         </div>
 
-        {/* =======================================================
-            CLOSING STATEMENT
-        ======================================================= */}
+        {/* Closing Statement */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -446,7 +293,7 @@ export default function FounderStory() {
             amount: 0.3,
           }}
           transition={{
-            duration: 0.8,
+            duration: 0.7,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="mt-14 border-t border-white/[0.08] pt-7 sm:mt-20"

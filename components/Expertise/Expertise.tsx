@@ -109,10 +109,6 @@ export default function Expertise() {
     mass: 0.8,
   });
 
-  /*
-   * Keep interaction-heavy effects desktop-only.
-   * Touch devices do not need mouse-follow or hover animation.
-   */
   useEffect(() => {
     const mediaQuery = window.matchMedia("(pointer: fine)");
 
@@ -191,7 +187,6 @@ export default function Expertise() {
           "
         />
 
-        {/* Left atmospheric glow */}
         <div
           className="
             absolute
@@ -223,7 +218,6 @@ export default function Expertise() {
           "
         />
 
-        {/* Center atmospheric glow */}
         <div
           className="
             absolute
@@ -244,7 +238,6 @@ export default function Expertise() {
           "
         />
 
-        {/* Right atmospheric glow */}
         <div
           className="
             absolute
@@ -264,7 +257,6 @@ export default function Expertise() {
           "
         />
 
-        {/* Bottom atmospheric glow */}
         <div
           className="
             absolute
@@ -284,7 +276,6 @@ export default function Expertise() {
           "
         />
 
-        {/* Desktop-only mouse-follow glow */}
         {motionEnabled && (
           <motion.div
             style={{
@@ -1873,7 +1864,7 @@ export default function Expertise() {
 
             <p
               className="
-                -mt-4
+                mt-0
                 max-w-5xl
                 font-serif
                 text-[clamp(1.5rem,2.8vw,2.9rem)]
