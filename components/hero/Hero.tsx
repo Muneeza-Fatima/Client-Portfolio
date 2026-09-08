@@ -16,6 +16,8 @@ import {
 
 import HeroImage from "@/components/hero/HeroImage";
 
+const smoothEase = [0.22, 1, 0.36, 1] as const;
+
 export default function Hero() {
   const shouldReduceMotion = useReducedMotion();
 
@@ -290,7 +292,7 @@ export default function Hero() {
               }}
               transition={{
                 duration: 0.55,
-                ease: [0.22, 1, 0.36, 1],
+                ease: smoothEase,
               }}
               className="mb-6 flex items-center gap-3"
             >
@@ -371,7 +373,7 @@ export default function Hero() {
               transition={{
                 duration: 0.7,
                 delay: 0.06,
-                ease: [0.22, 1, 0.36, 1],
+                ease: smoothEase,
               }}
               className="
                 max-w-[820px]
@@ -445,6 +447,7 @@ export default function Hero() {
               transition={{
                 duration: 0.6,
                 delay: 0.14,
+                ease: smoothEase,
               }}
               className="
                 mt-7
@@ -479,6 +482,7 @@ export default function Hero() {
               transition={{
                 duration: 0.55,
                 delay: 0.22,
+                ease: smoothEase,
               }}
               className="
                 mt-8
@@ -654,6 +658,7 @@ export default function Hero() {
               transition={{
                 duration: 0.55,
                 delay: 0.3,
+                ease: smoothEase,
               }}
               className="
                 mt-9
@@ -711,7 +716,7 @@ export default function Hero() {
             transition={{
               duration: 0.75,
               delay: 0.12,
-              ease: [0.22, 1, 0.36, 1],
+              ease: smoothEase,
             }}
             className="
               relative
@@ -769,6 +774,7 @@ export default function Hero() {
         transition={{
           duration: 0.5,
           delay: 0.9,
+          ease: smoothEase,
         }}
         className="
           absolute
@@ -930,6 +936,10 @@ function PremiumStat({
             border-white/[0.10]
             bg-black/20
             shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
+            transition-transform
+            duration-300
+            ease-out
+            group-hover:scale-[1.03]
           "
         >
           <div
@@ -949,6 +959,10 @@ function PremiumStat({
               relative
               z-10
               ${style.icon}
+              transition-transform
+              duration-300
+              ease-out
+              group-hover:scale-105
             `}
           />
         </div>
@@ -962,7 +976,6 @@ function PremiumStat({
               leading-none
               tracking-[-0.045em]
               ${style.value}
-              sm:text-[1.7rem]
             `}
           >
             {value}
@@ -977,6 +990,9 @@ function PremiumStat({
               uppercase
               tracking-[0.13em]
               text-white/45
+              transition-opacity
+              duration-300
+              group-hover:text-white/55
               sm:text-[7.5px]
             "
           >

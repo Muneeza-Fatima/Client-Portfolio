@@ -331,22 +331,22 @@ export default function Expertise() {
                     ? false
                     : {
                         opacity: 0,
-                        y: 16,
+                        x: -45,
                       }
                 }
                 whileInView={{
                   opacity: 1,
-                  y: 0,
+                  x: 0,
                 }}
                 viewport={{
                   once: true,
-                  amount: 0.12,
+                  amount: 0.18,
                 }}
                 transition={{
-                  duration: 0.42,
+                  duration: 0.55,
                   delay: shouldReduceMotion
                     ? 0
-                    : index * 0.045,
+                    : index * 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 whileHover={

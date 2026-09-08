@@ -21,7 +21,7 @@ const experiences = [
     location: "United Arab Emirates",
     category: "CYBERSECURITY",
     icon: ShieldCheck,
-    image: "/images/experience/cybersecurity.jfif",
+    image: "/images/experience/cybersecurity.jpeg",
     description:
       "Monitor and analyze security events, investigate incidents, assess vulnerabilities, and support remediation across enterprise environments.",
     highlights: [
@@ -39,7 +39,7 @@ const experiences = [
     location: "United Arab Emirates",
     category: "REAL ESTATE",
     icon: Building2,
-    image: "/images/experience/real-estate.jfif",
+    image: "/images/experience/real-estate.jpeg",
     description:
       "Support buyers and investors across Dubai's dynamic real-estate market through research, market intelligence and tailored investment guidance.",
     highlights: [
