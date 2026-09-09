@@ -167,6 +167,7 @@ export default function Experience() {
         >
           <div className="flex items-center gap-3">
             <span className="h-1.5 w-1.5 rounded-full bg-[#42D5F5] shadow-[0_0_14px_rgba(66,213,245,0.7)]" />
+
             <span className="text-[9px] font-semibold uppercase tracking-[0.36em] text-[#5FE0F5]">
               Professional Experience
             </span>
@@ -174,6 +175,7 @@ export default function Experience() {
 
           <h2 className="mt-6 text-[clamp(3.4rem,5.5vw,5.4rem)] font-medium leading-[0.88] tracking-[-0.07em]">
             <span className="text-white">Experience that </span>
+
             <span className="bg-gradient-to-r from-white via-[#83E5F4] to-[#3184DF] bg-clip-text text-transparent">
               shaped the path.
             </span>
@@ -212,6 +214,7 @@ export default function Experience() {
                     <span className="text-[13px] font-bold uppercase tracking-[0.25em] text-[#67E8F9]">
                       {experience.year}
                     </span>
+
                     <div className="mt-3 h-px w-8 bg-[#42D5F5]/30" />
                   </div>
 
@@ -411,8 +414,7 @@ export default function Experience() {
                           priority={index === 0}
                           fetchPriority={index === 0 ? "high" : "auto"}
                           loading={index === 0 ? "eager" : "lazy"}
-                          quality={90}
-                          decoding="async"
+                          quality={75}
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) calc(100vw - 2rem), 340px"
                           className="
                             object-cover
