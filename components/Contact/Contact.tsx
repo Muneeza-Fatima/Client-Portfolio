@@ -220,7 +220,9 @@ export default function ContactPage() {
     setSubmitError("");
   }
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    e: FormEvent<HTMLFormElement>,
+  ) {
     e.preventDefault();
 
     if (submitting) return;
@@ -241,6 +243,16 @@ export default function ContactPage() {
 
     setSubmitError("");
     setSubmitting(true);
+
+    /*
+     * AbortController prevents the form from remaining stuck on
+     * "Sending..." forever if Web3Forms is slow/unreachable.
+     */
+    const controller = new AbortController();
+
+    const timeoutId = window.setTimeout(() => {
+      controller.abort();
+    }, 12000);
 
     try {
       const accessKey =
@@ -279,10 +291,22 @@ export default function ContactPage() {
             Accept: "application/json",
           },
           body: formData,
+          signal: controller.signal,
         },
       );
 
-      const result = await response.json();
+      let result: {
+        success?: boolean;
+        message?: string;
+      } = {};
+
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error(
+          "The server returned an invalid response. Please try again.",
+        );
+      }
 
       if (!response.ok || !result.success) {
         throw new Error(
@@ -304,16 +328,29 @@ export default function ContactPage() {
         setSubmitted(false);
       }, 4000);
     } catch (error) {
-      console.error("Web3Forms submission error:", error);
+      console.error(
+        "Web3Forms submission error:",
+        error,
+      );
 
       setSubmitted(false);
 
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "Unable to send your inquiry. Please try again.",
-      );
+      if (
+        error instanceof DOMException &&
+        error.name === "AbortError"
+      ) {
+        setSubmitError(
+          "The request took too long. Please check your connection and try again.",
+        );
+      } else {
+        setSubmitError(
+          error instanceof Error
+            ? error.message
+            : "Unable to send your inquiry. Please try again.",
+        );
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setSubmitting(false);
     }
   }
@@ -326,21 +363,12 @@ export default function ContactPage() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_5%,rgba(54,145,185,0.085),transparent_32%),radial-gradient(circle_at_90%_25%,rgba(45,77,180,0.045),transparent_29%),radial-gradient(circle_at_5%_62%,rgba(18,122,137,0.035),transparent_28%)]" />
-
-        <div className="absolute left-1/2 top-[-120px] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[#48CBE8]/[0.018]" />
-
-        <div className="absolute -left-[300px] -top-[280px] h-[650px] w-[650px] rounded-full bg-[#246A91]/[0.045]" />
-
-        <div className="absolute -right-[280px] top-[12%] h-[620px] w-[620px] rounded-full bg-[#405FD1]/[0.028]" />
-
-        <div className="absolute left-1/2 top-[38%] h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[#315B78]/[0.018]" />
-
-        <div className="absolute -bottom-[280px] left-[20%] h-[600px] w-[600px] rounded-full bg-[#147D78]/[0.02]" />
+        {/* Clean background — no bubbles */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_5%,rgba(54,145,185,0.055),transparent_32%),radial-gradient(circle_at_90%_25%,rgba(45,77,180,0.025),transparent_29%),radial-gradient(circle_at_5%_62%,rgba(18,122,137,0.022),transparent_28%)]" />
 
         <div className="absolute inset-0 bg-[linear-gradient(rgba(190,220,235,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(190,220,235,0.7)_1px,transparent_1px)] bg-[size:92px_92px] opacity-[0.006] [mask-image:linear-gradient(to_bottom,black_0%,black_52%,transparent_100%)]" />
 
-        <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_14%,rgba(91,143,180,0.01)_42%,transparent_68%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_14%,rgba(91,143,180,0.008)_42%,transparent_68%)]" />
 
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,transparent_0%,rgba(5,20,34,0.12)_42%,rgba(3,13,24,0.76)_100%)]" />
 
@@ -365,11 +393,6 @@ export default function ContactPage() {
         {/* HERO */}
 
         <div className="relative mt-7 max-w-[1080px] sm:mt-8">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -left-20 top-0 h-44 w-80 rounded-full bg-[#42D5F5]/[0.018]"
-          />
-
           <h1 className="relative font-serif text-[clamp(2.7rem,5.5vw,5.6rem)] font-normal leading-[0.98] tracking-[-0.055em]">
             <span className="block text-[#F8FAFC]">
               Let&apos;s build
@@ -395,11 +418,6 @@ export default function ContactPage() {
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.018),transparent_40%,rgba(66,213,245,0.010)_100%)]"
-            />
-
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-[20%] -top-[20%] h-[260px] w-[260px] rounded-full bg-[#42D5F5]/[0.012]"
             />
 
             <div
@@ -537,11 +555,6 @@ export default function ContactPage() {
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 -z-10 rounded-[24px] bg-[linear-gradient(135deg,rgba(255,255,255,0.018),transparent_40%,rgba(66,213,245,0.010)_100%)]"
-            />
-
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-[12%] -top-[15%] h-[260px] w-[260px] rounded-full bg-[#42D5F5]/[0.012]"
             />
 
             <div

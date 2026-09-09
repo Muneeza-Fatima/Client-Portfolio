@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -198,7 +197,9 @@ export default function Experience() {
                 <motion.article
                   key={`${experience.year}-${experience.role}`}
                   initial={reduceMotion ? false : { opacity: 0, y: 28 }}
-                  whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+                  whileInView={
+                    reduceMotion ? undefined : { opacity: 1, y: 0 }
+                  }
                   viewport={{ once: true, amount: 0.12 }}
                   transition={{
                     duration: 0.7,
@@ -410,7 +411,9 @@ export default function Experience() {
                           priority={index === 0}
                           fetchPriority={index === 0 ? "high" : "auto"}
                           loading={index === 0 ? "eager" : "lazy"}
-                          sizes="(max-width: 1024px) 100vw, 340px"
+                          quality={90}
+                          decoding="async"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) calc(100vw - 2rem), 340px"
                           className="
                             object-cover
                             object-center

@@ -145,6 +145,65 @@ const hoverLift = {
   },
 };
 
+/*
+|--------------------------------------------------------------------------
+| IMAGE PRELOADER
+|--------------------------------------------------------------------------
+| All venture images are requested in the background after the page loads.
+| This means when the user selects another category, the image is much more
+| likely to already be available in browser cache.
+*/
+function VentureImagePreloader() {
+  useEffect(() => {
+    let cancelled = false;
+
+    const preloadImages = () => {
+      if (cancelled) return;
+
+      activities.forEach((activity) => {
+        const img = new window.Image();
+
+        img.decoding = "async";
+        img.src = activity.image;
+      });
+    };
+
+    /*
+     * Don't block the initial render.
+     * Give the browser a moment to render the page first, then preload.
+     */
+    if (
+      "requestIdleCallback" in window &&
+      typeof window.requestIdleCallback === "function"
+    ) {
+      const idleId = window.requestIdleCallback(
+        () => preloadImages(),
+        { timeout: 1500 }
+      );
+
+      return () => {
+        cancelled = true;
+
+        if (
+          "cancelIdleCallback" in window &&
+          typeof window.cancelIdleCallback === "function"
+        ) {
+          window.cancelIdleCallback(idleId);
+        }
+      };
+    }
+
+    const timeoutId = setTimeout(preloadImages, 300);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  return null;
+}
+
 export default function Ventures() {
   const reduceMotion = useReducedMotion();
 
@@ -254,7 +313,7 @@ export default function Ventures() {
   };
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
+    const timer = setTimeout(() => {
       scrollDesktopCategoryIntoView(activeIndex);
 
       if (shouldScrollHeadingRef.current) {
@@ -263,12 +322,14 @@ export default function Ventures() {
       }
     }, 80);
 
-    return () => window.clearTimeout(timer);
+    return () => clearTimeout(timer);
   }, [activeIndex]);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#06131F] text-white">
       <Navbar />
+
+      <VentureImagePreloader />
 
       <main className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -1123,27 +1184,15 @@ export default function Ventures() {
 
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.035] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                {/* COMPACT IMAGE — NO CROPPING */}
+                {/* OPTIMIZED ACTIVITY IMAGE */}
                 <motion.div
                   key={`image-${active.number}`}
-                  initial={
-                    reduceMotion || !hoverEnabled
-                      ? false
-                      : {
-                          opacity: 0,
-                          scale: 1.02,
-                        }
-                  }
-                  animate={
-                    reduceMotion || !hoverEnabled
-                      ? undefined
-                      : {
-                          opacity: 1,
-                          scale: 1,
-                        }
-                  }
+                  initial={false}
+                  animate={{
+                    opacity: 1,
+                  }}
                   transition={{
-                    duration: 0.55,
+                    duration: reduceMotion ? 0 : 0.2,
                     ease,
                   }}
                   className="relative aspect-[16/8] min-h-[180px] w-full overflow-hidden bg-[#071722] sm:min-h-[200px] lg:aspect-[16/8] lg:min-h-0"
@@ -1152,9 +1201,12 @@ export default function Ventures() {
                     src={active.image}
                     alt={active.title}
                     fill
+                    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 92vw, 900px"
+                    quality={82}
                     priority={activeIndex === 0}
-                    loading={activeIndex === 0 ? "eager" : "lazy"}
-                    sizes="(max-width: 1023px) 100vw, 900px"
+                    fetchPriority={
+                      activeIndex === 0 ? "high" : "auto"
+                    }
                     className="object-contain object-center"
                   />
                 </motion.div>

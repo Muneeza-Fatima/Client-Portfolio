@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -1693,6 +1692,7 @@ export default function Expertise() {
             group
             relative
             mt-10
+            min-h-[245px]
             overflow-hidden
             rounded-[13px]
             border
@@ -1706,9 +1706,11 @@ export default function Expertise() {
             hover:-translate-y-[3px]
             hover:border-[#C9C1B2]
             hover:shadow-[0_30px_78px_rgba(0,0,0,0.24),0_0_36px_rgba(79,140,255,0.04)]
+            sm:min-h-[270px]
             sm:px-8
             sm:py-9
             lg:mt-24
+            lg:min-h-[310px]
             lg:px-14
             lg:py-14
           "
@@ -1779,62 +1781,74 @@ export default function Expertise() {
             "
           />
 
+          {/* APPROACH CONTENT — VERTICALLY CENTERED */}
           <div
             className="
               relative
-              grid
-              gap-6
-              lg:grid-cols-[150px_1fr]
-              lg:gap-16
+              flex
+              min-h-[185px]
+              items-center
+              lg:min-h-[210px]
             "
           >
-            <div>
-              <span
-                className="
-                  text-[7px]
-                  font-semibold
-                  uppercase
-                  tracking-[0.34em]
-                  text-[#58708A]
-                "
-              >
-                Approach
-              </span>
-
-              <div
-                className="
-                  mt-5
-                  h-px
-                  w-14
-                  bg-gradient-to-r
-                  from-[#4F8CFF]/80
-                  via-[#7D9FFF]/40
-                  to-transparent
-                  transition-[width]
-                  duration-400
-                  group-hover:w-20
-                "
-              />
-            </div>
-
-            <p
+            <div
               className="
-                mt-0
-                max-w-5xl
-                font-serif
-                text-[clamp(1.5rem,2.8vw,2.9rem)]
-                leading-[1.12]
-                tracking-[-0.04em]
-                text-[#26313A]
-                sm:mt-0
+                grid
+                w-full
+                gap-6
+                lg:grid-cols-[150px_1fr]
+                lg:gap-16
+                lg:items-center
               "
             >
-              Turning complexity into clarity, capability into opportunity,
-              and opportunity into{" "}
-              <span className="text-[#168BD1]">
-                measurable impact.
-              </span>
-            </p>
+              <div>
+                <span
+                  className="
+                    text-[7px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.34em]
+                    text-[#58708A]
+                  "
+                >
+                  Approach
+                </span>
+
+                <div
+                  className="
+                    mt-5
+                    h-px
+                    w-14
+                    bg-gradient-to-r
+                    from-[#4F8CFF]/80
+                    via-[#7D9FFF]/40
+                    to-transparent
+                    transition-[width]
+                    duration-400
+                    group-hover:w-20
+                  "
+                />
+              </div>
+
+              <p
+                className="
+                  mt-0
+                  max-w-5xl
+                  font-serif
+                  text-[clamp(1.5rem,2.8vw,2.9rem)]
+                  leading-[1.12]
+                  tracking-[-0.04em]
+                  text-[#26313A]
+                  sm:mt-0
+                "
+              >
+                Turning complexity into clarity, capability into opportunity,
+                and opportunity into{" "}
+                <span className="text-[#168BD1]">
+                  measurable impact.
+                </span>
+              </p>
+            </div>
           </div>
         </motion.div>
 

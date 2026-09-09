@@ -65,8 +65,11 @@ export default function Ventures() {
 
   const motionEnabled = !shouldReduceMotion && finePointer;
 
-  // Lightweight ring animation works on all devices.
-  // Heavy section/card motion remains limited to fine-pointer devices.
+  /*
+   * Lightweight ring animation:
+   * Runs through CSS instead of Framer Motion so the ring
+   * remains smooth on mobile and after deployment.
+   */
   const ringAnimated = !shouldReduceMotion;
 
   return (
@@ -399,16 +402,10 @@ export default function Ventures() {
                 </span>
               </div>
 
-              {/* ROTATING RING — ALL DEVICES */}
+              {/* LIGHTWEIGHT CONTINUOUS RING */}
               {ringAnimated && (
-                <motion.span
+                <span
                   aria-hidden="true"
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 18,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
                   className="
                     pointer-events-none
                     absolute
@@ -418,8 +415,10 @@ export default function Ventures() {
                     border-transparent
                     border-t-[#14B8A6]
                     border-r-[#14B8A6]/50
-                    shadow-[0_0_14px_rgba(20,184,166,0.40)]
+                    shadow-[0_0_12px_rgba(20,184,166,0.30)]
                     transform-gpu
+                    will-change-transform
+                    motion-safe:animate-[ventures-ring_24s_linear_infinite]
                   "
                 />
               )}
@@ -474,13 +473,13 @@ export default function Ventures() {
                 <motion.div
                   key={venture.title}
                   initial={
-                    shouldReduceMotion
-                      ? false
-                      : {
+                    motionEnabled
+                      ? {
                           opacity: 0,
                           y: 22,
                           scale: 0.985,
                         }
+                      : false
                   }
                   whileInView={{
                     opacity: 1,
@@ -509,7 +508,7 @@ export default function Ventures() {
                       : undefined
                   }
                   whileTap={
-                    !shouldReduceMotion
+                    motionEnabled
                       ? {
                           scale: 0.985,
                           transition: {

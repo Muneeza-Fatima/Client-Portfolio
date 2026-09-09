@@ -294,7 +294,14 @@ export default function Hero() {
                 duration: 0.55,
                 ease: smoothEase,
               }}
-              className="mb-6 flex items-center gap-3"
+              className="
+                relative
+                -top-3
+                mb-6
+                flex
+                items-center
+                gap-3
+              "
             >
               <span
                 className="
