@@ -8,24 +8,12 @@ import {
   Mail,
   MapPin,
 } from "lucide-react";
-import { motion, useReducedMotion } from "framer-motion";
 import {
-  type CSSProperties,
   type FormEvent,
   useEffect,
   useRef,
   useState,
 } from "react";
-
-type AmbientStyle = CSSProperties & {
-  "--drift-x"?: string;
-  "--drift-y"?: string;
-  "--drift-scale-from"?: number;
-  "--drift-scale-to"?: number;
-  "--drift-opacity-from"?: number;
-  "--drift-opacity-to"?: number;
-  "--drift-duration"?: string;
-};
 
 const countries = [
   { name: "United Arab Emirates", code: "AE" },
@@ -77,12 +65,12 @@ const inputClass = `
   text-[#173247]
   outline-none
   placeholder:text-[#7A858A]
-  transition-all
-  duration-300
+  transition-[border-color,background-color,box-shadow]
+  duration-200
   hover:border-[#BFCACD]
   focus:border-[#55CDE8]
   focus:bg-[#FFFEFB]
-  focus:shadow-[0_0_0_3px_rgba(85,205,232,0.10),0_8px_22px_rgba(0,0,0,0.07)]
+  focus:shadow-[0_0_0_3px_rgba(85,205,232,0.10)]
 `;
 
 function CountryFlag({
@@ -157,9 +145,6 @@ function TelegramIcon() {
 }
 
 export default function ContactPage() {
-  const shouldReduceMotion = useReducedMotion();
-  const motionEnabled = !shouldReduceMotion;
-
   const [countryOpen, setCountryOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState<
     (typeof countries)[number] | null
@@ -182,11 +167,17 @@ export default function ContactPage() {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
 
-      if (countryRef.current && !countryRef.current.contains(target)) {
+      if (
+        countryRef.current &&
+        !countryRef.current.contains(target)
+      ) {
         setCountryOpen(false);
       }
 
-      if (reasonRef.current && !reasonRef.current.contains(target)) {
+      if (
+        reasonRef.current &&
+        !reasonRef.current.contains(target)
+      ) {
         setReasonOpen(false);
       }
     }
@@ -202,8 +193,14 @@ export default function ContactPage() {
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside,
+      );
+      document.removeEventListener(
+        "keydown",
+        handleEscape,
+      );
     };
   }, []);
 
@@ -323,95 +320,27 @@ export default function ContactPage() {
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#061A2A] text-[#F4F7F9]">
-      {/* PREMIUM DEEP NAVY BACKGROUND — NO EXTRA SHINE */}
+      {/* PREMIUM STATIC BACKGROUND */}
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 overflow-hidden"
+        className="pointer-events-none absolute inset-0"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_5%,rgba(54,145,185,0.09),transparent_34%),radial-gradient(circle_at_90%_25%,rgba(45,77,180,0.055),transparent_31%),radial-gradient(circle_at_5%_62%,rgba(18,122,137,0.045),transparent_30%)] sm:bg-[radial-gradient(circle_at_50%_5%,rgba(54,145,185,0.10),transparent_34%),radial-gradient(circle_at_90%_25%,rgba(45,77,180,0.06),transparent_31%),radial-gradient(circle_at_5%_62%,rgba(18,122,137,0.05),transparent_30%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_5%,rgba(54,145,185,0.085),transparent_32%),radial-gradient(circle_at_90%_25%,rgba(45,77,180,0.045),transparent_29%),radial-gradient(circle_at_5%_62%,rgba(18,122,137,0.035),transparent_28%)]" />
 
-        <div
-          className="ambient-blob absolute left-1/2 top-[3%] h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[#48CBE8]/[0.025] blur-[130px] sm:h-[720px] sm:w-[720px]"
-          style={
-            motionEnabled
-              ? ({
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.025,
-                  "--drift-opacity-from": 0.1,
-                  "--drift-opacity-to": 0.14,
-                  "--drift-duration": "14s",
-                } as AmbientStyle)
-              : undefined
-          }
-        />
+        <div className="absolute left-1/2 top-[-120px] h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[#48CBE8]/[0.018]" />
 
-        <div
-          className="ambient-blob absolute -left-[280px] -top-[300px] h-[720px] w-[720px] rounded-full bg-[#246A91]/[0.07] blur-[175px] sm:bg-[#246A91]/[0.085]"
-          style={
-            motionEnabled
-              ? ({
-                  "--drift-x": "24px",
-                  "--drift-y": "-14px",
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.03,
-                  "--drift-opacity-from": 0.09,
-                  "--drift-opacity-to": 0.13,
-                  "--drift-duration": "18s",
-                } as AmbientStyle)
-              : undefined
-          }
-        />
+        <div className="absolute -left-[300px] -top-[280px] h-[650px] w-[650px] rounded-full bg-[#246A91]/[0.045]" />
 
-        <div
-          className="ambient-blob absolute -right-[270px] top-[12%] h-[690px] w-[690px] rounded-full bg-[#405FD1]/[0.04] blur-[170px] sm:bg-[#405FD1]/[0.05]"
-          style={
-            motionEnabled
-              ? ({
-                  "--drift-x": "-22px",
-                  "--drift-y": "18px",
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.035,
-                  "--drift-opacity-from": 0.075,
-                  "--drift-opacity-to": 0.11,
-                  "--drift-duration": "21s",
-                } as AmbientStyle)
-              : undefined
-          }
-        />
+        <div className="absolute -right-[280px] top-[12%] h-[620px] w-[620px] rounded-full bg-[#405FD1]/[0.028]" />
 
-        <div
-          className="ambient-blob absolute left-1/2 top-[34%] h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-[#315B78]/[0.025] blur-[165px]"
-          style={
-            motionEnabled
-              ? ({
-                  "--drift-scale-from": 1,
-                  "--drift-scale-to": 1.025,
-                  "--drift-opacity-from": 0.04,
-                  "--drift-opacity-to": 0.065,
-                  "--drift-duration": "16s",
-                } as AmbientStyle)
-              : undefined
-          }
-        />
+        <div className="absolute left-1/2 top-[38%] h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-[#315B78]/[0.018]" />
 
-        <div
-          className="ambient-blob absolute -bottom-[300px] left-[20%] h-[650px] w-[650px] rounded-full bg-[#147D78]/[0.025] blur-[175px]"
-          style={
-            motionEnabled
-              ? ({
-                  "--drift-x": "-18px",
-                  "--drift-opacity-from": 0.03,
-                  "--drift-opacity-to": 0.05,
-                  "--drift-duration": "20s",
-                } as AmbientStyle)
-              : undefined
-          }
-        />
+        <div className="absolute -bottom-[280px] left-[20%] h-[600px] w-[600px] rounded-full bg-[#147D78]/[0.02]" />
 
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(190,220,235,0.75)_1px,transparent_1px),linear-gradient(90deg,rgba(190,220,235,0.75)_1px,transparent_1px)] bg-[size:92px_92px] opacity-[0.006] [mask-image:linear-gradient(to_bottom,black_0%,black_52%,transparent_100%)] sm:opacity-[0.009]" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(190,220,235,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(190,220,235,0.7)_1px,transparent_1px)] bg-[size:92px_92px] opacity-[0.006] [mask-image:linear-gradient(to_bottom,black_0%,black_52%,transparent_100%)]" />
 
-        <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_14%,rgba(91,143,180,0.012)_42%,transparent_68%)] opacity-40 sm:opacity-50" />
+        <div className="absolute inset-0 bg-[linear-gradient(115deg,transparent_14%,rgba(91,143,180,0.01)_42%,transparent_68%)]" />
 
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,transparent_0%,rgba(5,20,34,0.12)_42%,rgba(3,13,24,0.76)_100%)]" />
 
@@ -423,15 +352,7 @@ export default function ContactPage() {
       <div className="relative z-10 mx-auto w-full max-w-[1380px] px-5 pb-16 pt-32 sm:px-8 sm:pb-20 sm:pt-32 lg:px-10 lg:pb-24 lg:pt-36 xl:px-12">
         {/* SECTION LABEL */}
 
-        <motion.div
-          initial={motionEnabled ? { opacity: 0, y: 12 } : false}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.65,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="flex items-center gap-3"
-        >
+        <div className="flex items-center gap-3">
           <span className="h-px w-8 bg-gradient-to-r from-[#64748B]/60 via-[#6F89D8]/50 to-[#9AAEFF]/40 sm:w-10" />
 
           <span className="text-[9px] font-medium uppercase tracking-[0.34em] text-[#AAB8C3] sm:text-[10px]">
@@ -439,23 +360,14 @@ export default function ContactPage() {
           </span>
 
           <span className="h-1 w-1 rounded-full bg-[#79DDF0]/55 shadow-[0_0_7px_rgba(121,221,240,0.40)]" />
-        </motion.div>
+        </div>
 
         {/* HERO */}
 
-        <motion.div
-          initial={motionEnabled ? { opacity: 0, y: 20 } : false}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.8,
-            delay: 0.05,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="relative mt-7 max-w-[1080px] sm:mt-8"
-        >
+        <div className="relative mt-7 max-w-[1080px] sm:mt-8">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute -left-20 top-0 h-44 w-80 rounded-full bg-[#42D5F5]/[0.02] blur-[80px]"
+            className="pointer-events-none absolute -left-20 top-0 h-44 w-80 rounded-full bg-[#42D5F5]/[0.018]"
           />
 
           <h1 className="relative font-serif text-[clamp(2.7rem,5.5vw,5.6rem)] font-normal leading-[0.98] tracking-[-0.055em]">
@@ -472,36 +384,14 @@ export default function ContactPage() {
             Strategic opportunities, new ventures, and meaningful
             collaborations often begin with one thoughtful conversation.
           </p>
-        </motion.div>
+        </div>
 
         {/* MAIN GRID */}
 
         <div className="mt-9 grid gap-5 sm:mt-10 lg:mt-12 lg:grid-cols-[0.78fr_1.22fr] lg:gap-6">
           {/* DIRECT CONTACT CARD */}
 
-          <motion.div
-            initial={
-              motionEnabled
-                ? {
-                    opacity: 0,
-                    y: 22,
-                  }
-                : false
-            }
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.18,
-            }}
-            transition={{
-              duration: 0.75,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="group relative overflow-hidden rounded-[24px] border border-[#78DFF2]/[0.13] bg-[#0F3046]/[0.985] p-5 font-sans text-[#F4F7F9] shadow-[0_20px_52px_rgba(0,0,0,0.27),inset_0_1px_0_rgba(255,255,255,0.045)] backdrop-blur-[18px] transition-all duration-500 hover:-translate-y-1 hover:border-[#72DDF2]/[0.20] hover:bg-[#12374D]/[0.99] hover:shadow-[0_26px_62px_rgba(0,0,0,0.30),0_0_18px_rgba(66,213,245,0.028)] sm:p-5 lg:p-6"
-          >
+          <div className="group relative overflow-hidden rounded-[24px] border border-[#78DFF2]/[0.13] bg-[#0F3046]/[0.985] p-5 font-sans text-[#F4F7F9] shadow-[0_18px_42px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.045)] transition-[border-color,background-color,box-shadow] duration-300 hover:border-[#72DDF2]/[0.20] hover:bg-[#12374D]/[0.99] sm:p-5 lg:p-6">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.018),transparent_40%,rgba(66,213,245,0.010)_100%)]"
@@ -509,7 +399,7 @@ export default function ContactPage() {
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-[20%] -top-[20%] h-[300px] w-[300px] rounded-full bg-[#42D5F5]/[0.018] blur-[105px] transition-opacity duration-500 group-hover:opacity-70"
+              className="pointer-events-none absolute -right-[20%] -top-[20%] h-[260px] w-[260px] rounded-full bg-[#42D5F5]/[0.012]"
             />
 
             <div
@@ -530,7 +420,7 @@ export default function ContactPage() {
               <div className="mt-6 space-y-4">
                 <a
                   href="mailto:lynisbadar838@outlook.com"
-                  className="group/item flex items-center gap-4 rounded-[15px] border border-white/[0.065] bg-[#0B273A]/[0.78] px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#72DDF2]/[0.17] hover:bg-[#0D2E43]"
+                  className="group/item flex items-center gap-4 rounded-[15px] border border-white/[0.065] bg-[#0B273A]/[0.78] px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-[border-color,background-color] duration-200 hover:border-[#72DDF2]/[0.17] hover:bg-[#0D2E43]"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] border border-[#79DDF0]/[0.14] bg-[#79DDF0]/[0.05] text-[#79DDF0]">
                     <Mail size={14} strokeWidth={1.45} />
@@ -549,7 +439,7 @@ export default function ContactPage() {
                   <ArrowUpRight
                     size={14}
                     strokeWidth={1.5}
-                    className="ml-auto shrink-0 text-[#8CA4AF] transition-all duration-200 group-hover/item:-translate-y-0.5 group-hover/item:translate-x-0.5 group-hover/item:text-[#79DDF0]"
+                    className="ml-auto shrink-0 text-[#8CA4AF] transition-colors duration-200 group-hover/item:text-[#79DDF0]"
                   />
                 </a>
 
@@ -588,7 +478,7 @@ export default function ContactPage() {
                   ].map((item) => (
                     <span
                       key={item}
-                      className="rounded-full border border-white/[0.065] bg-[#0B273A]/[0.78] px-2.5 py-1.5 text-[8px] font-semibold uppercase tracking-[0.10em] text-[#AEC0C8] transition-all duration-200 hover:border-[#79DDF0]/[0.16] hover:bg-[#79DDF0]/[0.035] hover:text-[#C8F5FC] sm:text-[9px]"
+                      className="rounded-full border border-white/[0.065] bg-[#0B273A]/[0.78] px-2.5 py-1.5 text-[8px] font-semibold uppercase tracking-[0.10em] text-[#AEC0C8] transition-colors duration-200 hover:border-[#79DDF0]/[0.16] hover:bg-[#79DDF0]/[0.035] hover:text-[#C8F5FC] sm:text-[9px]"
                     >
                       {item}
                     </span>
@@ -607,7 +497,7 @@ export default function ContactPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="LinkedIn"
-                    className="group/social flex h-[36px] w-[36px] items-center justify-center rounded-[11px] border border-white/[0.075] bg-[#0B273A]/[0.78] shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-all duration-300 hover:-translate-y-1 hover:border-[#0A66C2]/[0.34] hover:bg-[#0A66C2]/[0.08] hover:shadow-[0_7px_17px_rgba(10,102,194,0.065)]"
+                    className="group/social flex h-[36px] w-[36px] items-center justify-center rounded-[11px] border border-white/[0.075] bg-[#0B273A]/[0.78] transition-[border-color,background-color] duration-200 hover:border-[#0A66C2]/[0.34] hover:bg-[#0A66C2]/[0.08]"
                   >
                     <LinkedInIcon />
                   </Link>
@@ -617,7 +507,7 @@ export default function ContactPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="WhatsApp"
-                    className="group/social flex h-[36px] w-[36px] items-center justify-center rounded-[11px] border border-white/[0.075] bg-[#0B273A]/[0.78] shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-all duration-300 hover:-translate-y-1 hover:border-[#25D366]/[0.34] hover:bg-[#25D366]/[0.08] hover:shadow-[0_7px_17px_rgba(37,211,102,0.065)]"
+                    className="group/social flex h-[36px] w-[36px] items-center justify-center rounded-[11px] border border-white/[0.075] bg-[#0B273A]/[0.78] transition-[border-color,background-color] duration-200 hover:border-[#25D366]/[0.34] hover:bg-[#25D366]/[0.08]"
                   >
                     <WhatsAppIcon />
                   </Link>
@@ -627,7 +517,7 @@ export default function ContactPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="Telegram"
-                    className="group/social flex h-[36px] w-[36px] items-center justify-center rounded-[11px] border border-white/[0.075] bg-[#0B273A]/[0.78] shadow-[inset_0_1px_0_rgba(255,255,255,0.025)] transition-all duration-300 hover:-translate-y-1 hover:border-[#229ED9]/[0.34] hover:bg-[#229ED9]/[0.08] hover:shadow-[0_7px_17px_rgba(34,158,217,0.065)]"
+                    className="group/social flex h-[36px] w-[36px] items-center justify-center rounded-[11px] border border-white/[0.075] bg-[#0B273A]/[0.78] transition-[border-color,background-color] duration-200 hover:border-[#229ED9]/[0.34] hover:bg-[#229ED9]/[0.08]"
                   >
                     <TelegramIcon />
                   </Link>
@@ -639,34 +529,11 @@ export default function ContactPage() {
               aria-hidden="true"
               className="pointer-events-none absolute bottom-0 left-[7%] right-[7%] h-px bg-gradient-to-r from-transparent via-[#6FB6CA]/[0.13] to-transparent"
             />
-          </motion.div>
+          </div>
 
           {/* PRIVATE INQUIRY CARD */}
 
-          <motion.div
-            initial={
-              motionEnabled
-                ? {
-                    opacity: 0,
-                    y: 24,
-                  }
-                : false
-            }
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.18,
-            }}
-            transition={{
-              duration: 0.8,
-              delay: 0.08,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="group relative overflow-visible rounded-[24px] border border-[#78DFF2]/[0.13] bg-[#0F3046]/[0.985] p-5 font-sans text-[#F4F7F9] shadow-[0_20px_52px_rgba(0,0,0,0.27),inset_0_1px_0_rgba(255,255,255,0.045)] backdrop-blur-[18px] transition-all duration-500 hover:-translate-y-1 hover:border-[#72DDF2]/[0.20] hover:bg-[#12374D]/[0.99] hover:shadow-[0_26px_62px_rgba(0,0,0,0.30),0_0_18px_rgba(66,213,245,0.028)] sm:p-5 lg:p-6"
-          >
+          <div className="group relative overflow-visible rounded-[24px] border border-[#78DFF2]/[0.13] bg-[#0F3046]/[0.985] p-5 font-sans text-[#F4F7F9] shadow-[0_18px_42px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.045)] transition-[border-color,background-color,box-shadow] duration-300 hover:border-[#72DDF2]/[0.20] hover:bg-[#12374D]/[0.99] sm:p-5 lg:p-6">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 -z-10 rounded-[24px] bg-[linear-gradient(135deg,rgba(255,255,255,0.018),transparent_40%,rgba(66,213,245,0.010)_100%)]"
@@ -674,7 +541,7 @@ export default function ContactPage() {
 
             <div
               aria-hidden="true"
-              className="pointer-events-none absolute -right-[12%] -top-[15%] h-[300px] w-[300px] rounded-full bg-[#42D5F5]/[0.018] blur-[105px] transition-opacity duration-500 group-hover:opacity-70"
+              className="pointer-events-none absolute -right-[12%] -top-[15%] h-[260px] w-[260px] rounded-full bg-[#42D5F5]/[0.012]"
             />
 
             <div
@@ -696,7 +563,10 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+              <form
+                onSubmit={handleSubmit}
+                className="mt-6 space-y-4"
+              >
                 <div className="grid gap-3.5 sm:grid-cols-2">
                   <input
                     id="name"
@@ -726,20 +596,23 @@ export default function ContactPage() {
                 />
 
                 <div className="grid gap-3.5 sm:grid-cols-2">
-                  <div ref={countryRef} className="relative">
+                  <div
+                    ref={countryRef}
+                    className="relative"
+                  >
                     <button
                       type="button"
                       onClick={() => {
                         setCountryOpen((value) => !value);
                         setReasonOpen(false);
                       }}
-                      className={`flex h-11 w-full items-center gap-3 rounded-[13px] border bg-[#F7F5EF] px-[17px] font-sans text-left outline-none transition-all duration-300 ${
+                      className={`flex h-11 w-full items-center gap-3 rounded-[13px] border bg-[#F7F5EF] px-[17px] font-sans text-left outline-none transition-[border-color,background-color,box-shadow] duration-200 ${
                         countryError
                           ? "border-[#F87171]/70"
                           : "border-[#D8D8D2]/70 hover:border-[#BFCACD]"
                       } ${
                         countryOpen
-                          ? "border-[#55CDE8] bg-[#FFFEFB] shadow-[0_0_0_3px_rgba(85,205,232,0.10),0_8px_22px_rgba(0,0,0,0.07)]"
+                          ? "border-[#55CDE8] bg-[#FFFEFB] shadow-[0_0_0_3px_rgba(85,205,232,0.10)]"
                           : ""
                       }`}
                     >
@@ -763,7 +636,7 @@ export default function ContactPage() {
                       <ChevronDown
                         size={15}
                         strokeWidth={1.5}
-                        className={`ml-auto shrink-0 text-[#657780] transition-transform duration-200 ${
+                        className={`ml-auto shrink-0 text-[#657780] transition-transform duration-150 ${
                           countryOpen
                             ? "rotate-180 text-[#168BD1]"
                             : ""
@@ -778,26 +651,7 @@ export default function ContactPage() {
                     )}
 
                     {countryOpen && (
-                      <motion.div
-                        initial={
-                          motionEnabled
-                            ? {
-                                opacity: 0,
-                                y: -5,
-                                scale: 0.985,
-                              }
-                            : false
-                        }
-                        animate={{
-                          opacity: 1,
-                          y: 0,
-                          scale: 1,
-                        }}
-                        transition={{
-                          duration: 0.18,
-                        }}
-                        className="absolute left-0 right-0 top-[50px] z-50 max-h-[230px] overflow-y-auto rounded-[15px] border border-[#345263] bg-[#0C2535] p-1.5 font-sans shadow-[0_22px_55px_rgba(0,0,0,0.48),0_0_18px_rgba(66,213,245,0.025)]"
-                      >
+                      <div className="absolute left-0 right-0 top-[50px] z-50 max-h-[230px] overflow-y-auto rounded-[15px] border border-[#345263] bg-[#0C2535] p-1.5 font-sans shadow-[0_18px_40px_rgba(0,0,0,0.38)]">
                         {countries.map((country) => (
                           <button
                             key={country.code}
@@ -805,7 +659,7 @@ export default function ContactPage() {
                             onClick={() =>
                               handleCountrySelect(country)
                             }
-                            className="flex w-full items-center gap-3 rounded-[10px] px-3 py-2.5 text-left transition-all duration-150 hover:bg-[#15394D]"
+                            className="flex w-full items-center gap-3 rounded-[10px] px-3 py-2.5 text-left transition-colors duration-150 hover:bg-[#15394D]"
                           >
                             <CountryFlag
                               code={country.code}
@@ -825,24 +679,27 @@ export default function ContactPage() {
                             )}
                           </button>
                         ))}
-                      </motion.div>
+                      </div>
                     )}
                   </div>
 
-                  <div ref={reasonRef} className="relative">
+                  <div
+                    ref={reasonRef}
+                    className="relative"
+                  >
                     <button
                       type="button"
                       onClick={() => {
                         setReasonOpen((value) => !value);
                         setCountryOpen(false);
                       }}
-                      className={`flex h-11 w-full items-center gap-3 rounded-[13px] border bg-[#F7F5EF] px-[17px] font-sans text-left outline-none transition-all duration-300 ${
+                      className={`flex h-11 w-full items-center gap-3 rounded-[13px] border bg-[#F7F5EF] px-[17px] font-sans text-left outline-none transition-[border-color,background-color,box-shadow] duration-200 ${
                         reasonError
                           ? "border-[#F87171]/70"
                           : "border-[#D8D8D2]/70 hover:border-[#BFCACD]"
                       } ${
                         reasonOpen
-                          ? "border-[#55CDE8] bg-[#FFFEFB] shadow-[0_0_0_3px_rgba(85,205,232,0.10),0_8px_22px_rgba(0,0,0,0.07)]"
+                          ? "border-[#55CDE8] bg-[#FFFEFB] shadow-[0_0_0_3px_rgba(85,205,232,0.10)]"
                           : ""
                       }`}
                     >
@@ -859,7 +716,7 @@ export default function ContactPage() {
                       <ChevronDown
                         size={15}
                         strokeWidth={1.5}
-                        className={`ml-auto shrink-0 text-[#657780] transition-transform duration-200 ${
+                        className={`ml-auto shrink-0 text-[#657780] transition-transform duration-150 ${
                           reasonOpen
                             ? "rotate-180 text-[#168BD1]"
                             : ""
@@ -874,26 +731,7 @@ export default function ContactPage() {
                     )}
 
                     {reasonOpen && (
-                      <motion.div
-                        initial={
-                          motionEnabled
-                            ? {
-                                opacity: 0,
-                                y: -5,
-                                scale: 0.985,
-                              }
-                            : false
-                        }
-                        animate={{
-                          opacity: 1,
-                          y: 0,
-                          scale: 1,
-                        }}
-                        transition={{
-                          duration: 0.18,
-                        }}
-                        className="absolute left-0 right-0 top-[50px] z-50 rounded-[15px] border border-[#345263] bg-[#0C2535] p-1.5 font-sans shadow-[0_22px_55px_rgba(0,0,0,0.48),0_0_18px_rgba(66,213,245,0.025)]"
-                      >
+                      <div className="absolute left-0 right-0 top-[50px] z-50 rounded-[15px] border border-[#345263] bg-[#0C2535] p-1.5 font-sans shadow-[0_18px_40px_rgba(0,0,0,0.38)]">
                         {reasons.map((reason) => (
                           <button
                             key={reason}
@@ -913,7 +751,7 @@ export default function ContactPage() {
                             )}
                           </button>
                         ))}
-                      </motion.div>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -924,7 +762,7 @@ export default function ContactPage() {
                   required
                   rows={6}
                   placeholder="Tell me a little about your opportunity or idea..."
-                  className="min-h-[145px] w-full resize-none rounded-[13px] border border-[#D8D8D2]/70 bg-[#F7F5EF] px-[17px] py-3.5 font-sans text-[12px] font-medium leading-[1.65] text-[#173247] outline-none placeholder:text-[#7A858A] transition-all duration-300 hover:border-[#BFCACD] focus:border-[#55CDE8] focus:bg-[#FFFEFB] focus:shadow-[0_0_0_3px_rgba(85,205,232,0.10),0_8px_22px_rgba(0,0,0,0.07)]"
+                  className="min-h-[145px] w-full resize-none rounded-[13px] border border-[#D8D8D2]/70 bg-[#F7F5EF] px-[17px] py-3.5 font-sans text-[12px] font-medium leading-[1.65] text-[#173247] outline-none placeholder:text-[#7A858A] transition-[border-color,background-color,box-shadow] duration-200 hover:border-[#BFCACD] focus:border-[#55CDE8] focus:bg-[#FFFEFB] focus:shadow-[0_0_0_3px_rgba(85,205,232,0.10)]"
                 />
 
                 <div className="flex flex-col gap-3.5 border-t border-white/[0.06] pt-5 sm:flex-row sm:items-center sm:justify-between">
@@ -944,7 +782,7 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={submitting || submitted}
-                    className="group/button relative inline-flex h-[48px] shrink-0 items-center justify-center gap-3 overflow-hidden rounded-full border border-[#8DEBFF]/[0.38] bg-gradient-to-r from-[#1289AA] via-[#16A8C9] to-[#147FBE] px-7 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-white shadow-[0_8px_22px_rgba(22,184,220,0.13),0_0_16px_rgba(66,213,245,0.06),inset_0_1px_0_rgba(255,255,255,0.15)] transition-all duration-300 hover:-translate-y-1 hover:border-[#A8ECF8]/[0.58] hover:from-[#18A1C2] hover:via-[#1BB5D4] hover:to-[#168BCB] hover:shadow-[0_12px_28px_rgba(22,184,220,0.17),0_0_22px_rgba(66,213,245,0.08),inset_0_1px_0_rgba(255,255,255,0.18)] active:translate-y-0 disabled:cursor-default disabled:opacity-75 disabled:hover:translate-y-0"
+                    className="group/button relative inline-flex h-[48px] shrink-0 items-center justify-center gap-3 overflow-hidden rounded-full border border-[#8DEBFF]/[0.38] bg-gradient-to-r from-[#1289AA] via-[#16A8C9] to-[#147FBE] px-7 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-white shadow-[0_8px_22px_rgba(22,184,220,0.13),inset_0_1px_0_rgba(255,255,255,0.15)] transition-[border-color,box-shadow,background-color] duration-200 hover:border-[#A8ECF8]/[0.58] hover:shadow-[0_10px_24px_rgba(22,184,220,0.15)] active:translate-y-0 disabled:cursor-default disabled:opacity-75"
                   >
                     <span className="relative z-10 flex items-center gap-3">
                       {submitted ? (
@@ -968,7 +806,7 @@ export default function ContactPage() {
                           <ArrowUpRight
                             size={14}
                             strokeWidth={1.6}
-                            className="text-white transition-transform duration-200 group-hover/button:-translate-y-0.5 group-hover/button:translate-x-0.5"
+                            className="text-white"
                           />
                         </>
                       )}
@@ -977,21 +815,12 @@ export default function ContactPage() {
                 </div>
               </form>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* BOTTOM STATEMENT */}
 
-        <motion.div
-          initial={motionEnabled ? { opacity: 0, y: 14 } : false}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={{
-            duration: 0.7,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="mt-8 border-t border-white/[0.06] pt-5 sm:mt-10 sm:pt-7"
-        >
+        <div className="mt-8 border-t border-white/[0.06] pt-5 sm:mt-10 sm:pt-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <p className="max-w-[920px] font-serif text-[1.4rem] font-normal leading-[1.13] tracking-[-0.045em] text-[#F8FAFC] sm:text-[1.7rem] lg:text-[2.15rem]">
               Every meaningful opportunity starts with a
@@ -1004,7 +833,7 @@ export default function ContactPage() {
               Dubai · UAE
             </span>
           </div>
-        </motion.div>
+        </div>
       </div>
     </main>
   );
