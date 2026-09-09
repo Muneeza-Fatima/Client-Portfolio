@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -56,6 +55,36 @@ export default function HeroImage({
               to-[#FFFFFF]/[0.025]
             "
           />
+
+          {/* INNER BORDER SHINE */}
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              rounded-[29px]
+              ring-1
+              ring-inset
+              ring-[#FFFFFF]/[0.18]
+              sm:rounded-[33px]
+            "
+          />
+
+          {/* CYAN EDGE HIGHLIGHT */}
+          <div
+            aria-hidden="true"
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              rounded-[29px]
+              border
+              border-[#67E8F9]/[0.24]
+              shadow-[inset_0_0_14px_rgba(103,232,249,0.09)]
+              sm:rounded-[33px]
+            "
+          />
         </div>
 
         {/* BACKGROUND-BLENDED EDGE */}
@@ -69,8 +98,25 @@ export default function HeroImage({
             rounded-[30px]
             ring-1
             ring-inset
-            ring-[#24272B]/80
+            ring-[#24272B]/70
             sm:rounded-[34px]
+          "
+        />
+
+        {/* OUTER LIGHT SHINE */}
+        <div
+          aria-hidden="true"
+          className="
+            pointer-events-none
+            absolute
+            -inset-[1px]
+            z-30
+            rounded-[31px]
+            ring-1
+            ring-inset
+            ring-[#67E8F9]/[0.18]
+            shadow-[0_0_18px_rgba(103,232,249,0.09)]
+            sm:rounded-[35px]
           "
         />
       </div>

@@ -27,7 +27,8 @@ export default function Navbar() {
         className="
           relative
           z-[9999]
-          h-[56px]
+          h-[64px]
+          md:h-[56px]
           w-full
           border-b
           border-[#0B1F33]/[0.08]
@@ -274,7 +275,7 @@ export default function Navbar() {
                 relative
                 z-10
                 flex
-                h-9
+                h-10
                 items-center
                 justify-center
                 gap-1.5
@@ -322,8 +323,8 @@ export default function Navbar() {
                 relative
                 z-[10000]
                 flex
-                h-8
-                w-8
+                h-9
+                w-9
                 shrink-0
                 items-center
                 justify-center
@@ -342,9 +343,9 @@ export default function Navbar() {
               "
             >
               {menuOpen ? (
-                <X size={15} strokeWidth={1.8} />
+                <X size={16} strokeWidth={1.8} />
               ) : (
-                <Menu size={15} strokeWidth={1.8} />
+                <Menu size={16} strokeWidth={1.8} />
               )}
             </button>
           </div>

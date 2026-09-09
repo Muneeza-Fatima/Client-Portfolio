@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -93,7 +94,7 @@ const experiences = [
     location: "United States",
     category: "EARLY EXPERIENCE",
     icon: Terminal,
-    image: "/images/experience/freelance-cyber.png",
+    image: "/images/experience/cyber-operator.jpeg",
     description:
       "Early professional experience delivering cybersecurity-related services to clients through freelance projects and digital platforms.",
     highlights: [

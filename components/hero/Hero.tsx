@@ -505,25 +505,23 @@ export default function Hero() {
                   overflow-hidden
                   rounded-full
                   border
-                  border-[#8FA8C7]/70
-                  bg-[#0B1F33]
+                  border-[#9CB7D8]/70
+                  bg-[#102D48]
                   px-7
                   text-[13px]
                   font-semibold
                   !text-[#F5F5F2]
-                  shadow-[0_0_0_1px_rgba(143,168,199,0.08),0_12px_35px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.10)]
-                  transition-[border-color,background-color,box-shadow,transform]
+                  shadow-[0_0_0_1px_rgba(143,168,199,0.12),0_12px_35px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.12)]
+                  transition-[border-color,box-shadow,transform]
                   duration-300
                   ease-out
                   hover:-translate-y-1
-                  hover:border-[#9CB7D8]/70
-                  hover:bg-[#102D48]
-                  hover:shadow-[0_16px_42px_rgba(67,101,148,0.18)]
+                  hover:border-[#A9D8E8]/80
+                  hover:shadow-[0_16px_42px_rgba(67,101,148,0.28),0_0_24px_rgba(66,213,245,0.08),inset_0_1px_0_rgba(255,255,255,0.12)]
                   focus:outline-none
                   focus:ring-2
                   focus:ring-[#8FA8C7]/25
-                  sm:border-[#8FA8C7]/45
-                  sm:shadow-[0_12px_35px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.08)]
+                  active:translate-y-0
                 "
               >
                 <span
@@ -538,26 +536,6 @@ export default function Hero() {
                     from-transparent
                     via-[#D5DFEA]/55
                     to-transparent
-                  "
-                />
-
-                <span
-                  aria-hidden="true"
-                  className="
-                    pointer-events-none
-                    absolute
-                    -left-[80%]
-                    top-[-30%]
-                    h-[160%]
-                    w-[30%]
-                    rotate-[18deg]
-                    bg-gradient-to-r
-                    from-transparent
-                    via-white/[0.10]
-                    to-transparent
-                    transition-[left]
-                    duration-700
-                    group-hover:left-[130%]
                   "
                 />
 
@@ -579,25 +557,23 @@ export default function Hero() {
                   overflow-hidden
                   rounded-full
                   border
-                  border-[#8FA8C7]/65
-                  bg-[#0B1F33]
+                  border-[#9CB7D8]/65
+                  bg-[#102D48]
                   px-7
                   text-[13px]
                   font-semibold
                   !text-[#F5F5F2]
-                  shadow-[0_0_0_1px_rgba(143,168,199,0.07),0_12px_35px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.09)]
-                  transition-[border-color,background-color,box-shadow,transform]
+                  shadow-[0_0_0_1px_rgba(143,168,199,0.10),0_12px_35px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.11)]
+                  transition-[border-color,box-shadow,transform]
                   duration-300
                   ease-out
                   hover:-translate-y-1
-                  hover:border-[#8FA8C7]/60
-                  hover:bg-[#102D48]
-                  hover:shadow-[0_16px_42px_rgba(67,101,148,0.15)]
+                  hover:border-[#A9D8E8]/75
+                  hover:shadow-[0_16px_42px_rgba(67,101,148,0.25),0_0_24px_rgba(66,213,245,0.07),inset_0_1px_0_rgba(255,255,255,0.10)]
                   focus:outline-none
                   focus:ring-2
                   focus:ring-[#8FA8C7]/20
-                  sm:border-[#8FA8C7]/30
-                  sm:shadow-[0_12px_35px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.07)]
+                  active:translate-y-0
                 "
               >
                 <span
@@ -612,26 +588,6 @@ export default function Hero() {
                     from-transparent
                     via-[#D5DFEA]/45
                     to-transparent
-                  "
-                />
-
-                <span
-                  aria-hidden="true"
-                  className="
-                    pointer-events-none
-                    absolute
-                    -left-[80%]
-                    top-[-30%]
-                    h-[160%]
-                    w-[30%]
-                    rotate-[18deg]
-                    bg-gradient-to-r
-                    from-transparent
-                    via-white/[0.08]
-                    to-transparent
-                    transition-[left]
-                    duration-700
-                    group-hover:left-[130%]
                   "
                 />
 
@@ -831,18 +787,35 @@ function PremiumStat({
       glow: "bg-[#587DB2]/[0.10]",
       border: "hover:border-[#8FA8C7]/40",
       value: "text-[#DCE6F0]",
+
+      /* MOBILE */
+      mobileBorder: "border-[#42D5F5]/55",
+      mobileGlow:
+        "shadow-[0_0_0_1px_rgba(66,213,245,0.10),0_10px_30px_rgba(0,0,0,0.42),0_0_24px_rgba(66,213,245,0.10),inset_0_1px_0_rgba(141,235,255,0.12)]",
     },
+
     blue: {
       icon: "text-[#7895BC]",
       glow: "bg-[#31558A]/[0.12]",
       border: "hover:border-[#7895BC]/40",
       value: "text-[#DCE5F0]",
+
+      /* MOBILE */
+      mobileBorder: "border-[#168BD1]/60",
+      mobileGlow:
+        "shadow-[0_0_0_1px_rgba(22,139,209,0.11),0_10px_30px_rgba(0,0,0,0.42),0_0_24px_rgba(22,139,209,0.11),inset_0_1px_0_rgba(66,213,245,0.12)]",
     },
+
     silver: {
       icon: "text-[#CBD5E1]",
       glow: "bg-[#CBD5E1]/[0.08]",
       border: "hover:border-[#CBD5E1]/30",
       value: "text-[#F1F5F9]",
+
+      /* MOBILE */
+      mobileBorder: "border-[#8FA8C7]/50",
+      mobileGlow:
+        "shadow-[0_0_0_1px_rgba(143,168,199,0.09),0_10px_30px_rgba(0,0,0,0.42),0_0_22px_rgba(143,168,199,0.08),inset_0_1px_0_rgba(255,255,255,0.10)]",
     },
   };
 
@@ -866,21 +839,32 @@ function PremiumStat({
         relative
         overflow-hidden
         rounded-[18px]
+
+        /* MOBILE PREMIUM TREATMENT */
         border
-        border-white/[0.10]
-        bg-gradient-to-br
-        from-white/[0.075]
-        via-white/[0.035]
-        to-white/[0.015]
+        ${style.mobileBorder}
+        bg-[#102D48]
+        ${style.mobileGlow}
+
         px-3
         py-3.5
+
         backdrop-blur-none
-        shadow-[0_10px_28px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.07)]
+
         transition-[border-color,background-color,box-shadow,transform]
         duration-300
-        ${style.border}
-        hover:bg-white/[0.07]
-        hover:shadow-[0_18px_42px_rgba(0,0,0,0.28)]
+
+        /* DESKTOP ORIGINAL */
+        lg:border-white/[0.10]
+        lg:bg-gradient-to-br
+        lg:from-white/[0.075]
+        lg:via-white/[0.035]
+        lg:to-white/[0.015]
+        lg:shadow-[0_10px_28px_rgba(0,0,0,0.16),inset_0_1px_0_rgba(255,255,255,0.07)]
+        lg:${style.border}
+        lg:hover:bg-white/[0.07]
+        lg:hover:shadow-[0_18px_42px_rgba(0,0,0,0.28)]
+
         sm:px-4
         sm:py-4
         sm:backdrop-blur-md

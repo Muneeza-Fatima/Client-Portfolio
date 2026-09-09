@@ -65,10 +65,9 @@ export default function Ventures() {
 
   const motionEnabled = !shouldReduceMotion && finePointer;
 
-  // Continuous animation is only needed on fine-pointer devices.
-  // Phones/tablets keep the exact same visual ring without the
-  // constant animation workload.
-  const ringAnimated = !shouldReduceMotion && finePointer;
+  // Lightweight ring animation works on all devices.
+  // Heavy section/card motion remains limited to fine-pointer devices.
+  const ringAnimated = !shouldReduceMotion;
 
   return (
     <section
@@ -97,7 +96,6 @@ export default function Ventures() {
           "
         />
 
-        {/* STATIC / LIGHTWEIGHT ATMOSPHERE */}
         <div
           className="
             absolute
@@ -401,7 +399,7 @@ export default function Ventures() {
                 </span>
               </div>
 
-              {/* ROTATING LINE — DESKTOP ONLY FOR PERFORMANCE */}
+              {/* ROTATING RING — ALL DEVICES */}
               {ringAnimated && (
                 <motion.span
                   aria-hidden="true"
@@ -420,8 +418,8 @@ export default function Ventures() {
                     border-transparent
                     border-t-[#14B8A6]
                     border-r-[#14B8A6]/50
-                    shadow-[0_0_14px_rgba(20,184,166,0.45)]
-                    will-change-transform
+                    shadow-[0_0_14px_rgba(20,184,166,0.40)]
+                    transform-gpu
                   "
                 />
               )}
@@ -523,7 +521,6 @@ export default function Ventures() {
                   }
                   className="group relative"
                 >
-                  {/* PREMIUM CARD */}
                   <div
                     className="
                       relative
@@ -548,7 +545,6 @@ export default function Ventures() {
                       lg:group-hover:shadow-[0_28px_60px_rgba(1,12,24,0.30),0_0_28px_rgba(20,184,166,0.08),inset_0_1px_0_rgba(255,255,255,0.12)]
                     "
                   >
-                    {/* SUBTLE INNER DEPTH */}
                     <div
                       aria-hidden="true"
                       className="
@@ -564,7 +560,6 @@ export default function Ventures() {
                       "
                     />
 
-                    {/* DESKTOP HOVER LIGHT */}
                     {motionEnabled && (
                       <div
                         aria-hidden="true"
