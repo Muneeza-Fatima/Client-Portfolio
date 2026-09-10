@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -17,7 +18,7 @@ const ventures = [
   },
   {
     number: "02",
-    icon: "🧠",
+    icon: "🌀",
     category: "TECHNOLOGY",
     title: "Technology & AI",
     subtitle: "Digital Innovation",

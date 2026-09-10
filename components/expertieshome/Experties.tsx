@@ -24,7 +24,7 @@ const expertise = [
   },
   {
     number: "02",
-    icon: "🤖",
+    icon: "robot",
     title: "Artificial Intelligence",
     description:
       "Turning complex information into intelligent automation, practical insights, and scalable digital solutions.",
@@ -72,91 +72,136 @@ const expertise = [
   },
 ];
 
-function RoboticHandIcon() {
+/* Fixed robot icon — same rendering on desktop and mobile */
+function RobotIcon() {
   return (
     <svg
-      width="34"
-      height="34"
-      viewBox="0 0 64 64"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
-      className="drop-shadow-[0_0_10px_rgba(45,212,191,0.18)]"
+      className="shrink-0"
     >
-      <circle cx="48" cy="10" r="2.5" fill="#67E8F9" />
-      <circle cx="55" cy="17" r="1.7" fill="#5EEAD4" />
-      <circle cx="43" cy="18" r="1.6" fill="#A5F3FC" />
+      {/* Antenna */}
+      <path
+        d="M16 5.2V3.4"
+        stroke="#B8D7E8"
+        strokeWidth="1.35"
+        strokeLinecap="round"
+      />
+
+      <circle
+        cx="16"
+        cy="2.6"
+        r="1.25"
+        fill="#6FE8F4"
+      />
+
+      {/* Robot head outer */}
+      <rect
+        x="7.1"
+        y="6.2"
+        width="17.8"
+        height="17"
+        rx="4.6"
+        fill="#273A63"
+        stroke="#59728C"
+        strokeWidth="0.9"
+      />
+
+      {/* Purple top */}
+      <path
+        d="M8.2 10.2C8.2 8.05 9.95 6.3 12.1 6.3H19.9C22.05 6.3 23.8 8.05 23.8 10.2V11.1H8.2V10.2Z"
+        fill="#4D4B8F"
+      />
+
+      {/* Pink side accents */}
+      <path
+        d="M7.15 11.1H9.25V18.4H7.15C6.48 18.4 5.95 17.87 5.95 17.2V12.3C5.95 11.63 6.48 11.1 7.15 11.1Z"
+        fill="#E85C9F"
+      />
 
       <path
-        d="M48 10L55 17L43 18L48 10Z"
-        stroke="#5EEAD4"
+        d="M24.85 11.1H22.75V18.4H24.85C25.52 18.4 26.05 17.87 26.05 17.2V12.3C26.05 11.63 25.52 11.1 24.85 11.1Z"
+        fill="#E85C9F"
+      />
+
+      {/* Face */}
+      <rect
+        x="9.3"
+        y="11"
+        width="13.4"
+        height="10"
+        rx="3.2"
+        fill="#DDE9F2"
+      />
+
+      {/* Eyes */}
+      <rect
+        x="11.8"
+        y="13.3"
+        width="2.5"
+        height="2.5"
+        rx="0.8"
+        fill="#293C83"
+      />
+
+      <rect
+        x="17.7"
+        y="13.3"
+        width="2.5"
+        height="2.5"
+        rx="0.8"
+        fill="#293C83"
+      />
+
+      {/* Eye highlights */}
+      <circle
+        cx="12.55"
+        cy="13.9"
+        r="0.42"
+        fill="#8DEBFF"
+      />
+
+      <circle
+        cx="18.45"
+        cy="13.9"
+        r="0.42"
+        fill="#8DEBFF"
+      />
+
+      {/* Mouth */}
+      <path
+        d="M13.5 18.2C14.35 18.85 17.65 18.85 18.5 18.2"
+        stroke="#6B78A4"
+        strokeWidth="0.9"
+        strokeLinecap="round"
+      />
+
+      {/* Bottom glow */}
+      <path
+        d="M11.1 23.2H20.9"
+        stroke="#42D5F5"
         strokeWidth="1"
-        strokeOpacity="0.5"
-      />
-
-      <path
-        d="M25 55C20.5 52.5 18 48.5 18 44V32.5C18 30.8 19.3 29.5 21 29.5C22.7 29.5 24 30.8 24 32.5V25.5C24 23.8 25.3 22.5 27 22.5C28.7 22.5 30 23.8 30 25.5V20C30 18.3 31.3 17 33 17C34.7 17 36 18.3 36 20V25.5"
-        stroke="#B8F3FF"
-        strokeWidth="2.2"
         strokeLinecap="round"
-        strokeLinejoin="round"
+        opacity="0.65"
       />
 
-      <path
-        d="M36 25.5V14C36 12.3 37.3 11 39 11C40.7 11 42 12.3 42 14V29"
-        stroke="#78E5F7"
-        strokeWidth="2.2"
-        strokeLinecap="round"
+      {/* Tiny side lights */}
+      <circle
+        cx="8.1"
+        cy="13.1"
+        r="0.65"
+        fill="#67E8F9"
       />
 
-      <path
-        d="M30 25.5V12.5C30 10.8 31.3 9.5 33 9.5C34.7 9.5 36 10.8 36 12.5V25.5"
-        stroke="#A5F3FC"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-
-      <path
-        d="M24 31V17C24 15.3 25.3 14 27 14C28.7 14 30 15.3 30 17V28"
-        stroke="#5EEAD4"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-
-      <path
-        d="M24 39L14.5 34.5C13 33.8 11.2 34.4 10.5 35.9C9.8 37.4 10.4 39.2 11.9 40L21 45.5"
-        stroke="#78E5F7"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      <path
-        d="M24 31.5C29 30 35 30.5 40 33.5L47 37.5C49 38.7 49.7 41.3 48.5 43.3C47.3 45.3 44.7 46 42.7 44.8L35 40.5"
-        stroke="#B8F3FF"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-
-      <circle cx="27" cy="28" r="1.5" fill="#67E8F9" />
-      <circle cx="33" cy="27" r="1.5" fill="#5EEAD4" />
-      <circle cx="39" cy="28" r="1.5" fill="#67E8F9" />
-
-      <path
-        d="M27 36H34M29 40H37M23 44H29"
-        stroke="#5EEAD4"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        strokeOpacity="0.65"
-      />
-
-      <path
-        d="M40 29L48 10"
-        stroke="#67E8F9"
-        strokeWidth="1"
-        strokeDasharray="2 3"
-        strokeOpacity="0.45"
+      <circle
+        cx="23.9"
+        cy="13.1"
+        r="0.65"
+        fill="#67E8F9"
       />
     </svg>
   );
@@ -738,8 +783,8 @@ export default function Expertise() {
                         }
                       `}
                     >
-                      {item.icon === "robotic-hand" ? (
-                        <RoboticHandIcon />
+                      {item.icon === "robot" ? (
+                        <RobotIcon />
                       ) : (
                         <span
                           aria-hidden="true"
