@@ -338,7 +338,7 @@ export default function Experience() {
               tracking-[-0.055em]
             "
           >
-            <span className="block text-[#F8FAFC]">
+            <span className="block whitespace-nowrap text-[#F8FAFC]">
               Experience shaped by
             </span>
 
@@ -346,6 +346,7 @@ export default function Experience() {
               className="
                 mt-3
                 block
+                whitespace-nowrap
                 bg-gradient-to-r
                 from-[#B8F3FF]
                 via-[#78E5F7]
