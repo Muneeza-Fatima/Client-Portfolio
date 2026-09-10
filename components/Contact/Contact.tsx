@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -246,7 +247,7 @@ export default function ContactPage() {
 
     /*
      * AbortController prevents the form from remaining stuck on
-     * "Sending..." forever if Web3Forms is slow/unreachable.
+     * "Sending..." forever if the server is slow/unreachable.
      */
     const controller = new AbortController();
 
@@ -255,27 +256,16 @@ export default function ContactPage() {
     }, 12000);
 
     try {
-      const accessKey =
-        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
-
-      if (!accessKey) {
-        throw new Error(
-          "Web3Forms access key is not configured.",
-        );
-      }
-
       const form = e.currentTarget;
       const formData = new FormData(form);
 
-      formData.append("access_key", accessKey);
-      formData.append(
-        "subject",
-        "New Contact Inquiry — CEO Portfolio",
-      );
-      formData.append(
-        "from_name",
-        "CEO Portfolio Contact Form",
-      );
+      /*
+       * Country and reason are custom UI controls, so they are
+       * added manually before sending the form to our server route.
+       *
+       * The Web3Forms Access Key is NOT included here.
+       * It stays private inside /api/contact/route.ts.
+       */
       formData.append("country", selectedCountry.name);
       formData.append(
         "country_code",
@@ -283,17 +273,14 @@ export default function ContactPage() {
       );
       formData.append("reason", selectedReason);
 
-      const response = await fetch(
-        "https://api.web3forms.com/submit",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-          },
-          body: formData,
-          signal: controller.signal,
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
         },
-      );
+        body: formData,
+        signal: controller.signal,
+      });
 
       let result: {
         success?: boolean;
@@ -329,7 +316,7 @@ export default function ContactPage() {
       }, 4000);
     } catch (error) {
       console.error(
-        "Web3Forms submission error:",
+        "Contact form submission error:",
         error,
       );
 
@@ -851,3 +838,4 @@ export default function ContactPage() {
     </main>
   );
 }
+
