@@ -1545,22 +1545,17 @@ export default function Expertise() {
                           className="
                             relative
                             flex
-                            h-12
-                            w-12
+                            h-11
+                            w-11
                             shrink-0
                             items-center
                             justify-center
                             overflow-hidden
-                            rounded-[9px]
+                            rounded-[8px]
                             border
-                            border-[#9CB4C7]/[0.18]
+                            border-[#9CB4C7]/[0.25]
                             bg-[linear-gradient(145deg,#294352,#203642)]
-                            shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_8px_22px_rgba(0,0,0,0.16)]
-                            sm:h-14
-                            sm:w-14
-                            sm:rounded-[10px]
-                            sm:border-[#9CB4C7]/[0.25]
-                            sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_8px_25px_rgba(0,0,0,0.18)]
+                            shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_8px_25px_rgba(0,0,0,0.18)]
                           "
                         >
                           <span
@@ -1572,25 +1567,23 @@ export default function Expertise() {
                               h-px
                               bg-gradient-to-r
                               from-transparent
-                              via-white/[0.24]
+                              via-white/[0.30]
                               to-transparent
-                              sm:via-white/[0.30]
                             "
                           />
 
+                          {/* SAME 25PX ICON SIZE ON MOBILE */}
                           <span
                             aria-hidden="true"
                             className="
                               select-none
-                              text-[22px]
+                              text-[25px]
                               leading-none
-                              drop-shadow-[0_3px_10px_rgba(255,255,255,0.10)]
+                              drop-shadow-[0_3px_12px_rgba(255,255,255,0.10)]
                               transition-transform
                               duration-300
                               ease-out
-                              group-hover:scale-105
-                              sm:text-[28px]
-                              sm:group-hover:scale-110
+                              group-hover:scale-110
                             "
                           >
                             {item.icon}

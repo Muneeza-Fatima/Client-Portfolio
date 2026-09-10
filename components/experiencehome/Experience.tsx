@@ -10,36 +10,12 @@ const CyberSecurityIcon = ({
 }: {
   className?: string;
 }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    className={className}
+  <span
+    className={`inline-flex items-center justify-center text-[20px] leading-none ${className}`}
     aria-hidden="true"
   >
-    <path
-      d="M12 3.2 19 6v5.3c0 4.5-2.8 7.7-7 9.5-4.2-1.8-7-5-7-9.5V6l7-2.8Z"
-      stroke="currentColor"
-      strokeWidth="1.25"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M8.3 9.2h2.1l1.1-1.5 1.3 3.2 1-1.7h2.1"
-      stroke="currentColor"
-      strokeWidth="1.15"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M5 7.1 3.7 6.2M19 7.1l1.3-.9M5.2 12H3.6M20.4 12h-1.6M7.1 17.2l-1 1M16.9 17.2l1 1"
-      stroke="currentColor"
-      strokeWidth="1"
-      strokeLinecap="round"
-      opacity=".7"
-    />
-    <circle cx="8.3" cy="9.2" r=".7" fill="currentColor" />
-    <circle cx="10.4" cy="9.2" r=".7" fill="currentColor" />
-    <circle cx="15.8" cy="9.2" r=".7" fill="currentColor" />
-  </svg>
+    🧿
+  </span>
 );
 
 const RealEstateIcon = ({
@@ -47,32 +23,12 @@ const RealEstateIcon = ({
 }: {
   className?: string;
 }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    className={className}
+  <span
+    className={`inline-flex items-center justify-center text-[20px] leading-none ${className}`}
     aria-hidden="true"
   >
-    <path
-      d="M4.5 20V9.2L9 5.8v14.2M9 20V3.8l5.2 3.4V20M14.2 20V8.5l5.3 3V20"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M3.5 20h17"
-      stroke="currentColor"
-      strokeWidth="1.25"
-      strokeLinecap="round"
-    />
-    <path
-      d="M6.5 11.3h.1M6.5 14.3h.1M11.5 8.5h.1M11.5 11.5h.1M11.5 14.5h.1M16.8 12.3h.1M16.8 15.3h.1"
-      stroke="currentColor"
-      strokeWidth="1.7"
-      strokeLinecap="round"
-    />
-  </svg>
+    🏢
+  </span>
 );
 
 const LeadershipIcon = ({
@@ -80,54 +36,12 @@ const LeadershipIcon = ({
 }: {
   className?: string;
 }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    className={className}
+  <span
+    className={`inline-flex items-center justify-center text-[20px] leading-none ${className}`}
     aria-hidden="true"
   >
-    <circle
-      cx="12"
-      cy="7"
-      r="2.5"
-      stroke="currentColor"
-      strokeWidth="1.2"
-    />
-    <path
-      d="M7.7 17.8c.3-3.2 1.7-5.2 4.3-5.2s4 2 4.3 5.2"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-    />
-    <circle
-      cx="5.5"
-      cy="10"
-      r="1.8"
-      stroke="currentColor"
-      strokeWidth="1.05"
-      opacity=".72"
-    />
-    <circle
-      cx="18.5"
-      cy="10"
-      r="1.8"
-      stroke="currentColor"
-      strokeWidth="1.05"
-      opacity=".72"
-    />
-    <path
-      d="M2.9 17c.2-2.2 1.1-3.6 2.6-3.6 1.2 0 2.1.8 2.4 2.1M21.1 17c-.2-2.2-1.1-3.6-2.6-3.6-1.2 0-2.1.8-2.4 2.1"
-      stroke="currentColor"
-      strokeWidth="1"
-      strokeLinecap="round"
-      opacity=".72"
-    />
-    <path
-      d="m12 2.3.55 1.05 1.15.16-.83.81.2 1.14L12 4.92l-1.07.54.2-1.14-.83-.81 1.15-.16L12 2.3Z"
-      fill="currentColor"
-      opacity=".9"
-    />
-  </svg>
+    🧑‍🤝‍🧑
+  </span>
 );
 
 const BusinessGrowthIcon = ({
@@ -135,48 +49,12 @@ const BusinessGrowthIcon = ({
 }: {
   className?: string;
 }) => (
-  <svg
-    viewBox="0 0 24 24"
-    fill="none"
-    className={className}
+  <span
+    className={`inline-flex items-center justify-center text-[20px] leading-none ${className}`}
     aria-hidden="true"
   >
-    <rect
-      x="3.5"
-      y="7.5"
-      width="12"
-      height="11"
-      rx="2"
-      stroke="currentColor"
-      strokeWidth="1.2"
-    />
-    <path
-      d="M7.2 7.5V6.4c0-.9.7-1.6 1.6-1.6h1.4c.9 0 1.6.7 1.6 1.6v1.1"
-      stroke="currentColor"
-      strokeWidth="1.1"
-      strokeLinecap="round"
-    />
-    <path
-      d="M3.7 11.5h11.6"
-      stroke="currentColor"
-      strokeWidth="1"
-      opacity=".6"
-    />
-    <path
-      d="m12.5 16 3-3 2 1.5 4-5"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M18.5 9.5h3v3"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
+    💰
+  </span>
 );
 
 const experiences = [
@@ -272,12 +150,6 @@ export default function Experience() {
     };
   }, []);
 
-  /*
-   * Continuous / hover-heavy motion is only enabled on
-   * fine-pointer devices such as desktop/laptop.
-   *
-   * Touch devices get lightweight reveal animations only.
-   */
   const motionEnabled = !shouldReduceMotion && finePointer;
 
   return (
@@ -309,7 +181,6 @@ export default function Experience() {
           overflow-hidden
         "
       >
-        {/* Very subtle vertical depth */}
         <div
           className="
             absolute
@@ -321,7 +192,6 @@ export default function Experience() {
           "
         />
 
-        {/* Fine architectural grid */}
         <div
           className="
             absolute
@@ -334,7 +204,6 @@ export default function Experience() {
           "
         />
 
-        {/* Subtle diagonal light */}
         <div
           className="
             absolute
@@ -345,7 +214,6 @@ export default function Experience() {
           "
         />
 
-        {/* Premium vignette */}
         <div
           className="
             absolute
@@ -355,7 +223,6 @@ export default function Experience() {
           "
         />
 
-        {/* Bottom depth */}
         <div
           className="
             absolute
@@ -657,8 +524,11 @@ export default function Experience() {
                   >
                     <Icon
                       className={`
+                        inline-flex
                         h-[20px]
                         w-[20px]
+                        items-center
+                        justify-center
                         ${style.icon}
                       `}
                     />
