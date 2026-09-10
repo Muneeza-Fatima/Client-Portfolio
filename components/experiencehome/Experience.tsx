@@ -332,10 +332,12 @@ export default function Experience() {
           <h2
             className="
               font-serif
-              text-[clamp(2.45rem,4.8vw,5.15rem)]
+              text-[clamp(2rem,9.5vw,2.7rem)]
               font-normal
-              leading-[1.02]
+              leading-[1.05]
               tracking-[-0.055em]
+              sm:text-[clamp(2.45rem,4.8vw,5.15rem)]
+              sm:leading-[1.02]
             "
           >
             <span className="block whitespace-nowrap text-[#F8FAFC]">
