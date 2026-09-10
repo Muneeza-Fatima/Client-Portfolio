@@ -136,16 +136,16 @@ export default function Connect() {
             <h2
               className="
                 mt-7
-                max-w-[920px]
+                max-w-[880px]
                 overflow-visible
                 pb-3
                 font-serif
-                text-[clamp(2.45rem,6vw,6.2rem)]
+                text-[clamp(2.3rem,5.5vw,5rem)]
                 font-medium
                 leading-[1]
                 tracking-[-0.055em]
-                sm:text-[clamp(2.7rem,6vw,6.2rem)]
-                lg:text-[clamp(2.7rem,5.5vw,5.5rem)]
+                sm:text-[clamp(2.5rem,5.5vw,5rem)]
+                lg:text-[clamp(2.5rem,5vw,5rem)]
               "
             >
               <span className="block bg-gradient-to-r from-[#F8FAFC] via-[#D7E5EF] to-[#9DB8CA] bg-clip-text pb-[0.06em] text-transparent">

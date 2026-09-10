@@ -14,7 +14,6 @@ import {
   Presentation,
   ClipboardCheck,
   Building2,
-  Sparkles,
   Globe2,
   ChevronDown,
 } from "lucide-react";
@@ -755,7 +754,7 @@ export default function Ventures() {
                           : "border-[#42D5F5]/[0.18] group-hover:border-[#42D5F5]/[0.32] group-hover:bg-[#42D5F5]/[0.075] group-hover:shadow-[0_0_32px_rgba(66,213,245,.09)]"
                       }`}
                     >
-                      <Sparkles
+                      <Globe2
                         size={19}
                         strokeWidth={1.25}
                         className="text-[#67D9F0] sm:h-[22px] sm:w-[22px]"
@@ -878,17 +877,6 @@ export default function Ventures() {
 
                       <span className="min-w-0 text-[7px] font-semibold uppercase tracking-[0.16em] text-[#67D9F0] sm:text-[9px] sm:tracking-[0.22em]">
                         Activities
-                      </span>
-                    </div>
-
-                    <div className="mt-3 flex items-center gap-2 text-white transition-colors duration-400 group-hover:text-white sm:mt-5">
-                      <Globe2
-                        size={11}
-                        strokeWidth={1.3}
-                      />
-
-                      <span className="text-[6.5px] uppercase tracking-[0.16em] sm:text-[8px] sm:tracking-[0.2em]">
-                        Global outlook
                       </span>
                     </div>
                   </div>
@@ -1195,7 +1183,7 @@ export default function Ventures() {
                     duration: reduceMotion ? 0 : 0.2,
                     ease,
                   }}
-                  className="relative aspect-[16/8] min-h-[180px] w-full overflow-hidden bg-[#071722] sm:min-h-[200px] lg:aspect-[16/8] lg:min-h-0"
+                  className="relative aspect-[16/9] min-h-[240px] w-full overflow-hidden bg-[#071722] sm:min-h-[260px] lg:aspect-[16/8] lg:min-h-0"
                 >
                   <Image
                     src={active.image}

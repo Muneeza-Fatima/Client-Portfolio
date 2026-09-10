@@ -1,23 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  Globe2,
-  Brain,
-  Building2,
-  TrendingUp,
-} from "lucide-react";
-import {
-  motion,
-  useReducedMotion,
-} from "framer-motion";
+import { ArrowUpRight, Globe2 } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const ventures = [
   {
     number: "01",
-    icon: TrendingUp,
+    icon: "📈",
     category: "TRADE",
     title: "International Trading",
     subtitle: "Cross-Border Commerce",
@@ -26,7 +17,7 @@ const ventures = [
   },
   {
     number: "02",
-    icon: Brain,
+    icon: "🧠",
     category: "TECHNOLOGY",
     title: "Technology & AI",
     subtitle: "Digital Innovation",
@@ -35,7 +26,7 @@ const ventures = [
   },
   {
     number: "03",
-    icon: Building2,
+    icon: "🏛️",
     category: "REAL ESTATE",
     title: "Real Estate",
     subtitle: "Property & Market Opportunities",
@@ -87,6 +78,7 @@ export default function Ventures() {
       "
     >
       {/* BACKGROUND */}
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 overflow-hidden"
@@ -210,6 +202,7 @@ export default function Ventures() {
         "
       >
         {/* SECTION LABEL */}
+
         <motion.div
           initial={motionEnabled ? { opacity: 0, y: 8 } : false}
           whileInView={{ opacity: 1, y: 0 }}
@@ -247,6 +240,7 @@ export default function Ventures() {
         </motion.div>
 
         {/* HEADING */}
+
         <motion.div
           initial={motionEnabled ? { opacity: 0, y: 14 } : false}
           whileInView={{ opacity: 1, y: 0 }}
@@ -305,6 +299,7 @@ export default function Ventures() {
         </motion.div>
 
         {/* PLATFORM */}
+
         <div className="relative mt-14 sm:mt-16 lg:mt-20">
           <div
             aria-hidden="true"
@@ -403,6 +398,7 @@ export default function Ventures() {
               </div>
 
               {/* LIGHTWEIGHT CONTINUOUS RING */}
+
               {ringAnimated && (
                 <span
                   aria-hidden="true"
@@ -455,6 +451,7 @@ export default function Ventures() {
           </motion.div>
 
           {/* CARDS */}
+
           <div
             className="
               mt-14
@@ -466,280 +463,265 @@ export default function Ventures() {
               lg:gap-10
             "
           >
-            {ventures.map((venture, index) => {
-              const Icon = venture.icon;
-
-              return (
-                <motion.div
-                  key={venture.title}
-                  initial={
-                    motionEnabled
-                      ? {
-                          opacity: 0,
-                          y: 22,
-                          scale: 0.985,
-                        }
-                      : false
-                  }
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                  }}
-                  viewport={{
-                    once: true,
-                    amount: 0.18,
-                  }}
-                  transition={{
-                    duration: 0.55,
-                    delay: 0.08 + index * 0.08,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  whileHover={
-                    motionEnabled
-                      ? {
-                          y: -7,
-                          scale: 1.012,
-                          transition: {
-                            duration: 0.28,
-                            ease: [0.22, 1, 0.36, 1],
-                          },
-                        }
-                      : undefined
-                  }
-                  whileTap={
-                    motionEnabled
-                      ? {
-                          scale: 0.985,
-                          transition: {
-                            duration: 0.14,
-                            ease: "easeOut",
-                          },
-                        }
-                      : undefined
-                  }
-                  className="group relative"
+            {ventures.map((venture, index) => (
+              <motion.div
+                key={venture.title}
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : {
+                        opacity: 0,
+                        y: 90,
+                        scale: 0.9,
+                        filter: "blur(8px)",
+                      }
+                }
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  filter: "blur(0px)",
+                }}
+                viewport={{
+                  once: true,
+                  amount: 0.12,
+                }}
+                transition={{
+                  duration: 0.9,
+                  delay: motionEnabled ? index * 0.18 : 0,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="group relative transform-gpu"
+              >
+                <div
+                  className="
+                    relative
+                    min-h-[300px]
+                    transform-gpu
+                    overflow-hidden
+                    rounded-[24px]
+                    border
+                    border-white/[0.14]
+                    bg-[linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.052)_48%,rgba(9,30,48,0.55))]
+                    p-5
+                    shadow-[0_20px_45px_rgba(1,12,24,0.22),inset_0_1px_0_rgba(255,255,255,0.10)]
+                    backdrop-blur-none
+                    transition-[transform,border-color,background-color,box-shadow]
+                    duration-300
+                    ease-[cubic-bezier(0.22,1,0.36,1)]
+                    sm:min-h-[310px]
+                    sm:backdrop-blur-md
+                    sm:p-6
+                    lg:backdrop-blur-xl
+                    lg:p-7
+                    lg:group-hover:-translate-y-1.5
+                    lg:group-hover:border-[#14B8A6]/35
+                    lg:group-hover:shadow-[0_28px_60px_rgba(1,12,24,0.30),0_0_28px_rgba(20,184,166,0.08),inset_0_1px_0_rgba(255,255,255,0.12)]
+                  "
                 >
                   <div
+                    aria-hidden="true"
                     className="
-                      relative
-                      min-h-[300px]
-                      overflow-hidden
+                      pointer-events-none
+                      absolute
+                      inset-0
                       rounded-[24px]
-                      border
-                      border-white/[0.14]
-                      bg-[linear-gradient(145deg,rgba(255,255,255,0.095),rgba(255,255,255,0.052)_48%,rgba(9,30,48,0.55))]
-                      p-5
-                      shadow-[0_20px_45px_rgba(1,12,24,0.22),inset_0_1px_0_rgba(255,255,255,0.10)]
-                      backdrop-blur-none
-                      transition-[border-color,background-color,box-shadow,transform]
+                      bg-[radial-gradient(circle_at_85%_10%,rgba(56,189,248,0.07),transparent_28%),radial-gradient(circle_at_10%_90%,rgba(20,184,166,0.035),transparent_30%)]
+                      opacity-100
+                      transition-opacity
                       duration-300
-                      ease-[cubic-bezier(0.22,1,0.36,1)]
-                      sm:min-h-[310px]
-                      sm:backdrop-blur-md
-                      sm:p-6
-                      lg:backdrop-blur-xl
-                      lg:p-7
-                      lg:group-hover:border-[#14B8A6]/35
-                      lg:group-hover:shadow-[0_28px_60px_rgba(1,12,24,0.30),0_0_28px_rgba(20,184,166,0.08),inset_0_1px_0_rgba(255,255,255,0.12)]
+                      ease-out
                     "
-                  >
+                  />
+
+                  {motionEnabled && (
                     <div
                       aria-hidden="true"
                       className="
                         pointer-events-none
                         absolute
-                        inset-0
-                        rounded-[24px]
-                        bg-[radial-gradient(circle_at_85%_10%,rgba(56,189,248,0.07),transparent_28%),radial-gradient(circle_at_10%_90%,rgba(20,184,166,0.035),transparent_30%)]
-                        opacity-100
+                        -right-16
+                        -top-16
+                        h-32
+                        w-32
+                        rounded-full
+                        bg-[#14B8A6]/[0.06]
+                        blur-2xl
+                        opacity-0
                         transition-opacity
                         duration-300
                         ease-out
+                        group-hover:opacity-100
+                      "
+                    />
+                  )}
+
+                  <div className="relative z-10 flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className="
+                          text-[9px]
+                          font-semibold
+                          tracking-[0.24em]
+                          text-[#67E8F9]
+                          transition-[color,transform]
+                          duration-300
+                          ease-out
+                          lg:group-hover:-translate-y-0.5
+                          lg:group-hover:text-[#8DEBFF]
+                        "
+                      >
+                        {venture.number}
+                      </span>
+                    </div>
+
+                    {/* VISUAL ICON */}
+
+                    <span
+                      className="
+                        flex
+                        h-10
+                        w-10
+                        transform-gpu
+                        items-center
+                        justify-center
+                        rounded-full
+                        border
+                        border-[#67E8F9]/25
+                        bg-[#071725]/75
+                        text-[21px]
+                        leading-none
+                        shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
+                        transition-[border-color,background-color,box-shadow,transform]
+                        duration-300
+                        ease-out
+                        lg:group-hover:-translate-y-1
+                        lg:group-hover:border-[#67E8F9]/45
+                        lg:group-hover:bg-[#0B2638]
+                        lg:group-hover:shadow-[0_0_20px_rgba(103,232,249,0.12),inset_0_1px_0_rgba(255,255,255,0.10)]
+                      "
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="
+                          block
+                          transform-gpu
+                          transition-transform
+                          duration-300
+                          ease-out
+                          lg:group-hover:scale-110
+                        "
+                      >
+                        {venture.icon}
+                      </span>
+                    </span>
+                  </div>
+
+                  <div
+                    className="
+                      relative
+                      z-10
+                      mt-8
+                      flex
+                      items-center
+                      gap-2.5
+                    "
+                  >
+                    <span
+                      className="
+                        h-px
+                        w-7
+                        bg-[#14B8A6]/70
+                        transition-[width,opacity]
+                        duration-300
+                        ease-out
+                        lg:group-hover:w-10
+                        lg:group-hover:bg-[#14B8A6]
                       "
                     />
 
-                    {motionEnabled && (
-                      <div
-                        aria-hidden="true"
-                        className="
-                          pointer-events-none
-                          absolute
-                          -right-16
-                          -top-16
-                          h-32
-                          w-32
-                          rounded-full
-                          bg-[#14B8A6]/[0.06]
-                          blur-2xl
-                          opacity-0
-                          transition-opacity
-                          duration-300
-                          ease-out
-                          group-hover:opacity-100
-                        "
-                      />
-                    )}
-
-                    <div className="relative z-10 flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <span
-                          className="
-                            text-[9px]
-                            font-semibold
-                            tracking-[0.24em]
-                            text-[#67E8F9]
-                            transition-[color,transform]
-                            duration-300
-                            ease-out
-                            lg:group-hover:-translate-y-0.5
-                            lg:group-hover:text-[#8DEBFF]
-                          "
-                        >
-                          {venture.number}
-                        </span>
-                      </div>
-
-                      <span
-                        className="
-                          flex
-                          h-10
-                          w-10
-                          items-center
-                          justify-center
-                          rounded-full
-                          border
-                          border-[#67E8F9]/25
-                          bg-[#071725]/75
-                          text-[#67E8F9]
-                          shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
-                          transition-[border-color,background-color,box-shadow,transform]
-                          duration-300
-                          ease-out
-                          lg:group-hover:-translate-y-1
-                          lg:group-hover:border-[#67E8F9]/45
-                          lg:group-hover:bg-[#0B2638]
-                          lg:group-hover:shadow-[0_0_20px_rgba(103,232,249,0.12),inset_0_1px_0_rgba(255,255,255,0.10)]
-                        "
-                      >
-                        <Icon
-                          size={17}
-                          strokeWidth={1.25}
-                          className="
-                            transition-transform
-                            duration-300
-                            ease-out
-                            lg:group-hover:scale-110
-                          "
-                        />
-                      </span>
-                    </div>
-
-                    <div
+                    <span
                       className="
-                        relative
-                        z-10
-                        mt-8
-                        flex
-                        items-center
-                        gap-2.5
-                      "
-                    >
-                      <span
-                        className="
-                          h-px
-                          w-7
-                          bg-[#14B8A6]/70
-                          transition-[width,opacity]
-                          duration-300
-                          ease-out
-                          lg:group-hover:w-10
-                          lg:group-hover:bg-[#14B8A6]
-                        "
-                      />
-
-                      <span
-                        className="
-                          text-[8px]
-                          font-semibold
-                          uppercase
-                          tracking-[0.25em]
-                          text-[#B5E4EC]
-                          transition-colors
-                          duration-300
-                          ease-out
-                          lg:group-hover:text-[#C8F3F7]
-                        "
-                      >
-                        {venture.category}
-                      </span>
-                    </div>
-
-                    <h3
-                      className="
-                        relative
-                        z-10
-                        mt-3
-                        text-[22px]
-                        font-normal
-                        leading-[1.18]
-                        tracking-[-0.04em]
-                        text-[#F8FAFC]
-                        transition-[transform,color]
-                        duration-300
-                        ease-out
-                        sm:text-[23px]
-                        lg:group-hover:-translate-y-0.5
-                      "
-                    >
-                      {venture.title}
-                    </h3>
-
-                    <p
-                      className="
-                        relative
-                        z-10
-                        mt-2
                         text-[8px]
                         font-semibold
                         uppercase
-                        tracking-[0.17em]
-                        text-[#A9D2DE]
+                        tracking-[0.25em]
+                        text-[#B5E4EC]
                         transition-colors
                         duration-300
                         ease-out
-                        lg:group-hover:text-[#C0E7EE]
+                        lg:group-hover:text-[#C8F3F7]
                       "
                     >
-                      {venture.subtitle}
-                    </p>
-
-                    <p
-                      className="
-                        relative
-                        z-10
-                        mt-5
-                        max-w-[370px]
-                        text-[11px]
-                        leading-[1.85]
-                        text-[#E3F0F4]/80
-                        transition-[color,transform]
-                        duration-300
-                        ease-out
-                        lg:group-hover:-translate-y-px
-                        lg:group-hover:text-[#E8F5F7]/90
-                      "
-                    >
-                      {venture.description}
-                    </p>
+                      {venture.category}
+                    </span>
                   </div>
-                </motion.div>
-              );
-            })}
+
+                  <h3
+                    className="
+                      relative
+                      z-10
+                      mt-3
+                      text-[22px]
+                      font-normal
+                      leading-[1.18]
+                      tracking-[-0.04em]
+                      text-[#F8FAFC]
+                      transition-[transform,color]
+                      duration-300
+                      ease-out
+                      sm:text-[23px]
+                      lg:group-hover:-translate-y-0.5
+                    "
+                  >
+                    {venture.title}
+                  </h3>
+
+                  <p
+                    className="
+                      relative
+                      z-10
+                      mt-2
+                      text-[8px]
+                      font-semibold
+                      uppercase
+                      tracking-[0.17em]
+                      text-[#A9D2DE]
+                      transition-colors
+                      duration-300
+                      ease-out
+                      lg:group-hover:text-[#C0E7EE]
+                    "
+                  >
+                    {venture.subtitle}
+                  </p>
+
+                  <p
+                    className="
+                      relative
+                      z-10
+                      mt-5
+                      max-w-[370px]
+                      text-[11px]
+                      leading-[1.85]
+                      text-[#E3F0F4]/80
+                      transition-[color,transform]
+                      duration-300
+                      ease-out
+                      lg:group-hover:-translate-y-px
+                      lg:group-hover:text-[#E8F5F7]/90
+                    "
+                  >
+                    {venture.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
 
         {/* FOOTER CTA */}
+
         <motion.div
           initial={motionEnabled ? { opacity: 0, y: 10 } : false}
           whileInView={{ opacity: 1, y: 0 }}

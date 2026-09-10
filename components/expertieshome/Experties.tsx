@@ -1,20 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import {
-  ShieldCheck,
-  Brain,
-  Globe2,
-  TrendingUp,
-  ArrowUpRight,
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const expertise = [
   {
     number: "01",
-    icon: ShieldCheck,
+    icon: "🔑",
     title: "Cyber Security",
     description:
       "Protecting critical infrastructure through intelligent security, resilient systems, and proactive risk management.",
@@ -30,7 +24,7 @@ const expertise = [
   },
   {
     number: "02",
-    icon: Brain,
+    icon: "🤖",
     title: "Artificial Intelligence",
     description:
       "Turning complex information into intelligent automation, practical insights, and scalable digital solutions.",
@@ -46,7 +40,7 @@ const expertise = [
   },
   {
     number: "03",
-    icon: Globe2,
+    icon: "🔎",
     title: "Digital Analytics",
     description:
       "Transforming business data into clear intelligence that enables smarter decisions and sustainable growth.",
@@ -62,7 +56,7 @@ const expertise = [
   },
   {
     number: "04",
-    icon: TrendingUp,
+    icon: "🎯",
     title: "Digital Marketing",
     description:
       "Creating strategic digital experiences that strengthen visibility, engagement, and measurable performance.",
@@ -77,6 +71,96 @@ const expertise = [
     mobileShine: "via-violet-200/70",
   },
 ];
+
+function RoboticHandIcon() {
+  return (
+    <svg
+      width="34"
+      height="34"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      className="drop-shadow-[0_0_10px_rgba(45,212,191,0.18)]"
+    >
+      <circle cx="48" cy="10" r="2.5" fill="#67E8F9" />
+      <circle cx="55" cy="17" r="1.7" fill="#5EEAD4" />
+      <circle cx="43" cy="18" r="1.6" fill="#A5F3FC" />
+
+      <path
+        d="M48 10L55 17L43 18L48 10Z"
+        stroke="#5EEAD4"
+        strokeWidth="1"
+        strokeOpacity="0.5"
+      />
+
+      <path
+        d="M25 55C20.5 52.5 18 48.5 18 44V32.5C18 30.8 19.3 29.5 21 29.5C22.7 29.5 24 30.8 24 32.5V25.5C24 23.8 25.3 22.5 27 22.5C28.7 22.5 30 23.8 30 25.5V20C30 18.3 31.3 17 33 17C34.7 17 36 18.3 36 20V25.5"
+        stroke="#B8F3FF"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      <path
+        d="M36 25.5V14C36 12.3 37.3 11 39 11C40.7 11 42 12.3 42 14V29"
+        stroke="#78E5F7"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+
+      <path
+        d="M30 25.5V12.5C30 10.8 31.3 9.5 33 9.5C34.7 9.5 36 10.8 36 12.5V25.5"
+        stroke="#A5F3FC"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+
+      <path
+        d="M24 31V17C24 15.3 25.3 14 27 14C28.7 14 30 15.3 30 17V28"
+        stroke="#5EEAD4"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+      />
+
+      <path
+        d="M24 39L14.5 34.5C13 33.8 11.2 34.4 10.5 35.9C9.8 37.4 10.4 39.2 11.9 40L21 45.5"
+        stroke="#78E5F7"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      <path
+        d="M24 31.5C29 30 35 30.5 40 33.5L47 37.5C49 38.7 49.7 41.3 48.5 43.3C47.3 45.3 44.7 46 42.7 44.8L35 40.5"
+        stroke="#B8F3FF"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      <circle cx="27" cy="28" r="1.5" fill="#67E8F9" />
+      <circle cx="33" cy="27" r="1.5" fill="#5EEAD4" />
+      <circle cx="39" cy="28" r="1.5" fill="#67E8F9" />
+
+      <path
+        d="M27 36H34M29 40H37M23 44H29"
+        stroke="#5EEAD4"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeOpacity="0.65"
+      />
+
+      <path
+        d="M40 29L48 10"
+        stroke="#67E8F9"
+        strokeWidth="1"
+        strokeDasharray="2 3"
+        strokeOpacity="0.45"
+      />
+    </svg>
+  );
+}
 
 export default function Expertise() {
   const shouldReduceMotion = useReducedMotion();
@@ -97,10 +181,6 @@ export default function Expertise() {
     };
   }, []);
 
-  /*
-   * Desktop/laptop = premium hover interactions.
-   * Touch/mobile = lightweight rendering with no hover-heavy effects.
-   */
   const motionEnabled = !shouldReduceMotion && finePointer;
 
   return (
@@ -120,14 +200,8 @@ export default function Expertise() {
 
       <div
         aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-        "
+        className="pointer-events-none absolute inset-0"
       >
-        {/* Lightweight static atmospheres */}
-
         <div
           className="
             absolute
@@ -321,8 +395,6 @@ export default function Expertise() {
           "
         >
           {expertise.map((item, index) => {
-            const Icon = item.icon;
-
             return (
               <motion.article
                 key={item.number}
@@ -349,22 +421,11 @@ export default function Expertise() {
                     : index * 0.08,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                whileHover={
-                  motionEnabled
-                    ? {
-                        y: -5,
-                        scale: 1.008,
-                        transition: {
-                          duration: 0.18,
-                          ease: "easeOut",
-                        },
-                      }
-                    : undefined
-                }
                 className={`
                   group
                   relative
                   min-h-[430px]
+                  transform-gpu
                   overflow-hidden
                   rounded-[22px]
                   border
@@ -374,10 +435,19 @@ export default function Expertise() {
                   shadow-[0_20px_50px_rgba(0,0,0,0.14)]
                   transition-[transform,border-color,box-shadow,background-color]
                   duration-300
-                  ease-out
+                  ease-[cubic-bezier(0.22,1,0.36,1)]
                   sm:shadow-[0_24px_60px_rgba(0,0,0,0.16)]
-                  ${motionEnabled ? item.hoverBorder : ""}
-                  ${motionEnabled ? item.hoverGlow : ""}
+                  ${
+                    motionEnabled
+                      ? item.hoverBorder
+                      : ""
+                  }
+                  ${
+                    motionEnabled
+                      ? item.hoverGlow
+                      : ""
+                  }
+                  lg:group-hover:-translate-y-1.5
                 `}
               >
                 {/* Card Accent */}
@@ -572,7 +642,8 @@ export default function Expertise() {
                         opacity-25
                         blur-[1.5px]
                         transition-[opacity,filter]
-                        duration-400
+                        duration-300
+                        ease-out
                         group-hover:opacity-55
                         group-hover:blur-[3px]
                       `}
@@ -641,36 +712,47 @@ export default function Expertise() {
                     </span>
                   </div>
 
-                  {/* Icon */}
+                  {/* Visual Symbol */}
 
                   <div className="mt-7">
                     <div
                       className={`
                         relative
                         flex
-                        h-[58px]
-                        w-[58px]
+                        h-[52px]
+                        w-[52px]
+                        transform-gpu
                         items-center
                         justify-center
-                        rounded-[17px]
+                        rounded-[15px]
                         border
                         border-white/[0.10]
                         bg-gradient-to-br
                         from-white/[0.08]
                         to-white/[0.025]
-                        text-cyan-200
                         shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]
                         ${
                           motionEnabled
-                            ? "transition-[border-color,background-color,color,box-shadow] duration-300 group-hover:border-cyan-200/25 group-hover:bg-cyan-200/[0.07] group-hover:text-cyan-100"
+                            ? "transition-[transform,border-color,background-color,box-shadow] duration-300 ease-out group-hover:-translate-y-1 group-hover:border-cyan-200/25 group-hover:bg-cyan-200/[0.07] group-hover:shadow-[0_0_24px_rgba(34,211,238,0.07),inset_0_1px_0_rgba(255,255,255,0.10)]"
                             : ""
                         }
                       `}
                     >
-                      <Icon
-                        size={23}
-                        strokeWidth={1.25}
-                      />
+                      {item.icon === "robotic-hand" ? (
+                        <RoboticHandIcon />
+                      ) : (
+                        <span
+                          aria-hidden="true"
+                          className="
+                            select-none
+                            text-[23px]
+                            leading-none
+                            drop-shadow-[0_4px_12px_rgba(255,255,255,0.10)]
+                          "
+                        >
+                          {item.icon}
+                        </span>
+                      )}
 
                       {motionEnabled && (
                         <div
@@ -679,7 +761,7 @@ export default function Expertise() {
                             pointer-events-none
                             absolute
                             inset-0
-                            rounded-[17px]
+                            rounded-[15px]
                             shadow-[0_0_24px_rgba(34,211,238,0.025)]
                             transition-shadow
                             duration-300
@@ -745,7 +827,7 @@ export default function Expertise() {
                     opacity-50
                     ${
                       motionEnabled
-                        ? "transition-[left,right,opacity] duration-300 group-hover:left-0 group-hover:right-0 group-hover:opacity-80"
+                        ? "transition-[left,right,opacity] duration-300 ease-out group-hover:left-0 group-hover:right-0 group-hover:opacity-80"
                         : ""
                     }
                   `}

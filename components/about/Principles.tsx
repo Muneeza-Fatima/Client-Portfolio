@@ -2,12 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ShieldCheck,
-  BookOpen,
-  MessageCircle,
-  Sparkles,
-} from "lucide-react";
 
 const principles = [
   {
@@ -15,7 +9,7 @@ const principles = [
     title: "Integrity",
     description:
       "Trust is built through consistency, transparency and actions that stand behind the words.",
-    icon: ShieldCheck,
+    icon: "🤝",
     keyword: "Trust",
   },
   {
@@ -23,7 +17,7 @@ const principles = [
     title: "Continuous Learning",
     description:
       "Technology changes quickly. Staying curious and continuously improving is part of the process.",
-    icon: BookOpen,
+    icon: "🌱",
     keyword: "Evolution",
   },
   {
@@ -31,7 +25,7 @@ const principles = [
     title: "Clear Communication",
     description:
       "Good solutions become effective when complex ideas can be understood by the people who need to act on them.",
-    icon: MessageCircle,
+    icon: "💬",
     keyword: "Clarity",
   },
   {
@@ -39,7 +33,7 @@ const principles = [
     title: "Real-World Impact",
     description:
       "The objective is practical value — stronger security, better decisions and meaningful outcomes.",
-    icon: Sparkles,
+    icon: "🌐",
     keyword: "Impact",
   },
 ];
@@ -67,7 +61,6 @@ export default function Principles() {
   const motionEnabled = !reduceMotion && finePointer;
 
   const active = principles[activeIndex];
-  const ActiveIcon = active.icon;
 
   return (
     <section
@@ -86,6 +79,7 @@ export default function Principles() {
       "
     >
       {/* Atmospheric background */}
+
       <div className="pointer-events-none absolute inset-0">
         <div
           className="
@@ -163,6 +157,7 @@ export default function Principles() {
 
       <div className="relative mx-auto max-w-[1480px] px-5 sm:px-8 lg:px-12">
         {/* Header */}
+
         <motion.div
           initial={
             reduceMotion
@@ -237,11 +232,12 @@ export default function Principles() {
         </motion.div>
 
         {/* Principles */}
+
         <div className="grid gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-8">
           {/* Selection cards */}
+
           <div className="flex flex-col gap-3">
             {principles.map((item, index) => {
-              const Icon = item.icon;
               const isActive = activeIndex === index;
 
               return (
@@ -302,6 +298,7 @@ export default function Principles() {
                   `}
                 >
                   {/* Active edge */}
+
                   <span
                     className={`
                       pointer-events-none
@@ -327,6 +324,7 @@ export default function Principles() {
                   />
 
                   {/* Very subtle active light */}
+
                   <span
                     className={`
                       pointer-events-none
@@ -355,20 +353,31 @@ export default function Principles() {
                         justify-center
                         rounded-xl
                         border
-                        transition-[border-color,background-color,color]
+                        transition-[border-color,background-color,box-shadow,transform]
                         duration-300
                         ${
                           isActive
-                            ? "border-[#42D5F5]/25 bg-[#42D5F5]/[0.07] text-[#70E4F5]"
-                            : `border-white/[0.09] bg-white/[0.025] text-[#9FB4C1] ${
+                            ? "border-[#42D5F5]/30 bg-[#42D5F5]/[0.08] shadow-[0_0_18px_rgba(66,213,245,0.08)]"
+                            : `border-white/[0.09] bg-white/[0.025] ${
                                 motionEnabled
-                                  ? "group-hover:border-[#42D5F5]/20 group-hover:text-[#CBEAF2]"
+                                  ? "group-hover:border-[#42D5F5]/25 group-hover:shadow-[0_0_16px_rgba(66,213,245,0.06)]"
                                   : ""
                               }`
                         }
                       `}
                     >
-                      <Icon size={17} strokeWidth={1.65} />
+                      <span
+                        aria-hidden="true"
+                        className="
+                          block
+                          select-none
+                          text-[21px]
+                          leading-none
+                          drop-shadow-[0_3px_10px_rgba(255,255,255,0.10)]
+                        "
+                      >
+                        {item.icon}
+                      </span>
                     </div>
 
                     <div className="min-w-0">
@@ -426,8 +435,10 @@ export default function Principles() {
           </div>
 
           {/* Big information card */}
+
           <div className="relative min-h-[390px]">
             {/* Soft atmospheric glow */}
+
             <div
               className="
                 pointer-events-none
@@ -455,6 +466,7 @@ export default function Principles() {
               "
             >
               {/* Top architectural accent */}
+
               <div
                 className="
                   absolute
@@ -470,6 +482,7 @@ export default function Principles() {
               />
 
               {/* Inner frame */}
+
               <div
                 className="
                   pointer-events-none
@@ -482,6 +495,7 @@ export default function Principles() {
               />
 
               {/* Card atmosphere */}
+
               <div
                 className="
                   pointer-events-none
@@ -523,6 +537,7 @@ export default function Principles() {
               />
 
               {/* Background number */}
+
               <div
                 className="
                   pointer-events-none
@@ -585,6 +600,7 @@ export default function Principles() {
                 >
                   <div>
                     {/* Icon */}
+
                     <div className="mb-9 flex items-center">
                       <div
                         className="
@@ -595,16 +611,30 @@ export default function Principles() {
                           justify-center
                           rounded-xl
                           border
-                          border-[#42D5F5]/22
-                          bg-[#42D5F5]/[0.06]
-                          text-[#71E2F3]
+                          border-[#42D5F5]/25
+                          bg-gradient-to-br
+                          from-[#42D5F5]/[0.10]
+                          via-[#1E9FC2]/[0.05]
+                          to-[#168BD1]/[0.025]
+                          shadow-[0_0_24px_rgba(66,213,245,0.07),inset_0_1px_0_rgba(255,255,255,0.08)]
                         "
                       >
-                        <ActiveIcon size={19} strokeWidth={1.65} />
+                        <span
+                          aria-hidden="true"
+                          className="
+                            select-none
+                            text-[30px]
+                            leading-none
+                            drop-shadow-[0_4px_14px_rgba(255,255,255,0.12)]
+                          "
+                        >
+                          {active.icon}
+                        </span>
                       </div>
                     </div>
 
                     {/* Meta */}
+
                     <div className="mb-4 flex items-center gap-3">
                       <span className="h-px w-7 bg-[#42D5F5]/45" />
 
@@ -622,6 +652,7 @@ export default function Principles() {
                     </div>
 
                     {/* Main heading */}
+
                     <h3
                       className="
                         max-w-2xl
@@ -651,6 +682,7 @@ export default function Principles() {
                   </div>
 
                   {/* Bottom progress */}
+
                   <div className="mt-10">
                     <div className="mb-3 flex items-center justify-between">
                       <span
@@ -691,7 +723,7 @@ export default function Principles() {
                           duration: 0.35,
                           ease: [0.22, 1, 0.36, 1],
                         }}
-                        className="h-full bg-gradient-to-r from-[#42D5F5] to-[#2DD4BF]"
+                        className="h-full bg-gradient-to-r from-[#42D5F5] via-[#2DD4BF] to-[#168BD1]"
                       />
                     </div>
                   </div>

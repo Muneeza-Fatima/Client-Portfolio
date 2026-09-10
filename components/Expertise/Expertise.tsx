@@ -7,13 +7,6 @@ import {
   useSpring,
   useReducedMotion,
 } from "framer-motion";
-import {
-  ShieldCheck,
-  Activity,
-  Network,
-  BriefcaseBusiness,
-  UsersRound,
-} from "lucide-react";
 
 const expertise = [
   {
@@ -22,7 +15,7 @@ const expertise = [
     description:
       "Focused on threat detection, risk analysis, incident response, and practical security solutions that protect enterprise environments.",
     skills: ["Threat Analysis", "Risk", "Incident Response"],
-    icon: ShieldCheck,
+    icon: "🛡️",
   },
   {
     title: "Security Operations",
@@ -30,7 +23,7 @@ const expertise = [
     description:
       "Monitoring security events, investigating incidents, assessing vulnerabilities, and strengthening overall security posture.",
     skills: ["SIEM", "IDS", "Vulnerability"],
-    icon: Activity,
+    icon: "⛓️",
   },
   {
     title: "Technology",
@@ -38,7 +31,7 @@ const expertise = [
     description:
       "Applying knowledge of network and system security, DNS, intrusion detection, and enterprise technologies to solve security challenges.",
     skills: ["Network", "Systems", "DNS"],
-    icon: Network,
+    icon: "🧬",
   },
   {
     title: "Business Strategy",
@@ -46,7 +39,7 @@ const expertise = [
     description:
       "Combining market research, business development, real-estate insight, and investment guidance to identify meaningful opportunities.",
     skills: ["Markets", "Development", "Growth"],
-    icon: BriefcaseBusiness,
+    icon: "🧭",
   },
   {
     title: "Leadership",
@@ -54,7 +47,7 @@ const expertise = [
     description:
       "Leading teams, building stakeholder relationships, and communicating across cultures with a client-first and results-driven approach.",
     skills: ["Leadership", "Clients", "Collaboration"],
-    icon: UsersRound,
+    icon: "🌐",
   },
 ];
 
@@ -175,6 +168,7 @@ export default function Expertise() {
       "
     >
       {/* PREMIUM BACKGROUND */}
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
@@ -375,6 +369,7 @@ export default function Expertise() {
         "
       >
         {/* HEADER */}
+
         <motion.div
           initial={
             reduceMotion
@@ -445,7 +440,7 @@ export default function Expertise() {
               className="
                 max-w-[900px]
                 font-serif
-                text-[clamp(2.8rem,5.8vw,5.8rem)]
+                text-[clamp(2.6rem,5.2vw,5.2rem)]
                 font-normal
                 leading-[0.94]
                 tracking-[-0.06em]
@@ -510,8 +505,10 @@ export default function Expertise() {
         </motion.div>
 
         {/* EXECUTIVE MATRIX */}
+
         <div className="relative lg:min-h-[850px]">
           {/* DESKTOP CENTER PROFILE */}
+
           <motion.div
             initial={
               reduceMotion
@@ -796,6 +793,7 @@ export default function Expertise() {
           </motion.div>
 
           {/* DESKTOP AXIS */}
+
           <div
             aria-hidden="true"
             className="
@@ -834,9 +832,9 @@ export default function Expertise() {
           />
 
           {/* DESKTOP EXPERTISE CARDS */}
+
           <div className="hidden lg:block">
             {expertise.map((item, index) => {
-              const Icon = item.icon;
               const isActive = active === index;
 
               const positions = [
@@ -1026,13 +1024,11 @@ export default function Expertise() {
                           border
                           border-[#9CB4C7]/[0.25]
                           bg-[linear-gradient(145deg,#294352,#203642)]
-                          text-[#B9D0DF]
                           shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_8px_25px_rgba(0,0,0,0.18)]
-                          transition-[border-color,color,box-shadow,background]
+                          transition-[border-color,box-shadow,background,transform]
                           duration-400
                           group-hover:border-[#7EA2FF]/[0.50]
                           group-hover:bg-[linear-gradient(145deg,#294968,#223D51)]
-                          group-hover:text-[#D9E8FF]
                           group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.13),0_0_25px_rgba(79,140,255,0.10)]
                         "
                       >
@@ -1050,7 +1046,21 @@ export default function Expertise() {
                           "
                         />
 
-                        <Icon size={18} strokeWidth={1.15} />
+                        <span
+                          aria-hidden="true"
+                          className="
+                            select-none
+                            text-[25px]
+                            leading-none
+                            drop-shadow-[0_3px_12px_rgba(255,255,255,0.10)]
+                            transition-transform
+                            duration-300
+                            ease-out
+                            group-hover:scale-110
+                          "
+                        >
+                          {item.icon}
+                        </span>
                       </motion.div>
                     </div>
 
@@ -1148,6 +1158,7 @@ export default function Expertise() {
           </div>
 
           {/* MOBILE PROFILE + CARDS */}
+
           <div className="relative mt-6 lg:hidden">
             <motion.div
               initial={
@@ -1381,7 +1392,6 @@ export default function Expertise() {
               "
             >
               {expertise.map((item, index) => {
-                const Icon = item.icon;
                 const isActive = active === index;
 
                 return (
@@ -1535,18 +1545,22 @@ export default function Expertise() {
                           className="
                             relative
                             flex
-                            h-14
-                            w-14
+                            h-12
+                            w-12
                             shrink-0
                             items-center
                             justify-center
                             overflow-hidden
-                            rounded-[10px]
+                            rounded-[9px]
                             border
-                            border-[#9CB4C7]/[0.25]
+                            border-[#9CB4C7]/[0.18]
                             bg-[linear-gradient(145deg,#294352,#203642)]
-                            text-[#B9D0DF]
-                            shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_8px_25px_rgba(0,0,0,0.18)]
+                            shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_8px_22px_rgba(0,0,0,0.16)]
+                            sm:h-14
+                            sm:w-14
+                            sm:rounded-[10px]
+                            sm:border-[#9CB4C7]/[0.25]
+                            sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.10),0_8px_25px_rgba(0,0,0,0.18)]
                           "
                         >
                           <span
@@ -1558,12 +1572,29 @@ export default function Expertise() {
                               h-px
                               bg-gradient-to-r
                               from-transparent
-                              via-white/[0.30]
+                              via-white/[0.24]
                               to-transparent
+                              sm:via-white/[0.30]
                             "
                           />
 
-                          <Icon size={21} strokeWidth={1.15} />
+                          <span
+                            aria-hidden="true"
+                            className="
+                              select-none
+                              text-[22px]
+                              leading-none
+                              drop-shadow-[0_3px_10px_rgba(255,255,255,0.10)]
+                              transition-transform
+                              duration-300
+                              ease-out
+                              group-hover:scale-105
+                              sm:text-[28px]
+                              sm:group-hover:scale-110
+                            "
+                          >
+                            {item.icon}
+                          </span>
                         </motion.div>
 
                         <div className="min-w-0 flex-1">
@@ -1663,6 +1694,7 @@ export default function Expertise() {
         </div>
 
         {/* EXECUTIVE APPROACH */}
+
         <motion.div
           initial={
             reduceMotion
@@ -1692,27 +1724,27 @@ export default function Expertise() {
             group
             relative
             mt-10
-            min-h-[245px]
+            min-h-[195px]
             overflow-hidden
             rounded-[13px]
             border
             border-[#D9D3C7]
             bg-[#F3F0E8]
             px-5
-            py-8
+            py-4
             shadow-[0_25px_70px_rgba(0,0,0,0.20),inset_0_1px_0_rgba(255,255,255,0.75)]
             transition-[border-color,box-shadow,transform]
             duration-400
             hover:-translate-y-[3px]
             hover:border-[#C9C1B2]
             hover:shadow-[0_30px_78px_rgba(0,0,0,0.24),0_0_36px_rgba(79,140,255,0.04)]
-            sm:min-h-[270px]
+            sm:min-h-[220px]
             sm:px-8
-            sm:py-9
+            sm:py-5
             lg:mt-24
-            lg:min-h-[310px]
+            lg:min-h-[235px]
             lg:px-14
-            lg:py-14
+            lg:py-[25px]
           "
         >
           <div
@@ -1781,14 +1813,13 @@ export default function Expertise() {
             "
           />
 
-          {/* APPROACH CONTENT — VERTICALLY CENTERED */}
           <div
             className="
               relative
               flex
-              min-h-[185px]
+              min-h-[155px]
               items-center
-              lg:min-h-[210px]
+              lg:min-h-[175px]
             "
           >
             <div
@@ -1853,6 +1884,7 @@ export default function Expertise() {
         </motion.div>
 
         {/* GLOBAL COMMUNICATION */}
+
         <motion.div
           initial={
             reduceMotion
