@@ -1,12 +1,16 @@
+
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://badarulhaq.com";
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://badarulhaq-portfolio.vercel.app";
 
 const siteDescription =
   "Official professional portfolio of Badar Ul Haq — cybersecurity professional, business leader and Founder & CEO, sharing his expertise, experience and ventures.";
+
+const ogImage = `${siteUrl}/images/ceo/badar-ul-haq.jpeg`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -38,7 +42,18 @@ export const metadata: Metadata = {
   creator: "Badar Ul Haq",
 
   alternates: {
-    canonical: "/",
+    canonical: siteUrl,
+  },
+
+  icons: {
+    icon: [
+      {
+        url: "/icon.png",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/icon.png",
+    apple: "/icon.png",
   },
 
   robots: {
@@ -61,7 +76,7 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [
       {
-        url: "/images/ceo/badar-ul-haq.jpeg",
+        url: ogImage,
         width: 1200,
         height: 630,
         alt: "Badar Ul Haq — Founder & CEO",
@@ -73,7 +88,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Badar Ul Haq | Founder & CEO",
     description: siteDescription,
-    images: ["/images/ceo/badar-ul-haq.jpeg"],
+    images: [ogImage],
   },
 
   formatDetection: {
@@ -100,12 +115,14 @@ export default function RootLayout({
     name: "Badar Ul Haq",
     jobTitle: "Founder & CEO",
     url: siteUrl,
-    image: `${siteUrl}/images/ceo/badar-ul-haq.jpeg`,
+    image: ogImage,
     description: siteDescription,
+
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": siteUrl,
     },
+
     knowsAbout: [
       "Cyber Security",
       "Artificial Intelligence",
@@ -131,3 +148,4 @@ export default function RootLayout({
     </html>
   );
 }
+
