@@ -1,4 +1,3 @@
-
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import SmoothScroll from "@/components/layout/SmoothScroll";
@@ -10,8 +9,11 @@ const siteUrl =
 const siteDescription =
   "Official professional portfolio of Badar Ul Haq — cybersecurity professional, business leader and Founder & CEO, sharing his expertise, experience and ventures.";
 
-// Use favicon/logo instead of CEO photo for link previews
-const ogImage = `${siteUrl}/icon.png`;
+// BUH logo for social/link previews
+const ogImage = `${siteUrl}/og-image.png`;
+
+// CEO profile image for structured data only
+const personImage = `${siteUrl}/images/ceo/badar-ul-haq.jpeg`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -46,17 +48,6 @@ export const metadata: Metadata = {
     canonical: siteUrl,
   },
 
-  icons: {
-    icon: [
-      {
-        url: "/icon.png",
-        type: "image/png",
-      },
-    ],
-    shortcut: "/icon.png",
-    apple: "/icon.png",
-  },
-
   robots: {
     index: true,
     follow: true,
@@ -78,8 +69,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImage,
-        width: 512,
-        height: 512,
+        width: 1200,
+        height: 630,
         alt: "Badar Ul Haq — BUH",
       },
     ],
@@ -116,7 +107,7 @@ export default function RootLayout({
     name: "Badar Ul Haq",
     jobTitle: "Founder & CEO",
     url: siteUrl,
-    image: ogImage,
+    image: personImage,
     description: siteDescription,
 
     mainEntityOfPage: {
