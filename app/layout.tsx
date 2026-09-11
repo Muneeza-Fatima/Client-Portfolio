@@ -10,7 +10,8 @@ const siteUrl =
 const siteDescription =
   "Official professional portfolio of Badar Ul Haq — cybersecurity professional, business leader and Founder & CEO, sharing his expertise, experience and ventures.";
 
-const ogImage = `${siteUrl}/images/ceo/badar-ul-haq.jpeg`;
+// Use favicon/logo instead of CEO photo for link previews
+const ogImage = `${siteUrl}/icon.png`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -77,9 +78,9 @@ export const metadata: Metadata = {
     images: [
       {
         url: ogImage,
-        width: 1200,
-        height: 630,
-        alt: "Badar Ul Haq — Founder & CEO",
+        width: 512,
+        height: 512,
+        alt: "Badar Ul Haq — BUH",
       },
     ],
   },
@@ -148,4 +149,3 @@ export default function RootLayout({
     </html>
   );
 }
-
