@@ -76,10 +76,6 @@ export const metadata: Metadata = {
     images: ["/images/ceo/badar-ul-haq.jpeg"],
   },
 
-  icons: {
-    icon: "/favicon.ico",
-  },
-
   formatDetection: {
     email: false,
     address: false,
