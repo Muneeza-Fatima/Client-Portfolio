@@ -12,7 +12,7 @@ const siteDescription =
 // BUH logo for social/link previews
 const ogImage = `${siteUrl}/og-image.png`;
 
-// CEO profile image for structured data only
+// CEO photo only for Person structured data
 const personImage = `${siteUrl}/images/ceo/badar-ul-haq.jpeg`;
 
 export const metadata: Metadata = {
@@ -48,6 +48,13 @@ export const metadata: Metadata = {
     canonical: siteUrl,
   },
 
+  // Browser favicon
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
+
   robots: {
     index: true,
     follow: true,
@@ -60,6 +67,7 @@ export const metadata: Metadata = {
     },
   },
 
+  // Link-sharing preview
   openGraph: {
     type: "website",
     url: siteUrl,
