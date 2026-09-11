@@ -8,7 +8,6 @@ import {
   Globe,
   Mail,
   MapPin,
-  Phone,
 } from "lucide-react";
 import {
   type FormEvent,
@@ -214,14 +213,8 @@ export default function ContactPage() {
     document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside,
-      );
-      document.removeEventListener(
-        "keydown",
-        handleEscape,
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, []);
 
@@ -288,7 +281,8 @@ export default function ContactPage() {
       );
       formData.append("reason", selectedReason);
 
-      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+      const accessKey =
+        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
       if (!accessKey) {
         throw new Error(
@@ -299,10 +293,15 @@ export default function ContactPage() {
       formData.append("access_key", accessKey);
       formData.append(
         "subject",
-        `New Website Inquiry — ${selectedReason || "General Inquiry"}`,
+        `New Website Inquiry — ${
+          selectedReason || "General Inquiry"
+        }`,
       );
       formData.append("from_name", "Badar Ul Haq Website");
-      formData.append("replyto", String(formData.get("email") ?? ""));
+      formData.append(
+        "replyto",
+        String(formData.get("email") ?? ""),
+      );
       formData.append("botcheck", "");
 
       const payload = Object.fromEntries(formData.entries());
@@ -330,7 +329,11 @@ export default function ContactPage() {
       try {
         result = JSON.parse(rawResponse);
       } catch {
-        console.error("Web3Forms raw response:", rawResponse);
+        console.error(
+          "Web3Forms raw response:",
+          rawResponse,
+        );
+
         throw new Error(
           "Web3Forms returned an invalid response. Please try again.",
         );
@@ -635,18 +638,34 @@ export default function ContactPage() {
                   className={inputClass}
                 />
 
-                <div className="flex h-11 w-full overflow-hidden rounded-[13px] border border-[#D8D8D2]/70 bg-[#F7F5EF] transition-[border-color,background-color,box-shadow] duration-200 hover:border-[#BFCACD] focus-within:border-[#55CDE8] focus-within:bg-[#FFFEFB] focus-within:shadow-[0_0_0_3px_rgba(85,205,232,0.10)]">
-                  <div className="flex shrink-0 items-center gap-2 border-r border-[#D8D8D2]/70 px-3.5 text-[12px] font-medium text-[#173247]">
+                {/* PHONE FIELD */}
+                <div
+                  className={`flex h-11 w-full overflow-hidden rounded-[13px] border bg-[#F7F5EF] transition-[border-color,background-color,box-shadow] duration-200 ${
+                    selectedCountry
+                      ? "border-[#D8D8D2]/70 hover:border-[#BFCACD] focus-within:border-[#55CDE8] focus-within:bg-[#FFFEFB] focus-within:shadow-[0_0_0_3px_rgba(85,205,232,0.10)]"
+                      : "cursor-not-allowed border-[#D8D8D2]/70"
+                  }`}
+                >
+                  <div
+                    className={`flex shrink-0 items-center gap-2 border-r border-[#D8D8D2]/70 px-3.5 text-[12px] font-medium ${
+                      selectedCountry
+                        ? "text-[#173247]"
+                        : "text-[#7A858A]"
+                    }`}
+                  >
                     {selectedCountry ? (
                       <>
                         <CountryFlag
                           code={selectedCountry.code}
                           size={19}
                         />
-                        <span>{selectedCountry.dialCode}</span>
+
+                        <span>
+                          {selectedCountry.dialCode || "+ Code"}
+                        </span>
                       </>
                     ) : (
-                      <span className="text-[#7A858A]">+ Code</span>
+                      <span>+ Code</span>
                     )}
                   </div>
 
@@ -657,16 +676,22 @@ export default function ContactPage() {
                     required
                     inputMode="tel"
                     autoComplete="tel"
+                    disabled={!selectedCountry}
                     placeholder={
                       selectedCountry
                         ? "Phone number"
                         : "Select country first"
                     }
-                    className="h-full min-w-0 flex-1 bg-transparent px-[14px] font-sans text-[12px] font-medium text-[#173247] outline-none placeholder:text-[#7A858A]"
+                    className={`h-full min-w-0 flex-1 bg-transparent px-[14px] font-sans text-[12px] font-medium outline-none placeholder:text-[#7A858A] ${
+                      selectedCountry
+                        ? "cursor-text text-[#173247]"
+                        : "cursor-not-allowed text-[#9AA3A7]"
+                    }`}
                   />
                 </div>
 
                 <div className="grid gap-3.5 sm:grid-cols-2">
+                  {/* COUNTRY */}
                   <div
                     ref={countryRef}
                     className="relative"
@@ -754,6 +779,7 @@ export default function ContactPage() {
                     )}
                   </div>
 
+                  {/* REASON */}
                   <div
                     ref={reasonRef}
                     className="relative"
