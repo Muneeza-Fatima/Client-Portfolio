@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
@@ -167,10 +167,7 @@ export default function Experience() {
         lg:pb-28
       "
     >
-      {/* =========================================================
-          PREMIUM LIGHTWEIGHT BACKGROUND
-          Static only — no continuous animation / no large blur.
-          ========================================================= */}
+      {/* Background */}
 
       <div
         aria-hidden="true"
@@ -237,7 +234,7 @@ export default function Experience() {
         />
       </div>
 
-      {/* CONTENT */}
+      {/* Content */}
 
       <div
         className="
@@ -252,7 +249,7 @@ export default function Experience() {
           xl:px-12
         "
       >
-        {/* SECTION LABEL */}
+        {/* Section Label */}
 
         <motion.div
           initial={
@@ -303,7 +300,7 @@ export default function Experience() {
           </span>
         </motion.div>
 
-        {/* MAIN HEADING */}
+        {/* Main Heading */}
 
         <motion.div
           initial={
@@ -331,7 +328,7 @@ export default function Experience() {
         >
           <h2
             className="
-              font-serif
+              font-sans
               text-[clamp(2rem,9.5vw,2.7rem)]
               font-normal
               leading-[1.05]
@@ -365,7 +362,7 @@ export default function Experience() {
           </h2>
         </motion.div>
 
-        {/* EXPERIENCE LIST */}
+        {/* Experience List */}
 
         <div className="mt-12 sm:mt-14 lg:mt-16">
           {experiences.map((experience, index) => {
@@ -424,7 +421,7 @@ export default function Experience() {
                   lg:py-8
                 "
               >
-                {/* LIGHTWEIGHT CARD BACKGROUND */}
+                {/* Card Background */}
 
                 <div
                   aria-hidden="true"
@@ -437,7 +434,7 @@ export default function Experience() {
                   "
                 />
 
-                {/* Very subtle glass gradient */}
+                {/* Glass Gradient */}
 
                 <div
                   aria-hidden="true"
@@ -453,7 +450,7 @@ export default function Experience() {
                   "
                 />
 
-                {/* Subtle accent atmosphere */}
+                {/* Accent Atmosphere */}
 
                 <div
                   aria-hidden="true"
@@ -470,7 +467,7 @@ export default function Experience() {
                   `}
                 />
 
-                {/* Top glass highlight */}
+                {/* Top Highlight */}
 
                 <div
                   aria-hidden="true"
@@ -489,7 +486,7 @@ export default function Experience() {
                   "
                 />
 
-                {/* SHARP CONTENT */}
+                {/* Content */}
 
                 <div
                   className="
@@ -502,7 +499,7 @@ export default function Experience() {
                     lg:gap-8
                   "
                 >
-                  {/* ICON */}
+                  {/* Icon */}
 
                   <div
                     className={`
@@ -551,7 +548,7 @@ export default function Experience() {
                     />
                   </div>
 
-                  {/* ROLE / COMPANY */}
+                  {/* Role / Company */}
 
                   <div className="min-w-0">
                     <h3
@@ -605,7 +602,7 @@ export default function Experience() {
                     </div>
                   </div>
 
-                  {/* IMPACT */}
+                  {/* Impact */}
 
                   <div
                     className="
@@ -705,7 +702,7 @@ export default function Experience() {
                   </div>
                 </div>
 
-                {/* Bottom glass shine */}
+                {/* Bottom Shine */}
 
                 <div
                   aria-hidden="true"
@@ -728,7 +725,7 @@ export default function Experience() {
           })}
         </div>
 
-        {/* EXPLORE MORE */}
+        {/* Explore More */}
 
         <motion.div
           initial={
@@ -815,7 +812,7 @@ export default function Experience() {
           </Link>
         </motion.div>
 
-        {/* BOTTOM STATEMENT */}
+        {/* Bottom Statement */}
 
         <motion.div
           initial={
@@ -850,7 +847,7 @@ export default function Experience() {
           <p
             className="
               max-w-[1000px]
-              font-serif
+              font-sans
               text-[1.5rem]
               font-normal
               leading-[1.12]
