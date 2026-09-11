@@ -504,7 +504,7 @@ export default function Footer() {
               text-[#94A3B8]
             "
           >
-            © {new Date().getFullYear()} BADAR UL HAQ
+            © 2026 BADAR UL HAQ, All Rights Reserved
           </span>
 
           <span
