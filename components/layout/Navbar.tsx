@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -99,14 +100,14 @@ export default function Navbar() {
                   z-10
                   select-none
                   font-sans
-                  text-[9px]
+                  text-[8px]
                   font-bold
-                  tracking-[-0.08em]
+                  tracking-[-0.10em]
                   text-[#F5F3EE]
                   antialiased
                 "
               >
-                BH
+                BUH
               </span>
 
               <span

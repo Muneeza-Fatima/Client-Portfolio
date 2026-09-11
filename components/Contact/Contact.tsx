@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -8,6 +7,7 @@ import {
   ChevronDown,
   Mail,
   MapPin,
+  Phone,
 } from "lucide-react";
 import {
   type FormEvent,
@@ -17,16 +17,16 @@ import {
 } from "react";
 
 const countries = [
-  { name: "United Arab Emirates", code: "AE" },
-  { name: "Saudi Arabia", code: "SA" },
-  { name: "United Kingdom", code: "GB" },
-  { name: "United States", code: "US" },
-  { name: "Pakistan", code: "PK" },
-  { name: "Germany", code: "DE" },
-  { name: "France", code: "FR" },
-  { name: "Estonia", code: "EE" },
-  { name: "Denmark", code: "DK" },
-  { name: "Ukraine", code: "UA" },
+  { name: "United Arab Emirates", code: "AE", dialCode: "+971" },
+  { name: "Saudi Arabia", code: "SA", dialCode: "+966" },
+  { name: "United Kingdom", code: "GB", dialCode: "+44" },
+  { name: "United States", code: "US", dialCode: "+1" },
+  { name: "Pakistan", code: "PK", dialCode: "+92" },
+  { name: "Germany", code: "DE", dialCode: "+49" },
+  { name: "France", code: "FR", dialCode: "+33" },
+  { name: "Estonia", code: "EE", dialCode: "+372" },
+  { name: "Denmark", code: "DK", dialCode: "+45" },
+  { name: "Ukraine", code: "UA", dialCode: "+380" },
 ];
 
 const reasons = [
@@ -245,10 +245,7 @@ export default function ContactPage() {
     setSubmitError("");
     setSubmitting(true);
 
-    /*
-     * AbortController prevents the form from remaining stuck on
-     * "Sending..." forever if the server is slow/unreachable.
-     */
+    
     const controller = new AbortController();
 
     const timeoutId = window.setTimeout(() => {
@@ -259,28 +256,56 @@ export default function ContactPage() {
       const form = e.currentTarget;
       const formData = new FormData(form);
 
-      /*
-       * Country and reason are custom UI controls, so they are
-       * added manually before sending the form to our server route.
-       *
-       * The Web3Forms Access Key is NOT included here.
-       * It stays private inside /api/contact/route.ts.
-       */
+      
       formData.append("country", selectedCountry.name);
       formData.append(
         "country_code",
         selectedCountry.code,
       );
+      formData.append(
+        "phone_full",
+        `${selectedCountry.dialCode} ${String(
+          formData.get("phone") ?? "",
+        ).trim()}`,
+      );
       formData.append("reason", selectedReason);
 
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
+      // Web3Forms is submitted directly from the browser.
+      // Add your Web3Forms Access Key to .env.local as:
+      // NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY=your_actual_key
+      const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+
+      if (!accessKey) {
+        throw new Error(
+          "Web3Forms is not configured. Add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY to .env.local and restart the dev server.",
+        );
+      }
+
+      formData.append("access_key", accessKey);
+      formData.append(
+        "subject",
+        `New Website Inquiry — ${selectedReason || "General Inquiry"}`,
+      );
+      formData.append("from_name", "Badar Ul Haq Website");
+      formData.append("replyto", String(formData.get("email") ?? ""));
+      formData.append("botcheck", "");
+
+      const payload = Object.fromEntries(formData.entries());
+
+      const response = await fetch(
+        "https://api.web3forms.com/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
         },
-        body: formData,
-        signal: controller.signal,
-      });
+      );
+
+      const rawResponse = await response.text();
 
       let result: {
         success?: boolean;
@@ -288,10 +313,11 @@ export default function ContactPage() {
       } = {};
 
       try {
-        result = await response.json();
+        result = JSON.parse(rawResponse);
       } catch {
+        console.error("Web3Forms raw response:", rawResponse);
         throw new Error(
-          "The server returned an invalid response. Please try again.",
+          "Web3Forms returned an invalid response. Please try again.",
         );
       }
 
@@ -594,6 +620,37 @@ export default function ContactPage() {
                   placeholder="Company or organization"
                   className={inputClass}
                 />
+
+                <div className="flex h-11 w-full overflow-hidden rounded-[13px] border border-[#D8D8D2]/70 bg-[#F7F5EF] transition-[border-color,background-color,box-shadow] duration-200 hover:border-[#BFCACD] focus-within:border-[#55CDE8] focus-within:bg-[#FFFEFB] focus-within:shadow-[0_0_0_3px_rgba(85,205,232,0.10)]">
+                  <div className="flex shrink-0 items-center gap-2 border-r border-[#D8D8D2]/70 px-3.5 text-[12px] font-medium text-[#173247]">
+                    {selectedCountry ? (
+                      <>
+                        <CountryFlag
+                          code={selectedCountry.code}
+                          size={19}
+                        />
+                        <span>{selectedCountry.dialCode}</span>
+                      </>
+                    ) : (
+                      <span className="text-[#7A858A]">+ Code</span>
+                    )}
+                  </div>
+
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    required
+                    inputMode="tel"
+                    autoComplete="tel"
+                    placeholder={
+                      selectedCountry
+                        ? "Phone number"
+                        : "Select country first"
+                    }
+                    className="h-full min-w-0 flex-1 bg-transparent px-[14px] font-sans text-[12px] font-medium text-[#173247] outline-none placeholder:text-[#7A858A]"
+                  />
+                </div>
 
                 <div className="grid gap-3.5 sm:grid-cols-2">
                   <div
