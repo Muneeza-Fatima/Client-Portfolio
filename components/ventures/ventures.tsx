@@ -144,85 +144,114 @@ const hoverLift = {
   },
 };
 
-/*
-|--------------------------------------------------------------------------
-| IMAGE PRELOADER
-|--------------------------------------------------------------------------
-| All venture images are requested in the background after the page loads.
-| This means when the user selects another category, the image is much more
-| likely to already be available in browser cache.
-*/
-function VentureImagePreloader() {
-  useEffect(() => {
-    let cancelled = false;
+/* -------------------------------------------------------------------------- */
+/* SMOOTH DOCUMENT SCROLL                                                     */
+/* -------------------------------------------------------------------------- */
 
-    const preloadImages = () => {
-      if (cancelled) return;
+const smoothScrollToElement = (
+  element: HTMLElement | null,
+  offset = 0,
+  reduceMotion = false
+) => {
+  if (!element) return;
 
-      activities.forEach((activity) => {
-        const img = new window.Image();
+  const startY = window.scrollY;
 
-        img.decoding = "async";
-        img.src = activity.image;
-      });
-    };
+  const targetY =
+    element.getBoundingClientRect().top +
+    window.scrollY -
+    offset;
 
-    /*
-     * Don't block the initial render.
-     * Give the browser a moment to render the page first, then preload.
-     */
-    if (
-      "requestIdleCallback" in window &&
-      typeof window.requestIdleCallback === "function"
-    ) {
-      const idleId = window.requestIdleCallback(
-        () => preloadImages(),
-        { timeout: 1500 }
-      );
+  const distance = targetY - startY;
 
-      return () => {
-        cancelled = true;
+  if (Math.abs(distance) < 2) return;
 
-        if (
-          "cancelIdleCallback" in window &&
-          typeof window.cancelIdleCallback === "function"
-        ) {
-          window.cancelIdleCallback(idleId);
-        }
-      };
+  if (reduceMotion) {
+    window.scrollTo({
+      top: targetY,
+      behavior: "auto",
+    });
+
+    return;
+  }
+
+  const duration = Math.min(
+    700,
+    Math.max(350, Math.abs(distance) * 0.65)
+  );
+
+  const easeInOutCubic = (t: number) =>
+    t < 0.5
+      ? 4 * t * t * t
+      : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+  let startTime: number | null = null;
+
+  const animateScroll = (currentTime: number) => {
+    if (startTime === null) {
+      startTime = currentTime;
     }
 
-    const timeoutId = setTimeout(preloadImages, 300);
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(
+      elapsed / duration,
+      1
+    );
 
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-    };
-  }, []);
+    const eased = easeInOutCubic(progress);
 
-  return null;
-}
+    window.scrollTo(
+      0,
+      startY + distance * eased
+    );
+
+    if (progress < 1) {
+      requestAnimationFrame(animateScroll);
+    }
+  };
+
+  requestAnimationFrame(animateScroll);
+};
 
 export default function Ventures() {
   const reduceMotion = useReducedMotion();
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [platformActive, setPlatformActive] = useState(false);
-  const [activeStat, setActiveStat] = useState<number | null>(null);
-  const [finePointer, setFinePointer] = useState(false);
+  const [platformActive, setPlatformActive] =
+    useState(false);
+  const [activeStat, setActiveStat] =
+    useState<number | null>(null);
+  const [finePointer, setFinePointer] =
+    useState(false);
 
-  const categoryRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const categoryRefs = useRef<
+    (HTMLButtonElement | null)[]
+  >([]);
+
   const desktopCategoryRefs = useRef<
     (HTMLButtonElement | null)[]
   >([]);
+
+  const mobileCategoryScrollRef =
+    useRef<HTMLDivElement | null>(null);
+
   const desktopCategoryScrollRef =
     useRef<HTMLDivElement | null>(null);
 
-  const activeHeadingRef = useRef<HTMLHeadingElement | null>(null);
-  const shouldScrollHeadingRef = useRef(false);
+  const activeHeadingRef =
+    useRef<HTMLHeadingElement | null>(null);
+
+  const shouldScrollHeadingRef =
+    useRef(false);
+
+  /* ------------------------------------------------------------------------ */
+  /* POINTER DETECTION                                                        */
+  /* ------------------------------------------------------------------------ */
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(pointer: fine)");
+    const mediaQuery = window.matchMedia(
+      "(pointer: fine)"
+    );
 
     const updatePointer = () => {
       setFinePointer(mediaQuery.matches);
@@ -230,15 +259,22 @@ export default function Ventures() {
 
     updatePointer();
 
-    mediaQuery.addEventListener("change", updatePointer);
+    mediaQuery.addEventListener(
+      "change",
+      updatePointer
+    );
 
     return () => {
-      mediaQuery.removeEventListener("change", updatePointer);
+      mediaQuery.removeEventListener(
+        "change",
+        updatePointer
+      );
     };
   }, []);
 
   const motionEnabled = !reduceMotion;
-  const hoverEnabled = motionEnabled && finePointer;
+  const hoverEnabled =
+    motionEnabled && finePointer;
 
   const active = activities[activeIndex];
 
@@ -250,21 +286,62 @@ export default function Ventures() {
       };
 
   const normalizeIndex = (index: number) =>
-    ((index % activities.length) + activities.length) %
+    ((index % activities.length) +
+      activities.length) %
     activities.length;
+
+  /* ------------------------------------------------------------------------ */
+  /* CATEGORY SCROLLING                                                       */
+  /* ------------------------------------------------------------------------ */
 
   const scrollActiveHeading = () => {
     requestAnimationFrame(() => {
-      activeHeadingRef.current?.scrollIntoView({
-        behavior: reduceMotion ? "auto" : "smooth",
-        block: "center",
-      });
+      smoothScrollToElement(
+        activeHeadingRef.current,
+        window.innerHeight * 0.32,
+        Boolean(reduceMotion)
+      );
     });
   };
 
-  const scrollDesktopCategoryIntoView = (index: number) => {
-    const container = desktopCategoryScrollRef.current;
-    const item = desktopCategoryRefs.current[index];
+  const scrollMobileCategoryIntoView = (
+    index: number
+  ) => {
+    const container =
+      mobileCategoryScrollRef.current;
+
+    const item = categoryRefs.current[index];
+
+    if (!container || !item) return;
+
+    const targetLeft =
+      item.offsetLeft -
+      container.clientWidth / 2 +
+      item.offsetWidth / 2;
+
+    const maxScroll =
+      container.scrollWidth -
+      container.clientWidth;
+
+    container.scrollTo({
+      left: Math.max(
+        0,
+        Math.min(targetLeft, maxScroll)
+      ),
+      behavior: reduceMotion
+        ? "auto"
+        : "smooth",
+    });
+  };
+
+  const scrollDesktopCategoryIntoView = (
+    index: number
+  ) => {
+    const container =
+      desktopCategoryScrollRef.current;
+
+    const item =
+      desktopCategoryRefs.current[index];
 
     if (!container || !item) return;
 
@@ -274,36 +351,46 @@ export default function Ventures() {
       item.offsetHeight / 2;
 
     const maxScroll =
-      container.scrollHeight - container.clientHeight;
+      container.scrollHeight -
+      container.clientHeight;
 
     container.scrollTo({
-      top: Math.max(0, Math.min(targetTop, maxScroll)),
-      behavior: reduceMotion ? "auto" : "smooth",
+      top: Math.max(
+        0,
+        Math.min(targetTop, maxScroll)
+      ),
+      behavior: reduceMotion
+        ? "auto"
+        : "smooth",
     });
   };
 
   const selectActivity = (index: number) => {
-    const normalized = normalizeIndex(index);
+    const normalized =
+      normalizeIndex(index);
 
     setActiveIndex(normalized);
 
     requestAnimationFrame(() => {
-      categoryRefs.current[normalized]?.scrollIntoView({
-        behavior: reduceMotion ? "auto" : "smooth",
-        block: "nearest",
-        inline: "center",
-      });
+      scrollMobileCategoryIntoView(
+        normalized
+      );
 
-      scrollDesktopCategoryIntoView(normalized);
+      scrollDesktopCategoryIntoView(
+        normalized
+      );
     });
   };
 
-  const moveActivity = (direction: 1 | -1) => {
+  const moveActivity = (
+    direction: 1 | -1
+  ) => {
     const nextIndex = normalizeIndex(
       activeIndex + direction
     );
 
     shouldScrollHeadingRef.current = true;
+
     setActiveIndex(nextIndex);
   };
 
@@ -312,29 +399,44 @@ export default function Ventures() {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      scrollDesktopCategoryIntoView(activeIndex);
+    const frame =
+      requestAnimationFrame(() => {
+        scrollDesktopCategoryIntoView(
+          activeIndex
+        );
 
-      if (shouldScrollHeadingRef.current) {
-        shouldScrollHeadingRef.current = false;
-        scrollActiveHeading();
-      }
-    }, 80);
+        if (
+          shouldScrollHeadingRef.current
+        ) {
+          shouldScrollHeadingRef.current =
+            false;
 
-    return () => clearTimeout(timer);
-  }, [activeIndex]);
+          scrollActiveHeading();
+        }
+      });
+
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [activeIndex, reduceMotion]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#06131F] text-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#06131F] text-white">
       <Navbar />
 
-      <VentureImagePreloader />
+      <main className="relative w-full max-w-full overflow-hidden">
+        {/* ------------------------------------------------------------------ */}
+        {/* AMBIENT BACKGROUND                                                  */}
+        {/* ------------------------------------------------------------------ */}
 
-      <main className="relative overflow-hidden">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {/* TOP AMBIENT GLOW */}
           <div
-            className={`${hoverEnabled ? "ambient-blob" : ""} absolute left-1/2 top-[-220px] h-[380px] w-[380px] -translate-x-1/2 rounded-full bg-[#174EA6]/[0.13] blur-[95px] sm:top-[-280px] sm:h-[560px] sm:w-[560px] sm:blur-[135px] lg:h-[680px] lg:w-[680px] lg:blur-[150px]`}
+            className={`${
+              hoverEnabled
+                ? "ambient-blob"
+                : ""
+            } absolute left-1/2 top-[-220px] h-[380px] w-[380px] -translate-x-1/2 rounded-full bg-[#174EA6]/[0.13] blur-[95px] sm:top-[-280px] sm:h-[560px] sm:w-[560px] sm:blur-[135px] lg:h-[680px] lg:w-[680px] lg:blur-[150px]`}
             style={
               hoverEnabled
                 ? ({
@@ -350,7 +452,11 @@ export default function Ventures() {
 
           {/* LEFT AMBIENT GLOW */}
           <div
-            className={`${hoverEnabled ? "ambient-blob" : ""} absolute -left-[160px] top-[28%] h-[300px] w-[300px] rounded-full bg-[#168BD1]/[0.055] blur-[90px] sm:-left-[260px] sm:h-[450px] sm:w-[450px] sm:blur-[140px] lg:h-[500px] lg:w-[500px] lg:blur-[150px]`}
+            className={`${
+              hoverEnabled
+                ? "ambient-blob"
+                : ""
+            } absolute -left-[160px] top-[28%] h-[300px] w-[300px] rounded-full bg-[#168BD1]/[0.055] blur-[90px] sm:-left-[260px] sm:h-[450px] sm:w-[450px] sm:blur-[140px] lg:h-[500px] lg:w-[500px] lg:blur-[150px]`}
             style={
               hoverEnabled
                 ? ({
@@ -364,7 +470,11 @@ export default function Ventures() {
 
           {/* RIGHT AMBIENT GLOW */}
           <div
-            className={`${hoverEnabled ? "ambient-blob" : ""} absolute -right-[170px] top-[58%] h-[300px] w-[300px] rounded-full bg-[#2DD4BF]/[0.04] blur-[90px] sm:-right-[280px] sm:h-[450px] sm:w-[450px] sm:blur-[140px] lg:h-[500px] lg:w-[500px] lg:blur-[150px]`}
+            className={`${
+              hoverEnabled
+                ? "ambient-blob"
+                : ""
+            } absolute -right-[170px] top-[58%] h-[300px] w-[300px] rounded-full bg-[#2DD4BF]/[0.04] blur-[90px] sm:-right-[280px] sm:h-[450px] sm:w-[450px] sm:blur-[140px] lg:h-[500px] lg:w-[500px] lg:blur-[150px]`}
             style={
               hoverEnabled
                 ? ({
@@ -383,7 +493,8 @@ export default function Ventures() {
             style={{
               backgroundImage:
                 "linear-gradient(rgba(255,255,255,.8) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.8) 1px, transparent 1px)",
-              backgroundSize: "120px 120px",
+              backgroundSize:
+                "120px 120px",
             }}
           />
 
@@ -392,9 +503,12 @@ export default function Ventures() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(40,120,215,.06),transparent_30%),radial-gradient(circle_at_20%_40%,rgba(45,212,191,.018),transparent_25%),linear-gradient(to_bottom,rgba(6,19,31,.08),rgba(6,19,31,.35))]" />
         </div>
 
-        {/* HERO */}
-        <section className="relative px-5 pb-9 pt-32 sm:px-8 sm:pb-16 sm:pt-20 md:px-10 md:pb-20 md:pt-24 lg:px-16 lg:pb-24 lg:pt-28">
-          <div className="mx-auto max-w-7xl">
+        {/* ------------------------------------------------------------------ */}
+        {/* HERO                                                               */}
+        {/* ------------------------------------------------------------------ */}
+
+        <section className="relative w-full px-5 pb-9 pt-32 sm:px-8 sm:pb-16 sm:pt-20 md:px-10 md:pb-20 md:pt-24 lg:px-16 lg:pb-24 lg:pt-28">
+          <div className="mx-auto w-full max-w-7xl">
             <motion.div
               initial={
                 reduceMotion
@@ -423,26 +537,30 @@ export default function Ventures() {
                   duration: 0.3,
                   ease,
                 }}
-                className="flex w-fit cursor-default items-center gap-3"
+                className="flex w-fit max-w-full cursor-default items-center gap-3"
               >
                 {hoverEnabled ? (
                   <motion.span
                     animate={{
                       scale: [1, 1.35, 1],
-                      opacity: [0.75, 1, 0.75],
+                      opacity: [
+                        0.75,
+                        1,
+                        0.75,
+                      ],
                     }}
                     transition={{
                       duration: 2.4,
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    className="h-1.5 w-1.5 rounded-full bg-[#42D5F5] shadow-[0_0_10px_rgba(66,213,245,.45)]"
+                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#42D5F5] shadow-[0_0_10px_rgba(66,213,245,.45)]"
                   />
                 ) : (
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#42D5F5] shadow-[0_0_10px_rgba(66,213,245,.45)]" />
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#42D5F5] shadow-[0_0_10px_rgba(66,213,245,.45)]" />
                 )}
 
-                <span className="text-[8px] font-semibold uppercase tracking-[0.32em] text-[#42D5F5] sm:text-[9px] sm:tracking-[0.4em]">
+                <span className="truncate text-[8px] font-semibold uppercase tracking-[0.32em] text-[#42D5F5] sm:text-[9px] sm:tracking-[0.4em]">
                   BH Ventures
                 </span>
               </motion.div>
@@ -459,7 +577,7 @@ export default function Ventures() {
                   duration: 0.4,
                   ease,
                 }}
-                className="mt-8 w-full max-w-5xl cursor-default break-words text-[clamp(2.8rem,11.2vw,6.5rem)] font-medium leading-[0.91] tracking-[-0.065em] sm:mt-9 sm:text-[clamp(3rem,9vw,6.5rem)] sm:tracking-[-0.07em] lg:text-[clamp(3rem,5.3vw,5rem)]"
+                className="mt-8 w-full max-w-5xl cursor-default break-words text-[clamp(2.65rem,11vw,6.5rem)] font-medium leading-[0.91] tracking-[-0.065em] sm:mt-9 sm:text-[clamp(3rem,9vw,6.5rem)] sm:tracking-[-0.07em] lg:text-[clamp(3rem,5.3vw,5rem)]"
               >
                 <span className="text-white">
                   Building across
@@ -486,179 +604,264 @@ export default function Ventures() {
                 }}
                 className="mt-9 max-w-2xl text-[12.5px] leading-7 text-white sm:mt-11 sm:text-[16px] sm:leading-9"
               >
-                BH Ventures operates across diverse industries and
-                emerging opportunities — combining commerce,
-                technology, innovation, marketing and strategic
-                services under one forward-looking venture platform.
+                BH Ventures operates across
+                diverse industries and
+                emerging opportunities —
+                combining commerce,
+                technology, innovation,
+                marketing and strategic
+                services under one
+                forward-looking venture
+                platform.
               </motion.p>
 
-              <div className="mt-8 grid grid-cols-3 gap-2.5 sm:mt-12 sm:flex sm:flex-wrap sm:gap-3">
+              {/* HERO STATS */}
+              <div className="mt-8 grid w-full max-w-xl grid-cols-3 gap-2.5 sm:mt-12 sm:flex sm:max-w-none sm:flex-wrap sm:gap-3">
                 {[
                   ["10", "Activities"],
                   ["UAE", "Based"],
                   ["Multi", "Industry"],
-                ].map(([value, label], index) => {
-                  const isActive = activeStat === index;
+                ].map(
+                  ([value, label], index) => {
+                    const isActive =
+                      activeStat === index;
 
-                  return (
-                    <motion.button
-                      key={label}
-                      type="button"
-                      aria-pressed={isActive}
-                      onClick={() => setActiveStat(index)}
-                      whileHover={
-                        hoverEnabled
-                          ? {
-                              y: -6,
-                              scale: 1.035,
-                            }
-                          : undefined
-                      }
-                      whileTap={
-                        motionEnabled
-                          ? {
-                              scale: 0.96,
-                            }
-                          : undefined
-                      }
-                      transition={{
-                        duration: 0.3,
-                        ease,
-                      }}
-                      className={`group relative min-w-0 appearance-none overflow-hidden rounded-2xl border px-2.5 py-4.5 text-left transition-[border-color,background-color,box-shadow,transform] duration-500 sm:backdrop-blur-xl ${
-                        isActive
-                          ? "border-[#42D5F5]/[0.58] bg-[#42D5F5]/[0.09] shadow-[0_16px_45px_rgba(66,213,245,.16)]"
-                          : index === 1
-                            ? "border-[#42D5F5]/[0.18] bg-[#42D5F5]/[0.045] hover:border-[#42D5F5]/[0.38] hover:bg-[#42D5F5]/[0.07] hover:shadow-[0_14px_38px_rgba(66,213,245,.09)]"
-                            : "border-white/[0.08] bg-white/[0.022] hover:border-white/[0.17] hover:bg-white/[0.04] hover:shadow-[0_14px_38px_rgba(0,0,0,.2)]"
-                      }`}
-                    >
-                      {hoverEnabled ? (
-                        <>
-                          <motion.span
-                            aria-hidden="true"
-                            animate={{
-                              opacity: isActive
-                                ? [0.5, 1, 0.5]
-                                : [0.18, 0.65, 0.18],
-                              scaleX: [0.75, 1, 0.75],
-                            }}
-                            transition={{
-                              duration: isActive ? 1.8 : 2.8,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                              delay: index * 0.2,
-                            }}
-                            className={`pointer-events-none absolute left-3 right-3 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#72E2F5] to-transparent ${
-                              isActive
-                                ? "opacity-100"
-                                : "opacity-60"
-                            }`}
-                          />
+                    return (
+                      <motion.button
+                        key={label}
+                        type="button"
+                        aria-pressed={isActive}
+                        onClick={() =>
+                          setActiveStat(index)
+                        }
+                        whileHover={
+                          hoverEnabled
+                            ? {
+                                y: -6,
+                                scale: 1.035,
+                              }
+                            : undefined
+                        }
+                        whileTap={
+                          motionEnabled
+                            ? {
+                                scale: 0.96,
+                              }
+                            : undefined
+                        }
+                        transition={{
+                          duration: 0.3,
+                          ease,
+                        }}
+                        className={`group relative min-w-0 appearance-none overflow-hidden rounded-2xl border px-2.5 py-[18px] text-left transition-[border-color,background-color,box-shadow,transform] duration-500 sm:backdrop-blur-xl ${
+                          isActive
+                            ? "border-[#42D5F5]/[0.58] bg-[#42D5F5]/[0.09] shadow-[0_16px_45px_rgba(66,213,245,.16)]"
+                            : index === 1
+                              ? "border-[#42D5F5]/[0.18] bg-[#42D5F5]/[0.045] hover:border-[#42D5F5]/[0.38] hover:bg-[#42D5F5]/[0.07] hover:shadow-[0_14px_38px_rgba(66,213,245,.09)]"
+                              : "border-white/[0.08] bg-white/[0.022] hover:border-white/[0.17] hover:bg-white/[0.04] hover:shadow-[0_14px_38px_rgba(0,0,0,.2)]"
+                        }`}
+                      >
+                        {hoverEnabled ? (
+                          <>
+                            <motion.span
+                              aria-hidden="true"
+                              animate={{
+                                opacity:
+                                  isActive
+                                    ? [
+                                        0.5,
+                                        1,
+                                        0.5,
+                                      ]
+                                    : [
+                                        0.18,
+                                        0.65,
+                                        0.18,
+                                      ],
+                                scaleX: [
+                                  0.75,
+                                  1,
+                                  0.75,
+                                ],
+                              }}
+                              transition={{
+                                duration:
+                                  isActive
+                                    ? 1.8
+                                    : 2.8,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                delay:
+                                  index * 0.2,
+                              }}
+                              className={`pointer-events-none absolute left-3 right-3 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#72E2F5] to-transparent ${
+                                isActive
+                                  ? "opacity-100"
+                                  : "opacity-60"
+                              }`}
+                            />
 
-                          <motion.span
-                            aria-hidden="true"
-                            animate={{
-                              opacity: isActive
-                                ? [0.45, 1, 0.45]
-                                : [0.15, 0.55, 0.15],
-                              scaleX: [0.75, 1, 0.75],
-                            }}
-                            transition={{
-                              duration: isActive ? 2 : 3,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                              delay: index * 0.25 + 0.4,
-                            }}
-                            className={`pointer-events-none absolute bottom-0 left-3 right-3 z-10 h-px bg-gradient-to-r from-transparent via-[#42D5F5] to-transparent ${
-                              isActive
-                                ? "opacity-100"
-                                : "opacity-50"
-                            }`}
-                          />
+                            <motion.span
+                              aria-hidden="true"
+                              animate={{
+                                opacity:
+                                  isActive
+                                    ? [
+                                        0.45,
+                                        1,
+                                        0.45,
+                                      ]
+                                    : [
+                                        0.15,
+                                        0.55,
+                                        0.15,
+                                      ],
+                                scaleX: [
+                                  0.75,
+                                  1,
+                                  0.75,
+                                ],
+                              }}
+                              transition={{
+                                duration:
+                                  isActive
+                                    ? 2
+                                    : 3,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                delay:
+                                  index * 0.25 +
+                                  0.4,
+                              }}
+                              className={`pointer-events-none absolute bottom-0 left-3 right-3 z-10 h-px bg-gradient-to-r from-transparent via-[#42D5F5] to-transparent ${
+                                isActive
+                                  ? "opacity-100"
+                                  : "opacity-50"
+                              }`}
+                            />
 
-                          <motion.span
-                            aria-hidden="true"
-                            animate={{
-                              opacity: isActive
-                                ? [0.4, 0.9, 0.4]
-                                : [0.12, 0.5, 0.12],
-                              scaleY: [0.72, 1, 0.72],
-                            }}
-                            transition={{
-                              duration: isActive ? 2.1 : 3.1,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                              delay: index * 0.18,
-                            }}
-                            className={`pointer-events-none absolute bottom-3 left-0 top-3 z-10 w-px bg-gradient-to-b from-transparent via-[#72E2F5] to-transparent ${
-                              isActive
-                                ? "opacity-100"
-                                : "opacity-50"
-                            }`}
-                          />
+                            <motion.span
+                              aria-hidden="true"
+                              animate={{
+                                opacity:
+                                  isActive
+                                    ? [
+                                        0.4,
+                                        0.9,
+                                        0.4,
+                                      ]
+                                    : [
+                                        0.12,
+                                        0.5,
+                                        0.12,
+                                      ],
+                                scaleY: [
+                                  0.72,
+                                  1,
+                                  0.72,
+                                ],
+                              }}
+                              transition={{
+                                duration:
+                                  isActive
+                                    ? 2.1
+                                    : 3.1,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                delay:
+                                  index * 0.18,
+                              }}
+                              className={`pointer-events-none absolute bottom-3 left-0 top-3 z-10 w-px bg-gradient-to-b from-transparent via-[#72E2F5] to-transparent ${
+                                isActive
+                                  ? "opacity-100"
+                                  : "opacity-50"
+                              }`}
+                            />
 
-                          <motion.span
-                            aria-hidden="true"
-                            animate={{
-                              opacity: isActive
-                                ? [0.45, 1, 0.45]
-                                : [0.14, 0.55, 0.14],
-                              scaleY: [0.72, 1, 0.72],
-                            }}
-                            transition={{
-                              duration: isActive ? 1.9 : 2.9,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                              delay: index * 0.22 + 0.3,
-                            }}
-                            className={`pointer-events-none absolute bottom-3 right-0 top-3 z-10 w-px bg-gradient-to-b from-transparent via-[#42D5F5] to-transparent ${
-                              isActive
-                                ? "opacity-100"
-                                : "opacity-50"
-                            }`}
-                          />
-                        </>
-                      ) : (
-                        <>
+                            <motion.span
+                              aria-hidden="true"
+                              animate={{
+                                opacity:
+                                  isActive
+                                    ? [
+                                        0.45,
+                                        1,
+                                        0.45,
+                                      ]
+                                    : [
+                                        0.14,
+                                        0.55,
+                                        0.14,
+                                      ],
+                                scaleY: [
+                                  0.72,
+                                  1,
+                                  0.72,
+                                ],
+                              }}
+                              transition={{
+                                duration:
+                                  isActive
+                                    ? 1.9
+                                    : 2.9,
+                                repeat: Infinity,
+                                ease: "easeInOut",
+                                delay:
+                                  index * 0.22 +
+                                  0.3,
+                              }}
+                              className={`pointer-events-none absolute bottom-3 right-0 top-3 z-10 w-px bg-gradient-to-b from-transparent via-[#42D5F5] to-transparent ${
+                                isActive
+                                  ? "opacity-100"
+                                  : "opacity-50"
+                              }`}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <span
+                              aria-hidden="true"
+                              className="pointer-events-none absolute left-3 right-3 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#72E2F5]/60 to-transparent"
+                            />
+
+                            <span
+                              aria-hidden="true"
+                              className="pointer-events-none absolute bottom-0 left-3 right-3 z-10 h-px bg-gradient-to-r from-transparent via-[#42D5F5]/50 to-transparent"
+                            />
+                          </>
+                        )}
+
+                        <div className="relative z-20 flex min-w-0 flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline sm:gap-2">
                           <span
-                            aria-hidden="true"
-                            className="pointer-events-none absolute left-3 right-3 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[#72E2F5]/60 to-transparent"
-                          />
+                            className={
+                              index === 1 ||
+                              isActive
+                                ? "text-base font-medium text-[#67D9F0] sm:text-lg"
+                                : "text-base font-medium text-white sm:text-lg"
+                            }
+                          >
+                            {value}
+                          </span>
 
-                          <span
-                            aria-hidden="true"
-                            className="pointer-events-none absolute bottom-0 left-3 right-3 z-10 h-px bg-gradient-to-r from-transparent via-[#42D5F5]/50 to-transparent"
-                          />
-                        </>
-                      )}
-
-                      <div className="relative z-20 flex min-w-0 flex-col items-center justify-center gap-1.5 sm:flex-row sm:items-baseline sm:gap-2">
-                        <span
-                          className={
-                            index === 1 || isActive
-                              ? "text-base font-medium text-[#67D9F0] sm:text-lg"
-                              : "text-base font-medium text-white sm:text-lg"
-                          }
-                        >
-                          {value}
-                        </span>
-
-                        <span className="text-[7px] font-semibold uppercase tracking-[0.14em] text-white sm:text-[8px] sm:tracking-[0.2em]">
-                          {label}
-                        </span>
-                      </div>
-                    </motion.button>
-                  );
-                })}
+                          <span className="truncate text-[7px] font-semibold uppercase tracking-[0.14em] text-white sm:text-[8px] sm:tracking-[0.2em]">
+                            {label}
+                          </span>
+                        </div>
+                      </motion.button>
+                    );
+                  }
+                )}
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* VENTURE INTRO */}
-        <section className="relative mt-6 px-5 pb-6 sm:mt-12 sm:px-8 sm:pb-10 md:mt-14 md:px-10 lg:mt-16 lg:px-16 lg:pb-16">
-          <div className="mx-auto max-w-7xl">
+        {/* ------------------------------------------------------------------ */}
+        {/* VENTURE INTRO                                                       */}
+        {/* ------------------------------------------------------------------ */}
+
+        <section className="relative mt-6 w-full px-5 pb-6 sm:mt-12 sm:px-8 sm:pb-10 md:mt-14 md:px-10 lg:mt-16 lg:px-16 lg:pb-16">
+          <div className="mx-auto w-full max-w-7xl">
             <motion.div
               initial={
                 reduceMotion
@@ -691,9 +894,11 @@ export default function Ventures() {
                   : undefined
               }
               onClick={() =>
-                setPlatformActive((prev) => !prev)
+                setPlatformActive(
+                  (prev) => !prev
+                )
               }
-              className={`group relative cursor-pointer overflow-hidden rounded-[22px] border bg-[#0C2434] shadow-[0_18px_55px_rgba(0,0,0,.22)] transition-[border-color,background-color,box-shadow,transform] duration-500 sm:rounded-[30px] sm:backdrop-blur-xl ${
+              className={`group relative w-full cursor-pointer overflow-hidden rounded-[22px] border bg-[#0C2434] shadow-[0_18px_55px_rgba(0,0,0,.22)] transition-[border-color,background-color,box-shadow,transform] duration-500 sm:rounded-[30px] sm:backdrop-blur-xl ${
                 platformActive
                   ? "border-[#42D5F5]/[0.28] bg-[#103044] shadow-[0_28px_85px_rgba(66,213,245,.10)]"
                   : "border-white/[0.09] hover:border-[#42D5F5]/[0.18] hover:bg-[#103044] hover:shadow-[0_28px_85px_rgba(0,0,0,.3)]"
@@ -717,12 +922,13 @@ export default function Ventures() {
                 }`}
               />
 
-              <div className="relative z-10 grid lg:grid-cols-[1fr_300px]">
-                <div className="p-5.5 sm:p-10 lg:p-12">
-                  <div className="flex items-start gap-3.5 sm:gap-5">
+              <div className="relative z-10 grid min-w-0 lg:grid-cols-[minmax(0,1fr)_300px]">
+                <div className="min-w-0 p-[22px] sm:p-10 lg:p-12">
+                  <div className="flex min-w-0 items-start gap-3.5 sm:gap-5">
                     <motion.div
                       animate={
-                        platformActive && motionEnabled
+                        platformActive &&
+                        motionEnabled
                           ? {
                               scale: 1.08,
                               rotate: 4,
@@ -766,19 +972,22 @@ export default function Ventures() {
                         Venture Platform
                       </span>
 
-                      <h2 className="mt-1.5 text-[clamp(2.2rem,9vw,3.3rem)] font-medium leading-none tracking-[-0.055em] text-white transition-transform duration-500 group-hover:translate-x-1 sm:mt-2">
+                      <h2 className="mt-1.5 break-words text-[clamp(2.1rem,9vw,3.3rem)] font-medium leading-none tracking-[-0.055em] text-white transition-transform duration-500 group-hover:translate-x-1 sm:mt-2">
                         BH Ventures
                       </h2>
                     </div>
                   </div>
 
                   <p className="mt-6 max-w-2xl text-[12px] leading-7 text-white transition-colors duration-500 group-hover:text-white sm:mt-9 sm:text-[15px] sm:leading-9">
-                    A diversified venture platform bringing together
-                    ten strategic business activities across multiple
-                    industries and emerging opportunities.
+                    A diversified venture
+                    platform bringing together
+                    ten strategic business
+                    activities across multiple
+                    industries and emerging
+                    opportunities.
                   </p>
 
-                  <div className="mt-6 flex flex-wrap gap-1.5 sm:mt-9 sm:gap-2">
+                  <div className="mt-6 flex max-w-full flex-wrap gap-1.5 sm:mt-9 sm:gap-2">
                     {[
                       "10 Activities",
                       "Multi-Industry",
@@ -819,7 +1028,11 @@ export default function Ventures() {
                   {hoverEnabled ? (
                     <motion.div
                       animate={{
-                        opacity: [0.35, 0.7, 0.35],
+                        opacity: [
+                          0.35,
+                          0.7,
+                          0.35,
+                        ],
                       }}
                       transition={{
                         duration: 2.8,
@@ -828,7 +1041,7 @@ export default function Ventures() {
                       }}
                       className="mt-5 flex items-center gap-2 text-[#67D9F0]"
                     >
-                      <span className="h-1 w-1 rounded-full bg-[#42D5F5]" />
+                      <span className="h-1 w-1 shrink-0 rounded-full bg-[#42D5F5]" />
 
                       <span className="text-[6.5px] font-semibold uppercase tracking-[0.2em]">
                         Tap to explore
@@ -836,7 +1049,7 @@ export default function Ventures() {
                     </motion.div>
                   ) : (
                     <div className="mt-5 flex items-center gap-2 text-[#67D9F0]">
-                      <span className="h-1 w-1 rounded-full bg-[#42D5F5]" />
+                      <span className="h-1 w-1 shrink-0 rounded-full bg-[#42D5F5]" />
 
                       <span className="text-[6.5px] font-semibold uppercase tracking-[0.2em]">
                         Tap to explore
@@ -846,13 +1059,13 @@ export default function Ventures() {
                 </div>
 
                 <div
-                  className={`relative flex min-h-[135px] items-center border-t border-white/[0.08] p-5 transition-[border-color,background-color] duration-500 group-hover:border-white/[0.12] sm:min-h-[180px] sm:p-8 lg:border-l lg:border-t-0 lg:p-10 ${
+                  className={`relative flex min-h-[135px] min-w-0 items-center border-t border-white/[0.08] p-5 transition-[border-color,background-color] duration-500 group-hover:border-white/[0.12] sm:min-h-[180px] sm:p-8 lg:border-l lg:border-t-0 lg:p-10 ${
                     platformActive
                       ? "bg-white/[0.018]"
                       : ""
                   }`}
                 >
-                  <div className="transition-transform duration-500 group-hover:translate-x-1">
+                  <div className="min-w-0 transition-transform duration-500 group-hover:translate-x-1">
                     <span className="text-[6.5px] font-semibold uppercase tracking-[0.28em] text-white sm:text-[8px] sm:tracking-[0.35em]">
                       Portfolio Scope
                     </span>
@@ -860,9 +1073,14 @@ export default function Ventures() {
                     <div className="mt-2.5 flex min-w-0 items-center gap-3 overflow-visible sm:mt-3">
                       <motion.span
                         animate={
-                          platformActive && motionEnabled
+                          platformActive &&
+                          motionEnabled
                             ? {
-                                scale: [1, 1.08, 1],
+                                scale: [
+                                  1,
+                                  1.08,
+                                  1,
+                                ],
                               }
                             : undefined
                         }
@@ -875,7 +1093,7 @@ export default function Ventures() {
                         10
                       </motion.span>
 
-                      <span className="min-w-0 text-[7px] font-semibold uppercase tracking-[0.16em] text-[#67D9F0] sm:text-[9px] sm:tracking-[0.22em]">
+                      <span className="min-w-0 break-words text-[7px] font-semibold uppercase tracking-[0.16em] text-[#67D9F0] sm:text-[9px] sm:tracking-[0.22em]">
                         Activities
                       </span>
                     </div>
@@ -886,9 +1104,12 @@ export default function Ventures() {
           </div>
         </section>
 
-        {/* 10 ACTIVITIES */}
-        <section className="relative mt-7 px-5 pb-14 sm:mt-12 sm:px-8 sm:pb-20 md:mt-14 md:px-10 lg:mt-16 lg:px-16 lg:pb-28">
-          <div className="mx-auto max-w-7xl">
+        {/* ------------------------------------------------------------------ */}
+        {/* 10 ACTIVITIES                                                       */}
+        {/* ------------------------------------------------------------------ */}
+
+        <section className="relative mt-7 w-full px-5 pb-14 sm:mt-12 sm:px-8 sm:pb-20 md:mt-14 md:px-10 lg:mt-16 lg:px-16 lg:pb-28">
+          <div className="mx-auto w-full max-w-7xl">
             <motion.div
               initial={
                 reduceMotion
@@ -907,7 +1128,7 @@ export default function Ventures() {
                 duration: 0.6,
                 ease,
               }}
-              className="mb-6 flex flex-col gap-6 border-b border-white/[0.08] pb-6 sm:mb-10 sm:gap-8 sm:pb-9 lg:mb-12 lg:flex-row lg:items-end lg:justify-between"
+              className="mb-6 flex min-w-0 flex-col gap-6 border-b border-white/[0.08] pb-6 sm:mb-10 sm:gap-8 sm:pb-9 lg:mb-12 lg:flex-row lg:items-end lg:justify-between"
             >
               <div className="min-w-0">
                 <span className="text-[7px] font-semibold uppercase tracking-[0.28em] text-[#42D5F5] sm:text-[9px] sm:tracking-[0.35em]">
@@ -926,7 +1147,7 @@ export default function Ventures() {
                     duration: 0.35,
                     ease,
                   }}
-                  className="mt-4 max-w-5xl cursor-default text-[clamp(2.75rem,12vw,5.8rem)] font-medium leading-[0.92] tracking-[-0.07em] sm:mt-3 sm:text-[clamp(2.4rem,8vw,5.8rem)] lg:text-[clamp(2.35rem,5vw,4.7rem)]"
+                  className="mt-4 max-w-5xl cursor-default break-words text-[clamp(2.55rem,11.5vw,5.8rem)] font-medium leading-[0.92] tracking-[-0.07em] sm:mt-3 sm:text-[clamp(2.4rem,8vw,5.8rem)] lg:text-[clamp(2.35rem,5vw,4.7rem)]"
                 >
                   <span className="text-white">
                     Ten activities.
@@ -941,72 +1162,89 @@ export default function Ventures() {
               </div>
 
               <p className="max-w-sm text-[9.5px] leading-5 text-white transition-colors duration-400 hover:text-white sm:text-[11px] sm:leading-6 lg:pb-2 lg:text-right">
-                Explore the different business frontiers that form
+                Explore the different
+                business frontiers that form
                 the BH Ventures portfolio.
               </p>
             </motion.div>
 
-            {/* MOBILE SELECTOR */}
-            <div className="mb-6 -mx-5 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:hidden">
-              <div className="flex min-w-max gap-2.5 pr-8">
-                {activities.map((activity, index) => {
-                  const isActive = index === activeIndex;
+            {/* ---------------------------------------------------------------- */}
+            {/* MOBILE SELECTOR                                                   */}
+            {/* ---------------------------------------------------------------- */}
 
-                  return (
-                    <motion.button
-                      key={activity.number}
-                      ref={(el) => {
-                        categoryRefs.current[index] = el;
-                      }}
-                      type="button"
-                      onClick={() => selectActivity(index)}
-                      whileHover={
-                        hoverEnabled
-                          ? {
-                              y: -2,
-                            }
-                          : undefined
-                      }
-                      whileTap={
-                        motionEnabled
-                          ? {
-                              scale: 0.96,
-                            }
-                          : undefined
-                      }
-                      transition={{
-                        duration: 0.25,
-                        ease,
-                      }}
-                      className={`flex h-12 shrink-0 items-center gap-2.5 rounded-full border px-4.5 text-[9px] font-semibold uppercase tracking-[0.12em] transition-[border-color,background-color,color,box-shadow,transform] duration-400 sm:h-11 sm:px-4.5 sm:text-[9px] sm:tracking-[0.15em] ${
-                        isActive
-                          ? "border-[#42D5F5]/[0.42] bg-[#42D5F5]/[0.10] text-[#72E2F5] shadow-[0_9px_28px_rgba(66,213,245,.10)]"
-                          : "border-white/[0.09] bg-white/[0.025] text-white hover:border-white/[0.17] hover:bg-white/[0.05] hover:text-white"
-                      }`}
-                    >
-                      <span
-                        className={`text-[9px] font-bold tracking-[0.12em] ${
+            <div
+              ref={mobileCategoryScrollRef}
+              className="mb-6 -mx-5 w-[calc(100%+2.5rem)] overflow-x-auto overscroll-x-contain px-5 pb-2 [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden lg:hidden"
+            >
+              <div className="flex min-w-max gap-2.5 pr-8">
+                {activities.map(
+                  (activity, index) => {
+                    const isActive =
+                      index === activeIndex;
+
+                    return (
+                      <motion.button
+                        key={activity.number}
+                        ref={(el) => {
+                          categoryRefs.current[
+                            index
+                          ] = el;
+                        }}
+                        type="button"
+                        onClick={() =>
+                          selectActivity(index)
+                        }
+                        whileHover={
+                          hoverEnabled
+                            ? {
+                                y: -2,
+                              }
+                            : undefined
+                        }
+                        whileTap={
+                          motionEnabled
+                            ? {
+                                scale: 0.96,
+                              }
+                            : undefined
+                        }
+                        transition={{
+                          duration: 0.25,
+                          ease,
+                        }}
+                        className={`flex h-12 shrink-0 items-center gap-2.5 rounded-full border px-[18px] text-[9px] font-semibold uppercase tracking-[0.12em] transition-[border-color,background-color,color,box-shadow,transform] duration-400 sm:h-11 sm:px-[18px] sm:text-[9px] sm:tracking-[0.15em] ${
                           isActive
-                            ? "text-[#72E2F5]"
-                            : "text-white"
+                            ? "border-[#42D5F5]/[0.42] bg-[#42D5F5]/[0.10] text-[#72E2F5] shadow-[0_9px_28px_rgba(66,213,245,.10)]"
+                            : "border-white/[0.09] bg-white/[0.025] text-white hover:border-white/[0.17] hover:bg-white/[0.05] hover:text-white"
                         }`}
                       >
-                        {activity.number}
-                      </span>
+                        <span
+                          className={`text-[9px] font-bold tracking-[0.12em] ${
+                            isActive
+                              ? "text-[#72E2F5]"
+                              : "text-white"
+                          }`}
+                        >
+                          {activity.number}
+                        </span>
 
-                      <span className="max-w-[125px] truncate text-[8.5px] font-semibold tracking-[0.13em] sm:max-w-[130px] sm:text-[9px] sm:tracking-[0.15em]">
-                        {activity.tag}
-                      </span>
-                    </motion.button>
-                  );
-                })}
+                        <span className="max-w-[125px] truncate text-[8.5px] font-semibold tracking-[0.13em] sm:max-w-[130px] sm:text-[9px] sm:tracking-[0.15em]">
+                          {activity.tag}
+                        </span>
+                      </motion.button>
+                    );
+                  }
+                )}
               </div>
             </div>
 
-            {/* DESKTOP */}
-            <div className="grid items-start gap-4 sm:gap-5 lg:grid-cols-[230px_1fr]">
+            {/* ---------------------------------------------------------------- */}
+            {/* DESKTOP GRID                                                      */}
+            {/* ---------------------------------------------------------------- */}
+
+            <div className="grid min-w-0 items-start gap-4 sm:gap-5 lg:grid-cols-[230px_minmax(0,1fr)]">
               {/* CATEGORY CARD */}
-              <div className="hidden lg:block lg:self-start">
+              <div className="hidden min-w-0 lg:block lg:self-start">
                 <motion.div
                   whileHover={
                     hoverEnabled
@@ -1019,7 +1257,7 @@ export default function Ventures() {
                     duration: 0.35,
                     ease,
                   }}
-                  className="sticky top-28 flex h-[520px] flex-col overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#091C2B]/75 p-1.5 shadow-[0_18px_55px_rgba(0,0,0,.15)] backdrop-blur-xl transition-[border-color,background-color,box-shadow] duration-500 hover:border-white/[0.14] hover:bg-[#0A1F30] hover:shadow-[0_24px_65px_rgba(0,0,0,.2)]"
+                  className="sticky top-28 flex h-[520px] w-full flex-col overflow-hidden rounded-[20px] border border-white/[0.08] bg-[#091C2B]/75 p-1.5 shadow-[0_18px_55px_rgba(0,0,0,.15)] backdrop-blur-xl transition-[border-color,background-color,box-shadow] duration-500 hover:border-white/[0.14] hover:bg-[#0A1F30] hover:shadow-[0_24px_65px_rgba(0,0,0,.2)]"
                 >
                   {/* CATEGORY HEADER */}
                   <div className="shrink-0 px-4 pb-4 pt-5">
@@ -1032,7 +1270,8 @@ export default function Ventures() {
                     </div>
 
                     <div className="mt-2.5 text-[11px] font-medium tracking-[-0.01em] text-white/75">
-                      Explore our business categories
+                      Explore our business
+                      categories
                     </div>
                   </div>
 
@@ -1055,18 +1294,26 @@ export default function Ventures() {
                     </button>
 
                     <div
-                      ref={desktopCategoryScrollRef}
-                      className="h-full w-full overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                      ref={
+                        desktopCategoryScrollRef
+                      }
+                      className="h-full w-full overflow-y-auto overscroll-contain pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                     >
                       <div className="flex w-full flex-col pb-9 pt-2">
                         {activities.map(
-                          (activity, index) => {
+                          (
+                            activity,
+                            index
+                          ) => {
                             const isActive =
-                              index === activeIndex;
+                              index ===
+                              activeIndex;
 
                             return (
                               <motion.button
-                                key={activity.number}
+                                key={
+                                  activity.number
+                                }
                                 ref={(el) => {
                                   desktopCategoryRefs.current[
                                     index
@@ -1074,7 +1321,9 @@ export default function Ventures() {
                                 }}
                                 type="button"
                                 onClick={() =>
-                                  selectActivity(index)
+                                  selectActivity(
+                                    index
+                                  )
                                 }
                                 whileHover={
                                   hoverEnabled
@@ -1118,17 +1367,21 @@ export default function Ventures() {
                                       : "text-white group-hover:text-white"
                                   }`}
                                 >
-                                  {activity.number}
+                                  {
+                                    activity.number
+                                  }
                                 </span>
 
                                 <span
-                                  className={`min-w-0 text-[10.5px] font-medium uppercase tracking-[0.065em] transition-colors duration-300 ${
+                                  className={`min-w-0 break-words text-[10.5px] font-medium uppercase tracking-[0.065em] transition-colors duration-300 ${
                                     isActive
                                       ? "text-white"
                                       : "text-white group-hover:text-white"
                                   }`}
                                 >
-                                  {activity.tag}
+                                  {
+                                    activity.tag
+                                  }
                                 </span>
                               </motion.button>
                             );
@@ -1162,7 +1415,7 @@ export default function Ventures() {
                   duration: 0.4,
                   ease,
                 }}
-                className="group relative min-w-0 overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#091C2B]/90 shadow-[0_22px_65px_rgba(0,0,0,.19)] transition-[border-color,box-shadow,background-color] duration-500 sm:rounded-[26px] sm:backdrop-blur-xl"
+                className="group relative min-w-0 w-full overflow-hidden rounded-[20px] border border-white/[0.09] bg-[#091C2B]/90 shadow-[0_22px_65px_rgba(0,0,0,.19)] transition-[border-color,box-shadow,background-color] duration-500 sm:rounded-[26px] sm:backdrop-blur-xl"
               >
                 <div
                   className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${active.accent} transition-opacity duration-700`}
@@ -1172,38 +1425,77 @@ export default function Ventures() {
 
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.035] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-                {/* OPTIMIZED ACTIVITY IMAGE */}
-                <motion.div
-                  key={`image-${active.number}`}
-                  initial={false}
-                  animate={{
-                    opacity: 1,
-                  }}
-                  transition={{
-                    duration: reduceMotion ? 0 : 0.2,
-                    ease,
-                  }}
-                  className="relative aspect-[16/9] min-h-[240px] w-full overflow-hidden bg-[#071722] sm:min-h-[260px] lg:aspect-[16/8] lg:min-h-0"
-                >
-                  <Image
-                    src={active.image}
-                    alt={active.title}
-                    fill
-                    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 92vw, 900px"
-                    quality={82}
-                    priority={activeIndex === 0}
-                    fetchPriority={
-                      activeIndex === 0 ? "high" : "auto"
-                    }
-                    className="object-contain object-center"
-                  />
-                </motion.div>
+                {/* ------------------------------------------------------------ */}
+                {/* OPTIMIZED ACTIVITY IMAGE                                      */}
+                {/* ------------------------------------------------------------ */}
 
-                <div className="relative p-5.5 sm:p-8 lg:p-11">
+                <div
+                  className="relative aspect-[16/9] min-h-[210px] w-full overflow-hidden bg-[#071722] xs:min-h-[220px] sm:min-h-[260px] lg:aspect-[16/8] lg:min-h-0"
+                  style={
+                    {
+                      contain:
+                        "layout paint",
+                    } as CSSProperties
+                  }
+                >
+                  {activities.map(
+                    (
+                      activity,
+                      index
+                    ) => {
+                      const isActive =
+                        index ===
+                        activeIndex;
+
+                      return (
+                        <div
+                          key={
+                            activity.number
+                          }
+                          className={`absolute inset-0 transition-opacity duration-150 ${
+                            isActive
+                              ? "pointer-events-auto opacity-100"
+                              : "pointer-events-none opacity-0"
+                          }`}
+                          aria-hidden={
+                            !isActive
+                          }
+                        >
+                          <Image
+                            src={
+                              activity.image
+                            }
+                            alt={
+                              activity.title
+                            }
+                            fill
+                            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 92vw, 900px"
+                            quality={78}
+                            priority={
+                              index === 0
+                            }
+                            loading="eager"
+                            fetchPriority={
+                              index === 0
+                                ? "high"
+                                : "auto"
+                            }
+                            decoding="async"
+                            className="object-contain object-center"
+                          />
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+
+                {/* ACTIVE CONTENT */}
+                <div className="relative min-w-0 p-5.5 sm:p-8 lg:p-11">
                   <motion.div
                     key={`category-${active.number}`}
                     initial={
-                      reduceMotion || !hoverEnabled
+                      reduceMotion ||
+                      !hoverEnabled
                         ? false
                         : {
                             opacity: 0,
@@ -1211,7 +1503,8 @@ export default function Ventures() {
                           }
                     }
                     animate={
-                      reduceMotion || !hoverEnabled
+                      reduceMotion ||
+                      !hoverEnabled
                         ? undefined
                         : {
                             opacity: 1,
@@ -1230,7 +1523,7 @@ export default function Ventures() {
 
                     <span className="h-3.5 w-px shrink-0 bg-[#42D5F5]/25 sm:h-4" />
 
-                    <span className="truncate text-[8px] font-semibold uppercase tracking-[0.22em] text-white sm:text-[9px] sm:tracking-[0.3em]">
+                    <span className="min-w-0 truncate text-[8px] font-semibold uppercase tracking-[0.22em] text-white sm:text-[9px] sm:tracking-[0.3em]">
                       {active.tag}
                     </span>
                   </motion.div>
@@ -1238,7 +1531,8 @@ export default function Ventures() {
                   <motion.div
                     key={`content-${active.number}`}
                     initial={
-                      reduceMotion || !hoverEnabled
+                      reduceMotion ||
+                      !hoverEnabled
                         ? false
                         : {
                             opacity: 0,
@@ -1246,7 +1540,8 @@ export default function Ventures() {
                           }
                     }
                     animate={
-                      reduceMotion || !hoverEnabled
+                      reduceMotion ||
+                      !hoverEnabled
                         ? undefined
                         : {
                             opacity: 1,
@@ -1258,19 +1553,22 @@ export default function Ventures() {
                       delay: 0.04,
                       ease,
                     }}
+                    className="min-w-0"
                   >
                     <h3
-                      ref={activeHeadingRef}
-                      className={`max-w-4xl font-medium leading-[1.05] tracking-[-0.045em] text-white ${
+                      ref={
+                        activeHeadingRef
+                      }
+                      className={`max-w-4xl break-words font-medium leading-[1.05] tracking-[-0.045em] text-white ${
                         active.number === "06"
-                          ? "text-[clamp(1.35rem,4.5vw,2.45rem)] sm:text-[clamp(1.5rem,5vw,2.45rem)]"
-                          : "text-[clamp(1.5rem,4.7vw,3rem)] sm:text-[clamp(1.7rem,5.2vw,3rem)]"
+                          ? "text-[clamp(1.3rem,5vw,2.45rem)] sm:text-[clamp(1.5rem,5vw,2.45rem)]"
+                          : "text-[clamp(1.45rem,5vw,3rem)] sm:text-[clamp(1.7rem,5.2vw,3rem)]"
                       }`}
                     >
                       {active.title}
                     </h3>
 
-                    <p className="mt-4 max-w-4xl font-light leading-6.5 tracking-normal text-white/70 sm:mt-5 sm:text-[15px] sm:leading-7">
+                    <p className="mt-4 max-w-4xl break-words font-light leading-[1.625rem] tracking-normal text-white/70 sm:mt-5 sm:text-[15px] sm:leading-7">
                       {active.description}
                     </p>
                   </motion.div>
@@ -1280,9 +1578,12 @@ export default function Ventures() {
           </div>
         </section>
 
-        {/* BEYOND ONE INDUSTRY */}
-        <section className="relative -mt-7 px-5 pb-12 sm:-mt-12 sm:px-8 sm:pb-20 md:-mt-16 md:px-10 lg:px-16 lg:pb-28">
-          <div className="mx-auto max-w-7xl">
+        {/* ------------------------------------------------------------------ */}
+        {/* BEYOND ONE INDUSTRY                                                 */}
+        {/* ------------------------------------------------------------------ */}
+
+        <section className="relative -mt-7 w-full px-5 pb-12 sm:-mt-12 sm:px-8 sm:pb-20 md:-mt-16 md:px-10 lg:px-16 lg:pb-28">
+          <div className="mx-auto w-full max-w-7xl">
             <motion.div
               initial={
                 reduceMotion
@@ -1308,13 +1609,13 @@ export default function Ventures() {
                     }
                   : undefined
               }
-              className="group relative overflow-hidden rounded-[22px] border border-slate-200 bg-[#D9D8D3] px-5 py-16 text-center shadow-[0_22px_70px_rgba(0,0,0,.12)] transition-[border-color,background-color,box-shadow] duration-500 sm:rounded-[30px] sm:px-12 sm:py-16 sm:backdrop-blur-xl hover:border-slate-300 hover:bg-[#D9D8D3] hover:shadow-[0_32px_95px_rgba(0,0,0,.16)]"
+              className="group relative w-full overflow-hidden rounded-[22px] border border-slate-200 bg-[#D9D8D3] px-5 py-16 text-center shadow-[0_22px_70px_rgba(0,0,0,.12)] transition-[border-color,background-color,box-shadow] duration-500 sm:rounded-[30px] sm:px-12 sm:py-16 sm:backdrop-blur-xl hover:border-slate-300 hover:bg-[#D9D8D3] hover:shadow-[0_32px_95px_rgba(0,0,0,.16)]"
             >
               <div className="pointer-events-none absolute left-1/2 top-[-110px] h-[320px] w-[320px] -translate-x-1/2 rounded-full bg-[#42D5F5]/[0.08] blur-[90px] transition-all duration-700 sm:top-[-130px] sm:h-[400px] sm:w-[400px] sm:blur-[115px] group-hover:scale-125 group-hover:bg-[#42D5F5]/[0.12]" />
 
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-100/[0.8] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
-              <div className="relative">
+              <div className="relative min-w-0">
                 <span className="text-[7px] font-semibold uppercase tracking-[0.28em] text-[#168BD1] transition-colors duration-400 group-hover:text-[#0B6FA4] sm:text-[9px] sm:tracking-[0.36em]">
                   Beyond one industry
                 </span>
@@ -1331,7 +1632,7 @@ export default function Ventures() {
                     duration: 0.3,
                     ease,
                   }}
-                  className="mx-auto mt-4 max-w-4xl cursor-default text-[clamp(2.7rem,10vw,4.5rem)] font-medium leading-[0.92] tracking-[-0.065em] sm:mt-4 sm:text-[clamp(2.2rem,8vw,4.5rem)] lg:text-[clamp(2.25rem,4vw,4rem)]"
+                  className="mx-auto mt-4 max-w-4xl break-words text-[clamp(2.45rem,10vw,4.5rem)] font-medium leading-[0.92] tracking-[-0.065em] sm:mt-4 sm:text-[clamp(2.2rem,8vw,4.5rem)] lg:text-[clamp(2.25rem,4vw,4rem)]"
                 >
                   <span className="text-[#06131F]">
                     One platform.
@@ -1341,11 +1642,13 @@ export default function Ventures() {
                   </span>
                 </motion.h2>
 
-                <p className="mx-auto mt-5 max-w-2xl text-[10.5px] leading-5.5 text-slate-700 transition-colors duration-500 group-hover:text-slate-700 sm:mt-5 sm:text-[13px] sm:leading-6">
-                  BH Ventures continues to explore opportunities
-                  where commerce, technology, innovation and
-                  strategic thinking can create meaningful long-term
-                  value.
+                <p className="mx-auto mt-5 max-w-2xl break-words text-[10.5px] leading-5.5 text-slate-700 transition-colors duration-500 group-hover:text-slate-700 sm:mt-5 sm:text-[13px] sm:leading-6">
+                  BH Ventures continues to
+                  explore opportunities where
+                  commerce, technology,
+                  innovation and strategic
+                  thinking can create meaningful
+                  long-term value.
                 </p>
               </div>
             </motion.div>
