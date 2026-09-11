@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   Check,
   ChevronDown,
+  Globe,
   Mail,
   MapPin,
   Phone,
@@ -27,6 +28,7 @@ const countries = [
   { name: "Estonia", code: "EE", dialCode: "+372" },
   { name: "Denmark", code: "DK", dialCode: "+45" },
   { name: "Ukraine", code: "UA", dialCode: "+380" },
+  { name: "Other", code: "OT", dialCode: "" },
 ];
 
 const reasons = [
@@ -81,6 +83,24 @@ function CountryFlag({
   code: string;
   size?: number;
 }) {
+  if (code === "OT") {
+    return (
+      <span
+        className="flex shrink-0 items-center justify-center rounded-[3px] bg-[#E8E8E3] text-[#657780]"
+        style={{
+          width: `${size}px`,
+          height: `${Math.round(size * 0.7)}px`,
+        }}
+        aria-hidden="true"
+      >
+        <Globe
+          size={Math.round(size * 0.72)}
+          strokeWidth={1.6}
+        />
+      </span>
+    );
+  }
+
   return (
     <span
       className="flex shrink-0 items-center justify-center overflow-hidden rounded-[3px] bg-[#E8E8E3]"
@@ -245,7 +265,6 @@ export default function ContactPage() {
     setSubmitError("");
     setSubmitting(true);
 
-    
     const controller = new AbortController();
 
     const timeoutId = window.setTimeout(() => {
@@ -256,7 +275,6 @@ export default function ContactPage() {
       const form = e.currentTarget;
       const formData = new FormData(form);
 
-      
       formData.append("country", selectedCountry.name);
       formData.append(
         "country_code",
@@ -270,9 +288,6 @@ export default function ContactPage() {
       );
       formData.append("reason", selectedReason);
 
-      // Web3Forms is submitted directly from the browser.
-      // Add your Web3Forms Access Key to .env.local as:
-      // NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY=your_actual_key
       const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
 
       if (!accessKey) {
@@ -376,7 +391,6 @@ export default function ContactPage() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
       >
-        {/* Clean background — no bubbles */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_5%,rgba(54,145,185,0.055),transparent_32%),radial-gradient(circle_at_90%_25%,rgba(45,77,180,0.025),transparent_29%),radial-gradient(circle_at_5%_62%,rgba(18,122,137,0.022),transparent_28%)]" />
 
         <div className="absolute inset-0 bg-[linear-gradient(rgba(190,220,235,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(190,220,235,0.7)_1px,transparent_1px)] bg-[size:92px_92px] opacity-[0.006] [mask-image:linear-gradient(to_bottom,black_0%,black_52%,transparent_100%)]" />
@@ -895,4 +909,3 @@ export default function ContactPage() {
     </main>
   );
 }
-
